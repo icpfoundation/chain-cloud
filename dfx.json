@@ -1,8 +1,10 @@
 {
   "canisters": {
     "chain_cloud": {
-      "main": "src/chain_cloud/main.mo",
-      "type": "motoko"
+      "build": "cargo build --target wasm32-unknown-unknown --package chain_cloud --release",
+      "candid": "src/chain_cloud/src/chain_cloud.did",
+      "wasm": "target/wasm32-unknown-unknown/release/chain_cloud.wasm",
+      "type": "custom"
     },
     "chain_cloud_assets": {
       "dependencies": [
