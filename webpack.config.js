@@ -3,6 +3,8 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const dfxJson = require("./dfx.json");
 
 let localCanisters, prodCanisters, canisters;
 
@@ -36,7 +38,15 @@ const asset_entry = path.join(
   "src",
   "chain_cloud_assets",
   "src",
+  "public",
   "index.html"
+);
+
+const app_entry = path.join(
+  "src",
+  "chain_cloud_assets",
+  "src",
+  "main.js"
 );
 
 module.exports = {
@@ -45,7 +55,7 @@ module.exports = {
   entry: {
     // The frontend.entrypoint points to the HTML file for this build, so we need
     // to replace the extension to `.js`.
-    index: path.join(__dirname, asset_entry).replace(/\.html$/, ".js"),
+    index: path.join(__dirname, app_entry),
   },
   devtool: isDevelopment ? "source-map" : false,
   optimization: {
@@ -53,7 +63,7 @@ module.exports = {
     minimizer: [new TerserPlugin()],
   },
   resolve: {
-    extensions: [".js", ".ts", ".jsx", ".tsx"],
+    extensions: [".js", ".ts", ".jsx", ".tsx", ".vue", ".json"],
     fallback: {
       assert: require.resolve("assert/"),
       buffer: require.resolve("buffer/"),
@@ -72,17 +82,23 @@ module.exports = {
   // webpack configuration. For example, if you are using React
   // modules and CSS as described in the "Adding a stylesheet"
   // tutorial, uncomment the following lines:
-  // module: {
-  //  rules: [
-  //    { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
-  //    { test: /\.css$/, use: ['style-loader','css-loader'] }
-  //  ]
-  // },
+  module: {
+    rules: [
+      { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        // options: vueLoaderConfig
+      },
+    ]
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, asset_entry),
       cache: false
     }),
+    new VueLoaderPlugin(),
     new CopyPlugin({
       patterns: [
         {

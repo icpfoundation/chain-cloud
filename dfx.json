@@ -11,7 +11,7 @@
         "chain_cloud"
       ],
       "frontend": {
-        "entrypoint": "src/chain_cloud_assets/src/index.html"
+        "entrypoint": "src/chain_cloud_assets/src/main.js"
       },
       "source": [
         "src/chain_cloud_assets/assets",
