@@ -1,13 +1,15 @@
 import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
-import 'element-ui/lib/theme-chalk/index.css';
 import ElementLocale from 'element-ui/lib/locale'
-import '../assets/css/icon.css';
 import 'babel-polyfill';
+
+import App from './App.vue';
+import router from './router';
+
+import '../assets/css/icon.css';
+import 'element-ui/lib/theme-chalk/index.css';
 
 //Vue.config.productionTip = false;
 Vue.use(VueI18n);
