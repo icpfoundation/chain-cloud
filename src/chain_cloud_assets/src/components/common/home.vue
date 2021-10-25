@@ -1,55 +1,94 @@
 <template>
   <div>
-    <h3>HOME</h3>
-    <button @click="doSomething">{{ principal }}</button>
+    <el-container class="containView">
+      <headerview></headerview>
+
+      <el-main id="mainview">
+        <bannerview></bannerview>
+      </el-main>
+
+      <el-footer id="footerview">
+        <footerview></footerview>
+      </el-footer>
+    </el-container>
   </div>
 </template>
 
 <script>
-import { AuthClient } from "@dfinity/auth-client";
-import { Actor, HttpAgent } from "@dfinity/agent";
-import { DelegationIdentity } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
+import headerview from "./header.vue";
+import bannerview from "./banner.vue";
+import footerview from "./footer.vue";
 
 export default {
   name: "Home",
   data() {
     return {
-        principal: "LOGIN",
-        IDENTITY_URL: "https://identity.ic0.app",
-        maxTimeToLive: 120,
-        authClient: null,
+      principal: "LOGIN",
+      IDENTITY_URL: "https://identity.ic0.app",
+      maxTimeToLive: 120,
+      authClient: null,
     };
   },
-  components: {},
+  components: {
+    headerview,
+    bannerview,
+    footerview,
+  },
   methods: {
-    doSomething: async function (event) {
-      if (event) {
-        alert(event.target.tagName + "" + this.IDENTITY_URL);
-
-        this.authClient.login({
-          identityProvider: this.IDENTITY_URL,
-          onSuccess: () => {
-            let identity = this.authClient.getIdentity();
-            let principle = identity.getPrincipal();
-            this.principal = principle;
-
-            console.log("Logged in with II: " + this.principle);
-          },
-          onError: (str) => {
-            console.log("Error while logging with II: " + str);
-          },
-        });
-      }
-    },
   },
   mounted() {
-      const init = async () => {
-          this.authClient = await AuthClient.create();
-      }
-
-      init();
   },
   destroyed() {},
 };
 </script>
+
+<style>
+.el-header,
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+
+.el-aside {
+  background-color: #d3dce6;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  line-height: 160px;
+}
+
+#mainview {
+  padding: 0px;
+  width: 100%;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+  line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+  line-height: 320px;
+}
+
+.containView {
+  max-width: 100%;
+}
+
+#footerview {
+  background-color: white;
+  height: 124px;
+  width: 100%;
+}
+</style>

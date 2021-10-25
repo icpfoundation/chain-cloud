@@ -91,6 +91,14 @@ module.exports = {
         loader: 'vue-loader',
         // options: vueLoaderConfig
       },
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 100000, //10000
+          name: 'img/[name].[ext]'
+        }
+      }
     ]
   },
   plugins: [
