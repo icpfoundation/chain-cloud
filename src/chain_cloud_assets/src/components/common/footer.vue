@@ -2,38 +2,40 @@
   <div class="outview">
     <el-row>
       <el-col :span="3">
-          <div class="footlogo">
-      <img src="../../../assets/img/nav_logo@2x.png" alt="" />
-    </div>
+        <div class="footlogo">
+          <img src="../../../assets/img/nav_logo@2x.png" alt="" />
+        </div>
       </el-col>
-      <el-col :span="17"></el-col>
-      <el-col :span="4">
-          <div class="aboutview">
-      <div class="about">About us</div>
-      <div class="row">
-        <div class="col">
-          <img
-            class="iconsize"
-            src="../../../assets/img/wechat@2x.png"
-            alt=""
-          />
+      <el-col :span="19">
+        <div class="footmidview"></div>
+      </el-col>
+      <el-col :span="2">
+        <div class="aboutview">
+          <div class="about">About us</div>
+          <div class="row">
+            <div class="col">
+              <img
+                class="iconsize"
+                src="../../../assets/img/wechat@2x.png"
+                alt=""
+              />
+            </div>
+            <div class="col">
+              <img
+                class="iconsize"
+                src="../../../assets/img/twitter@2x.png"
+                alt=""
+              />
+            </div>
+            <div class="col">
+              <img
+                class="iconsize"
+                src="../../../assets/img/facebook@2x.png"
+                alt=""
+              />
+            </div>
+          </div>
         </div>
-        <div class="col">
-          <img
-            class="iconsize"
-            src="../../../assets/img/twitter@2x.png"
-            alt=""
-          />
-        </div>
-        <div class="col">
-          <img
-            class="iconsize"
-            src="../../../assets/img/facebook@2x.png"
-            alt=""
-          />
-        </div>
-      </div>
-    </div>
       </el-col>
     </el-row>
   </div>
@@ -53,13 +55,12 @@ export default {
 </script>
 
 <style scoped>
-.aboutview {
-  /* float: right; */
-  /* overflow: hidden; */
+.footmidview {
+  height: 60px;
 }
 
 .about {
-  width: 61px;
+  width: 60px;
   height: 20px;
   font-size: 14px;
   font-family: PingFangSC-Regular, PingFang SC;

@@ -5,6 +5,7 @@
 
       <el-main id="mainview">
         <bannerview></bannerview>
+        <featureview></featureview>
       </el-main>
 
       <el-footer id="footerview">
@@ -18,6 +19,7 @@
 import headerview from "./header.vue";
 import bannerview from "./banner.vue";
 import footerview from "./footer.vue";
+import featureview from "./feature.vue"
 
 export default {
   name: "Home",
@@ -33,6 +35,7 @@ export default {
     headerview,
     bannerview,
     footerview,
+    featureview,
   },
   methods: {
   },
@@ -88,7 +91,7 @@ body > .el-container {
 
 #footerview {
   background-color: white;
-  height: 124px;
+  height: 60px;
   width: 100%;
 }
 </style>
