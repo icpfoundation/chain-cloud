@@ -2,7 +2,7 @@
   <div class="featureview">
     <div class="titleview">Why Chain Cloud ?</div>
     <el-row :gutter="40" class="feature-row">
-      <el-col :span="6" offset="3">
+      <el-col :span="6" :offset="3">
         <div id="lefttop" class="b-left below">
           <img src="../../../assets/img/why_pic01_hover@2x.png" alt="" />
           <div class="desctitle">
@@ -54,7 +54,7 @@
 
     <div class="footstartview">
       <el-row>
-        <el-col :span="2" offset="3">
+        <el-col :span="2" :offset="3">
           <div class="qs-title">Quick Start Now！</div>
         </el-col>
 

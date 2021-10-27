@@ -12,7 +12,7 @@
         innovation
       </div>
 
-      <el-button class="startbtn" type="primary"
+      <el-button class="startbtn" type="primary" v-on:click="doStart"
         >Get Start<i class="el-icon-arrow-right el-icon-right"></i
       ></el-button>
     </div>
@@ -26,7 +26,14 @@ export default {
     return {};
   },
   components: {},
-  methods: {},
+  methods: {
+    doStart() {
+      console.log(this.$router.path);
+      if (this.$router.path != "/deploy") {
+        this.$router.push("/deploy");
+      }
+    },
+  },
   mounted() {},
   destroyed() {},
 };
@@ -84,9 +91,8 @@ export default {
   width: 161px;
   height: 54px;
   border-radius: 8px;
-  background: #1776FF;
+  background: #1776ff;
   font-size: 16px;
   font-weight: 400;
 }
-
 </style>
