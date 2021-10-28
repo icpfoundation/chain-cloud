@@ -3,10 +3,12 @@
     <el-container class="containView">
       <headerview></headerview>
 
-      <el-main id="mainview">
+      <el-main id="mainview" v-if="!isAuth">
         <bannerview></bannerview>
         <featureview></featureview>
       </el-main>
+
+      <authedview v-else></authedview>
 
       <el-footer id="footerview">
         <footerview></footerview>
@@ -19,7 +21,8 @@
 import headerview from "./header.vue";
 import bannerview from "./banner.vue";
 import footerview from "./footer.vue";
-import featureview from "./feature.vue"
+import featureview from "./feature.vue";
+import authedview from "../page/authorized.vue";
 
 export default {
   name: "Home",
@@ -29,6 +32,7 @@ export default {
       IDENTITY_URL: "https://identity.ic0.app",
       maxTimeToLive: 120,
       authClient: null,
+      isAuth: false,
     };
   },
   components: {
@@ -37,9 +41,41 @@ export default {
     footerview,
     featureview,
   },
-  methods: {
-  },
+  methods: {},
   mounted() {
+    //installation_id
+    //setup_action
+    console.log(window.location.search.toString());
+    console.log("path: %s", this.$router.path);
+    console.log(this.$router.params);
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let hascanister = urlParams.has("canisterId");
+    let hasinstall_id = urlParams.has("installation_id");
+    let hassetup_action = urlParams.has("setup_action");
+    let has_code = urlParams.has("code");
+
+    if (hascanister && hasinstall_id && hassetup_action && has_code) {
+      // store this key and value
+      window.localStorage.setItem("code", urlParams.get("code"));
+      window.localStorage.setItem("canisterId", urlParams.get("canisterId"));
+      window.localStorage.setItem(
+        "installation_id",
+        urlParams.get("installation_id")
+      );
+      window.localStorage.setItem(
+        "setup_action",
+        urlParams.get("setup_action")
+      );
+
+      this.isAuth = true;
+
+      setTimeout(function () {
+        window.close();
+      }, 2000);
+    } else {
+      this.isAuth = false;
+    }
   },
   destroyed() {},
 };

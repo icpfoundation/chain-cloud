@@ -6,17 +6,15 @@
 
 <script>
 export default {
-    name: "Overview",
-    data() {
-        return {}
-    },
-    components: {
-    },
-    mounted() {
-    },
-    destroyed() {
-    },
-}
+  name: "overview",
+  data() {
+    return {};
+  },
+  components: {},
+  methods: {},
+  mounted() {},
+  destroyed() {},
+};
 </script>
 
 <style scoped>

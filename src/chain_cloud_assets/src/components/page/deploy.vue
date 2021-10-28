@@ -34,20 +34,36 @@
       </div>
 
       <div class="actionview" v-if="step == 2">
-        <el-button type="text" icon="el-icon-arrow-left" v-on:click="backaction2">back</el-button>
+        <el-button
+          type="text"
+          icon="el-icon-arrow-left"
+          v-on:click="backaction2"
+          >back</el-button
+        >
         <div class="actiontitle">Continuous Deployment: GitHub App</div>
         <div class="actionsubtitle">
-          When you push to Git we run your build tool on our services and deploy the result.
+          When you push to Git we run your build tool on our services and deploy
+          the result.
         </div>
       </div>
 
       <div class="actionview" v-if="step == 3">
-        <el-button type="text" icon="el-icon-arrow-left" v-on:click="backaction3">back</el-button>
+        <el-button
+          type="text"
+          icon="el-icon-arrow-left"
+          v-on:click="backaction3"
+          >back</el-button
+        >
         <div>Auth from giuthub</div>
       </div>
 
       <div class="actionview" v-if="step == 4">
-        <el-button type="text" icon="el-icon-arrow-left" v-on:click="backaction4">back</el-button>
+        <el-button
+          type="text"
+          icon="el-icon-arrow-left"
+          v-on:click="backaction4"
+          >back</el-button
+        >
         <div>Auth from giuthub</div>
       </div>
     </div>
@@ -68,6 +84,7 @@ export default {
       customColor: "#409eff",
       percentage: 25,
       step: 1,
+      repopoll: null,
     };
   },
   components: {
@@ -75,37 +92,93 @@ export default {
     footerview,
   },
   mounted() {
-    console.log(window.location.search)
+    //installation_id
+    //setup_action
+    console.log(window.location.search.toString());
     console.log("path: %s", this.$router.path);
     console.log(this.$router.params);
+
+    let urlParams = new URLSearchParams(window.location.search);
+    console.log(urlParams.has("canisterId")); // true
+    console.log(urlParams.get("canisterId"));
   },
   methods: {
     connetgithubaction: function (event) {
       if (event) {
         // install github app: chain-cloud
-        var targeturl = "https://github.com/apps/chain-cloud/installations/new"
-        window.open(targeturl)
+        var targeturl = "https://github.com/apps/chain-cloud/installations/new";
+        window.open(targeturl, "width:800px; height:500px", "blank");
 
-        window.close()
+        //start poll task
+        this.repopoll = window.setInterval(this.pollcoderepo, 500);
+      }
+    },
+    pollcoderepo: function () {
+      let tmp_code = window.localStorage.getItem("code");
+      let local_canister_id = window.localStorage.getItem("canisterId");
+      let local_install_id = window.localStorage.getItem("installation_id");
+      let local_setup_action = window.localStorage.getItem("setup_action");
 
-        this.step = 2
-        this.percentage = 50
+      if (
+        local_install_id != null &&
+        local_setup_action != null &&
+        local_canister_id != null
+      ) {
+        console.log(
+          local_canister_id +
+            " " +
+            local_install_id +
+            " " +
+            local_setup_action +
+            " " +
+            tmp_code
+        );
+
+        setTimeout(() => {
+          this.step = 2;
+          this.percentage = 50;
+          window.localStorage.setItem("access_token", "sxxxx");
+          clearInterval(this.repopoll);
+        }, 3000);
+
+        // this.axios
+        //   .post("https://github.com/login/oauth/access_token", {
+        //     client_id: "Iv1.018aba55453994ac",
+        //     client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
+        //     code: tmp_code,
+        //     redirect_uri:
+        //       "http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
+        //     state: "xxx",
+        //   })
+        //   .then(function (response) {
+        //     console.log(response);
+
+        //     this.step = 2;
+        //     this.percentage = 50;
+        //     window.localStorage.setItem('access_token', response.access_token);
+        //     clearInterval(this.repopoll);
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
+      } else {
+        console.log("not yet install and authorize");
       }
     },
     backaction2: function (event) {
-      if (event) {   
+      if (event) {
         this.step = 1;
         this.percentage = 25;
       }
     },
     backaction3: function (event) {
-      if (event) {                                                                                                                                                                                                                                                                                               
+      if (event) {
         this.step = 2;
         this.percentage = 50;
       }
     },
     backaction4: function (event) {
-      if (event) {                                                                                                                                                                                                                                                                                                  
+      if (event) {
         this.step = 3;
         this.percentage = 75;
       }

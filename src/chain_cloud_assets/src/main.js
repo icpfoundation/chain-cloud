@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
@@ -16,6 +18,7 @@ Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
 });
+Vue.use(VueAxios, axios);
 const i18n = new VueI18n({
     locale: 'en',
     messages

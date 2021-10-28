@@ -6,6 +6,7 @@ import P404 from '../components/page/404.vue';
 import Overview from '../components/page/overview.vue';
 
 import Deploy from '../components/page/deploy.vue';
+import Authorized from '../components/page/authorized.vue';
 
 Vue.use(Router);
 
@@ -17,7 +18,7 @@ export default new Router({
     {
         path: '/home',
         component: Home,
-        meta: { title: '自述文件' },
+        meta: { title: 'Chain-cloud' },
         children: [
             {
                 path: '/i18n',
@@ -36,6 +37,12 @@ export default new Router({
         name: 'deployview',
         component: Deploy,
         meta: { title: 'Auto-deploy' }
+    },
+    {
+        path: '/authed',
+        name: 'authorizedview',
+        component: Authorized,
+        meta: { title: 'Authorized' }
     },
     {
         path: '*',
