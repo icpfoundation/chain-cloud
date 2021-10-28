@@ -45,6 +45,65 @@
           When you push to Git we run your build tool on our services and deploy
           the result.
         </div>
+
+        <div class="git-outer">
+          <div class="git-title">
+            <el-row class="title-row">
+              <el-col :span="18" class="title-col">
+                <div>
+                  <img src="../../../assets/img/logo_icon@2x.png" alt="" />
+                  <span>lyswifter</span>
+                </div>
+              </el-col>
+
+              <el-col :span="4" class="title-col">
+                <el-input
+                  placeholder="Type something"
+                  v-model="inputSearchRepo"
+                >
+                  <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                </el-input>
+              </el-col>
+
+              <el-col :span="2" class="title-col">
+                <div class=""></div>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div class="git-repo">
+            <el-row class="each-repo">
+              <el-col :span="22">
+                <img src="../../../assets/img/github-fill.png" alt="" />
+                <span>repo name</span>
+              </el-col>
+              <el-col :span="2">
+                <el-checkbox v-model="checked"></el-checkbox>
+              </el-col>
+            </el-row>
+
+            <el-row class="each-repo">
+              <el-col :span="22">
+                <img src="../../../assets/img/github-fill.png" alt="" />
+                <span>repo name</span>
+              </el-col>
+              <el-col :span="2">
+                <el-checkbox v-model="checked"></el-checkbox>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div class="git-more">
+            <span>Can’t find your GitHub repo？</span>
+            <a href="">Choose more</a>
+          </div>
+
+          <div class="confirm">
+            <el-button type="primary" size="medium"
+              >Confirm<i class="el-icon-arrow-right el-icon-right"></i
+            ></el-button>
+          </div>
+        </div>
       </div>
 
       <div class="actionview" v-if="step == 3">
@@ -85,6 +144,14 @@ export default {
       percentage: 25,
       step: 1,
       repopoll: null,
+      accessToken: "",
+
+      inputSearchRepo: "",
+
+      installGitHubAppUrl:
+        "https://github.com/apps/chain-cloud/installations/new",
+      installationAppUrl: "https://api.github.com/user/installations",
+      installationRepoUrl: "https://api.github.com/installation/repositories",
     };
   },
   components: {
@@ -101,14 +168,22 @@ export default {
     let urlParams = new URLSearchParams(window.location.search);
     console.log(urlParams.has("canisterId")); // true
     console.log(urlParams.get("canisterId"));
+
+    let local_token = window.localStorage.getItem("access_token");
+    if (local_token != "") {
+      this.step = 2;
+      this.percentage = 50;
+    }
   },
   methods: {
     connetgithubaction: function (event) {
       if (event) {
         // install github app: chain-cloud
-        var targeturl = "https://github.com/apps/chain-cloud/installations/new";
-        window.open(targeturl, "width:800px; height:500px", "blank");
-
+        window.open(
+          this.installGitHubAppUrl,
+          "width:800px; height:500px",
+          "blank"
+        );
         //start poll task
         this.repopoll = window.setInterval(this.pollcoderepo, 500);
       }
@@ -135,9 +210,11 @@ export default {
         );
 
         setTimeout(() => {
+          window.localStorage.setItem("access_token", "sxxxx");
+          this.accessToken = "sxxxx";
+
           this.step = 2;
           this.percentage = 50;
-          window.localStorage.setItem("access_token", "sxxxx");
           clearInterval(this.repopoll);
         }, 3000);
 
@@ -164,6 +241,40 @@ export default {
       } else {
         console.log("not yet install and authorize");
       }
+    },
+    getrepoinfo: function () {
+      this.axios
+        .get("https://github.com/login/oauth/access_token", {
+          client_id: "Iv1.018aba55453994ac",
+          client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
+          code: tmp_code,
+          redirect_uri:
+            "http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
+          state: "xxx",
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getinstallationinfo: function () {
+      this.axios
+        .get("https://github.com/login/oauth/access_token", {
+          client_id: "Iv1.018aba55453994ac",
+          client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
+          code: tmp_code,
+          redirect_uri:
+            "http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
+          state: "xxx",
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     backaction2: function (event) {
       if (event) {
@@ -238,9 +349,8 @@ export default {
 
 <style scoped>
 .actionview {
-  width: 100%;
-  margin-top: 35px;
-  padding-left: 260px;
+  width: 1440px;
+  margin: 35px auto;
 }
 
 .actiontitle {
@@ -267,5 +377,95 @@ export default {
   color: white;
   font-weight: bold;
   border-radius: 4px;
+}
+</style>
+
+<style scoped>
+.git-outer {
+  width: 1440px;
+  margin: 0 auto;
+}
+
+.git-title {
+  width: 1440px;
+  height: 112px;
+  background: linear-gradient(153deg, #3e4554 0%, #252b3a 100%);
+  border-radius: 8px 8px 0px 0px;
+}
+
+.git-title .title-row {
+  height: 100%;
+}
+
+.git-title .title-col {
+  height: 100%;
+}
+
+.git-title img {
+  width: 64px;
+  height: 64px;
+  display: inline;
+}
+
+.git-repo {
+  width: 1440px;
+}
+
+.git-repo .each-repo {
+  width: 100%;
+  line-height: 250%;
+  height: 60px;
+  padding-left: 62px;
+  border: 1px solid #f4f4f4;
+}
+
+.git-repo img {
+  width: 21px;
+  height: 21px;
+  display: inline;
+  vertical-align: middle;
+}
+
+.git-repo span {
+  height: 22px;
+  font-size: 16px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #252b3a;
+  line-height: 22px;
+}
+
+.git-more {
+  width: 1440px;
+  height: 68px;
+  line-height: 250%;
+  background: #f8f8f8;
+  border-radius: 0px 0px 8px 8px;
+  border: 1px solid #d9d9d9;
+}
+
+.git-more span {
+  height: 20px;
+  font-size: 14px;
+  padding-left: 30px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #252b3a;
+  line-height: 20px;
+}
+
+.git-more a {
+  height: 20px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #1776ff;
+  line-height: 20px;
+}
+
+.confirm {
+  float: right;
+  margin-top: 20px;
+  margin-right: 10px;
 }
 </style>
