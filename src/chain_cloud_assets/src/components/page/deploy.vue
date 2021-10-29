@@ -56,7 +56,7 @@
                 </div>
               </el-col>
 
-              <el-col :span="4" class="title-col">
+              <el-col :span="5" class="title-col">
                 <el-input
                   placeholder="Type something"
                   v-model="inputSearchRepo"
@@ -65,7 +65,7 @@
                 </el-input>
               </el-col>
 
-              <el-col :span="2" class="title-col">
+              <el-col :span="1" class="title-col">
                 <div class=""></div>
               </el-col>
             </el-row>
@@ -139,6 +139,7 @@ export default {
   name: "deployview",
   data() {
     return {
+      canisterid: "ryjl3-tyaaa-aaaaa-aaaba-cai",
       githubapp: "chain-cloud",
       customColor: "#409eff",
       percentage: 25,
@@ -148,6 +149,9 @@ export default {
 
       inputSearchRepo: "",
 
+      checked: true,
+
+      queryAccessTokenUrl: "http://54.244.200.160:9091/public/token/",
       installGitHubAppUrl:
         "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
@@ -161,85 +165,50 @@ export default {
   mounted() {
     //installation_id
     //setup_action
-    console.log(window.location.search.toString());
-    console.log("path: %s", this.$router.path);
-    console.log(this.$router.params);
-
-    let urlParams = new URLSearchParams(window.location.search);
-    console.log(urlParams.has("canisterId")); // true
-    console.log(urlParams.get("canisterId"));
-
     let local_token = window.localStorage.getItem("access_token");
-    if (local_token != "") {
+    console.log(local_token);
+    if (local_token != null) {
       this.step = 2;
       this.percentage = 50;
+    } else {
+      this.step = 1;
+      this.percentage = 25;
     }
   },
   methods: {
     connetgithubaction: function (event) {
       if (event) {
-        // install github app: chain-cloud
+        // start install github app: chain-cloud
         window.open(
-          this.installGitHubAppUrl,
+          this.installGitHubAppUrl + "?state=" + this.canisterid,
           "width:800px; height:500px",
           "blank"
         );
+
         //start poll task
         this.repopoll = window.setInterval(this.pollcoderepo, 500);
       }
     },
     pollcoderepo: function () {
-      let tmp_code = window.localStorage.getItem("code");
-      let local_canister_id = window.localStorage.getItem("canisterId");
-      let local_install_id = window.localStorage.getItem("installation_id");
-      let local_setup_action = window.localStorage.getItem("setup_action");
+      let local_access_token = window.localStorage.getItem("access_token");
+      if (local_access_token == null) {
+        this.axios
+          .get(queryAccessTokenUrl, {
+            state: this.canisterid,
+          })
+          .then(function (response) {
+            console.log(response);
 
-      if (
-        local_install_id != null &&
-        local_setup_action != null &&
-        local_canister_id != null
-      ) {
-        console.log(
-          local_canister_id +
-            " " +
-            local_install_id +
-            " " +
-            local_setup_action +
-            " " +
-            tmp_code
-        );
-
-        setTimeout(() => {
-          window.localStorage.setItem("access_token", "sxxxx");
-          this.accessToken = "sxxxx";
-
-          this.step = 2;
-          this.percentage = 50;
-          clearInterval(this.repopoll);
-        }, 3000);
-
-        // this.axios
-        //   .post("https://github.com/login/oauth/access_token", {
-        //     client_id: "Iv1.018aba55453994ac",
-        //     client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
-        //     code: tmp_code,
-        //     redirect_uri:
-        //       "http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
-        //     state: "xxx",
-        //   })
-        //   .then(function (response) {
-        //     console.log(response);
-
-        //     this.step = 2;
-        //     this.percentage = 50;
-        //     window.localStorage.setItem('access_token', response.access_token);
-        //     clearInterval(this.repopoll);
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
+            this.step = 2;
+            this.percentage = 50;
+            window.localStorage.setItem("access_token", response.access_token);
+            clearInterval(this.repopoll);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       } else {
-        console.log("not yet install and authorize");
+        console.log("already got access token from authorization");
       }
     },
     getrepoinfo: function () {
@@ -383,7 +352,7 @@ export default {
 <style scoped>
 .git-outer {
   width: 1440px;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .git-title {
@@ -401,10 +370,25 @@ export default {
   height: 100%;
 }
 
+.title-col div {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .git-title img {
+  margin: 0px;
   width: 64px;
   height: 64px;
+  padding-left: 24px;
   display: inline;
+  vertical-align: middle;
+}
+
+.git-title span {
+  padding-left: 10px;
+  color: white;
 }
 
 .git-repo {
@@ -427,6 +411,7 @@ export default {
 }
 
 .git-repo span {
+  padding-left: 10px;
   height: 22px;
   font-size: 16px;
   font-family: PingFangSC-Regular, PingFang SC;
