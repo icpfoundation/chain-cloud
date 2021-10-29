@@ -186,10 +186,10 @@ export default {
         );
 
         //start poll task
-        this.repopoll = window.setInterval(this.pollcoderepo, 500);
+        this.repopoll = window.setInterval(this.pollAccessToken, 500);
       }
     },
-    pollcoderepo: function () {
+    pollAccessToken: function () {
       let local_access_token = window.localStorage.getItem("access_token");
       if (local_access_token == null) {
         this.axios
@@ -201,7 +201,10 @@ export default {
 
             this.step = 2;
             this.percentage = 50;
+            
+            // get access token from response
             window.localStorage.setItem("access_token", response.access_token);
+
             clearInterval(this.repopoll);
           })
           .catch(function (error) {
