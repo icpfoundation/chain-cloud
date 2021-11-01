@@ -126,15 +126,15 @@ module.exports = {
   ],
   // proxy /api to port 8000 during development
   devServer: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:8000",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/api": "/api",
-        },
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "http://localhost:8000",
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       "^/api": "/api",
+    //     },
+    //   },
+    // },
     hot: true,
     contentBase: path.resolve(__dirname, "./src/chain_cloud_assets"),
     watchContentBase: true

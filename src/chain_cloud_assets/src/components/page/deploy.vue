@@ -139,23 +139,26 @@ export default {
   name: "deployview",
   data() {
     return {
+      client_id: "Iv1.018aba55453994ac",
+      client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
       canisterid: "ryjl3-tyaaa-aaaaa-aaaba-cai",
       githubapp: "chain-cloud",
       customColor: "#409eff",
       percentage: 25,
       step: 1,
       repopoll: null,
-      accessToken: "",
+      access_token: "",
+      installation_id: "",
 
       inputSearchRepo: "",
 
       checked: true,
 
-      queryAccessTokenUrl: "http://54.244.200.160:9091/public/token/",
-      installGitHubAppUrl:
-        "https://github.com/apps/chain-cloud/installations/new",
+      queryAccessTokenUrl: "http://54.244.200.160:9091/public/token",
+      installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
-      installationRepoUrl: "https://api.github.com/installation/repositories",
+      installationRepoUrl: "https://api.github.com/user/installations/",
+      githubUserInfo: "https://api.github.com/user",
     };
   },
   components: {
@@ -166,8 +169,14 @@ export default {
     //installation_id
     //setup_action
     let local_token = window.localStorage.getItem("access_token");
-    console.log(local_token);
+    let local_code = window.localStorage.getItem("installation_id");
     if (local_token != null) {
+      this.access_token = local_token;
+      this.installation_id = local_code;
+
+      this.installappinfo(this.access_token);
+      this.getRepoInfo(this.access_token, this.installation_id);
+
       this.step = 2;
       this.percentage = 50;
     } else {
@@ -186,26 +195,40 @@ export default {
         );
 
         //start poll task
-        this.repopoll = window.setInterval(this.pollAccessToken, 500);
+        this.repopoll = window.setInterval(this.pollAccessToken, 5000);
       }
     },
     pollAccessToken: function () {
+      let that = this;
       let local_access_token = window.localStorage.getItem("access_token");
       if (local_access_token == null) {
         this.axios
-          .get(queryAccessTokenUrl, {
-            state: this.canisterid,
+          .get(this.queryAccessTokenUrl, {
+            params: {
+              state: this.canisterid,
+            },
           })
           .then(function (response) {
-            console.log(response);
+            let access_token = response.data.token.split("&")[0].split("=")[1];
+            let installation_id = response.data.code;
 
-            this.step = 2;
-            this.percentage = 50;
-            
-            // get access token from response
-            window.localStorage.setItem("access_token", response.access_token);
+            window.localStorage.setItem("access_token", access_token);
+            that.access_token = access_token;
 
-            clearInterval(this.repopoll);
+            window.localStorage.setItem("installation_id", installation_id);
+            that.installation_id = installation_id
+
+
+            that.step = 2;
+            that.percentage = 50;
+            clearInterval(that.repopoll);
+
+            //get repo info request
+            that.getUserInfo(access_token);
+
+            that.installappinfo(access_token);
+
+            that.getRepoInfo(access_token, installation_id);
           })
           .catch(function (error) {
             console.log(error);
@@ -214,15 +237,12 @@ export default {
         console.log("already got access token from authorization");
       }
     },
-    getrepoinfo: function () {
+    getUserInfo: function (access_token) {
       this.axios
-        .get("https://github.com/login/oauth/access_token", {
-          client_id: "Iv1.018aba55453994ac",
-          client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
-          code: tmp_code,
-          redirect_uri:
-            "http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
-          state: "xxx",
+        .get(this.githubUserInfo, {
+          headers: {
+            Authorization: "Bearer ".concat(access_token)
+          }
         })
         .then(function (response) {
           console.log(response);
@@ -231,15 +251,29 @@ export default {
           console.log(error);
         });
     },
-    getinstallationinfo: function () {
+    installappinfo: function (access_token) {
       this.axios
-        .get("https://github.com/login/oauth/access_token", {
-          client_id: "Iv1.018aba55453994ac",
-          client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
-          code: tmp_code,
-          redirect_uri:
-            "http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
-          state: "xxx",
+        .get(this.installationAppUrl, {
+          params: {
+            per_page: 100,
+          },
+          headers: {
+            Authorization: "Bearer ".concat(access_token)
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+        }) 
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getRepoInfo: function (access_token, installation_id) {
+      this.axios
+        .get(this.installationRepoUrl.concat(installation_id).concat("/repositories"), {
+          headers: {
+            Authorization: "Bearer ".concat(access_token)
+          }
         })
         .then(function (response) {
           console.log(response);
