@@ -23,6 +23,8 @@
         </div>
       </div>
 
+      <!-- step - 1 -->
+
       <div class="actionview" v-if="step == 1">
         <div class="actiontitle">Continuous Deployment</div>
         <div class="actionsubtitle">
@@ -32,6 +34,8 @@
           >Connect with GitHub</el-button
         >
       </div>
+
+      <!-- step - 2 -->
 
       <div class="actionview" v-if="step == 2">
         <el-button
@@ -51,8 +55,8 @@
             <el-row class="title-row">
               <el-col :span="18" class="title-col">
                 <div>
-                  <img src="../../../assets/img/logo_icon@2x.png" alt="" />
-                  <span>lyswifter</span>
+                  <img :src="step2.useravatar" alt="avatar" />
+                  <span>{{ step2.username }}</span>
                 </div>
               </el-col>
 
@@ -72,23 +76,19 @@
           </div>
 
           <div class="git-repo">
-            <el-row class="each-repo">
+            <el-row
+              class="each-repo"
+              v-for="(item, index) in step2.repos"
+              :key="index"
+              @click.native="selectRepoAction(index)"
+            >
               <el-col :span="22">
                 <img src="../../../assets/img/github-fill.png" alt="" />
-                <span>repo name</span>
+                <span>{{ item.name }}</span>
               </el-col>
-              <el-col :span="2">
-                <el-checkbox v-model="checked"></el-checkbox>
-              </el-col>
-            </el-row>
 
-            <el-row class="each-repo">
-              <el-col :span="22">
-                <img src="../../../assets/img/github-fill.png" alt="" />
-                <span>repo name</span>
-              </el-col>
               <el-col :span="2">
-                <el-checkbox v-model="checked"></el-checkbox>
+                <i class="el-icon-arrow-right"></i>
               </el-col>
             </el-row>
           </div>
@@ -98,13 +98,15 @@
             <a href="">Choose more</a>
           </div>
 
-          <div class="confirm">
+          <!-- <div class="confirm">
             <el-button type="primary" size="medium"
               >Confirm<i class="el-icon-arrow-right el-icon-right"></i
             ></el-button>
-          </div>
+          </div> -->
         </div>
       </div>
+
+      <!-- step - 3 -->
 
       <div class="actionview" v-if="step == 3">
         <el-button
@@ -113,8 +115,45 @@
           v-on:click="backaction3"
           >back</el-button
         >
-        <div>Auth from giuthub</div>
+        <div class="actiontitle">
+          Deploy setting for
+          {{ step3.selectedRepo.owner.login + "/" + step3.selectedRepo.name }}
+        </div>
+        <div class="actionsubtitle">
+          Get more control over how chain-cloud builds and deploys your site
+          with these settings.
+        </div>
+
+        <div class="select-repo">
+          <el-input
+            :placeholder="step3.selectedRepo.name"
+            v-model="step3.selectedRepo.name"
+            size="medium"
+          >
+          </el-input>
+        </div>
+
+        <div class="select-branch">
+          <el-select v-model="step3.selectbranch" placeholder="Select">
+            <el-option
+              v-for="(item, index) in step3.branchoptions"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+              size="large"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="actiontitle">Basic build settings</div>
+        <div class="actionsubtitle">
+          If you're using a static site generator or build tool, we'll need
+          these settings to build your site.
+        </div>
       </div>
+
+      <!-- step - 4 -->
 
       <div class="actionview" v-if="step == 4">
         <el-button
@@ -142,23 +181,37 @@ export default {
       client_id: "Iv1.018aba55453994ac",
       client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
       canisterid: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      authstate: "",
       githubapp: "chain-cloud",
       customColor: "#409eff",
+
       percentage: 25,
       step: 1,
       repopoll: null,
       access_token: "",
       installation_id: "",
-
       inputSearchRepo: "",
 
-      checked: true,
-
       queryAccessTokenUrl: "http://54.244.200.160:9091/public/token",
-      installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
+      installGitHubAppUrl:
+        "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
       installationRepoUrl: "https://api.github.com/user/installations/",
       githubUserInfo: "https://api.github.com/user",
+      githubBranchInfo: "https://api.github.com/repos",
+
+      step2: {
+        username: "",
+        useravatar: "",
+        repos: [],
+      },
+
+      step3: {
+        selectedRepo: null,
+
+        selectbranch: "",
+        branchoptions: [],
+      },
     };
   },
   components: {
@@ -174,6 +227,7 @@ export default {
       this.access_token = local_token;
       this.installation_id = local_code;
 
+      this.getUserInfo(this.access_token);
       this.installappinfo(this.access_token);
       this.getRepoInfo(this.access_token, this.installation_id);
 
@@ -188,14 +242,15 @@ export default {
     connetgithubaction: function (event) {
       if (event) {
         // start install github app: chain-cloud
+        this.authstate = this.canisterid.concat("-").concat(Date.now());
         window.open(
-          this.installGitHubAppUrl + "?state=" + this.canisterid,
+          this.installGitHubAppUrl + "?state=" + this.authstate,
           "width:800px; height:500px",
           "blank"
         );
 
         //start poll task
-        this.repopoll = window.setInterval(this.pollAccessToken, 5000);
+        this.repopoll = window.setInterval(this.pollAccessToken, 2000);
       }
     },
     pollAccessToken: function () {
@@ -205,7 +260,7 @@ export default {
         this.axios
           .get(this.queryAccessTokenUrl, {
             params: {
-              state: this.canisterid,
+              state: this.authstate,
             },
           })
           .then(function (response) {
@@ -216,14 +271,12 @@ export default {
             that.access_token = access_token;
 
             window.localStorage.setItem("installation_id", installation_id);
-            that.installation_id = installation_id
-
+            that.installation_id = installation_id;
 
             that.step = 2;
             that.percentage = 50;
             clearInterval(that.repopoll);
 
-            //get repo info request
             that.getUserInfo(access_token);
 
             that.installappinfo(access_token);
@@ -238,14 +291,17 @@ export default {
       }
     },
     getUserInfo: function (access_token) {
+      let that = this;
       this.axios
         .get(this.githubUserInfo, {
           headers: {
-            Authorization: "Bearer ".concat(access_token)
-          }
+            Authorization: "Bearer ".concat(access_token),
+          },
         })
         .then(function (response) {
           console.log(response);
+          that.step2.username = response.data.name;
+          that.step2.useravatar = response.data.avatar_url;
         })
         .catch(function (error) {
           console.log(error);
@@ -258,29 +314,72 @@ export default {
             per_page: 100,
           },
           headers: {
-            Authorization: "Bearer ".concat(access_token)
-          }
+            Authorization: "Bearer ".concat(access_token),
+          },
         })
         .then(function (response) {
           console.log(response);
-        }) 
+        })
         .catch(function (error) {
           console.log(error);
         });
     },
     getRepoInfo: function (access_token, installation_id) {
+      let that = this;
       this.axios
-        .get(this.installationRepoUrl.concat(installation_id).concat("/repositories"), {
-          headers: {
-            Authorization: "Bearer ".concat(access_token)
+        .get(
+          this.installationRepoUrl
+            .concat(installation_id)
+            .concat("/repositories"),
+          {
+            headers: {
+              Authorization: "Bearer ".concat(access_token),
+            },
           }
-        })
+        )
         .then(function (response) {
           console.log(response);
+
+          that.step2.repos = response.data.repositories;
         })
         .catch(function (error) {
           console.log(error);
         });
+    },
+    getBranchInfo: function (access_token, username, repo) {
+      let that = this;
+      this.axios
+        .get(
+          this.githubBranchInfo
+            .concat("/")
+            .concat(username)
+            .concat("/")
+            .concat(repo)
+            .concat("/branches"),
+          {
+            headers: {
+              Authorization: "Bearer ".concat(access_token),
+            },
+          }
+        )
+        .then(function (response) {
+          console.log(response);
+
+          that.step3.branchoptions = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    selectRepoAction: function (index) {
+      this.step = 3;
+      this.step3.selectedRepo = this.step2.repos[index];
+
+      this.getBranchInfo(
+        this.access_token,
+        this.step3.selectedRepo.owner.login,
+        this.step3.selectedRepo.name
+      );
     },
     backaction2: function (event) {
       if (event) {
@@ -434,8 +533,7 @@ export default {
 
 .git-repo .each-repo {
   width: 100%;
-  line-height: 250%;
-  height: 60px;
+  height: 100%;
   padding-left: 62px;
   border: 1px solid #f4f4f4;
 }
@@ -489,5 +587,19 @@ export default {
   float: right;
   margin-top: 20px;
   margin-right: 10px;
+}
+</style>
+
+<style scoped>
+.select-repo {
+  width: 225px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.select-branch {
+  width: 225px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 </style>
