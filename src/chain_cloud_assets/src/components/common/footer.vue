@@ -70,7 +70,7 @@ export default {
 }
 
 .outview {
-  border-top: gray solid 1px;
+  border-top: lightgrey solid 1px;
   padding-top: 50px;
   padding-left: 240px;
 }

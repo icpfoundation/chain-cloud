@@ -55,7 +55,11 @@
             <el-row class="title-row">
               <el-col :span="18" class="title-col">
                 <div>
-                  <img class="avatar-image" :src="step2.useravatar" alt="avatar" />
+                  <img
+                    class="avatar-image"
+                    :src="step2.useravatar"
+                    alt="avatar"
+                  />
                   <span>{{ step2.username }}</span>
                 </div>
               </el-col>
@@ -157,7 +161,11 @@
             >
             </el-option>
           </el-select>
-          <i class="el-icon-info"></i>
+
+          <el-tooltip placement="right">
+            <div slot="content">The frontend static website framework yor based</div>
+            <img src="../../../assets/img/info.png" alt="" />
+          </el-tooltip>
         </div>
 
         <div class="select-docker select-gap">
@@ -167,7 +175,10 @@
             size="medium"
           >
           </el-input>
-          <i class="el-icon-info"></i>
+          <el-tooltip placement="right">
+            <div slot="content">The docker image and tag from the docker hub to use as a base when build your site</div>
+            <img src="../../../assets/img/info.png" alt="" />
+          </el-tooltip>
         </div>
 
         <div class="select-builder select-gap">
@@ -177,7 +188,10 @@
             size="medium"
           >
           </el-input>
-          <i class="el-icon-info"></i>
+          <el-tooltip placement="right">
+            <div slot="content">The build command used to build your website</div>
+            <img src="../../../assets/img/info.png" alt="" />
+          </el-tooltip>
         </div>
 
         <div class="select-file-location select-gap">
@@ -187,7 +201,10 @@
             size="medium"
           >
           </el-input>
-          <i class="el-icon-info"></i>
+          <el-tooltip placement="right">
+            <div slot="content">The directory to hold website static files</div>
+            <img src="../../../assets/img/info.png" alt="" />
+          </el-tooltip>
         </div>
 
         <div class="actiontitle">Environment Variables</div>
@@ -200,7 +217,9 @@
           <el-button @click="newVariablesAction">New variables</el-button>
         </div>
 
-        <el-button class="deploy-btn deploy-view" @click="deployAction">Deploy site</el-button>
+        <el-button class="deploy-btn deploy-view" @click="deployAction"
+          >Deploy site</el-button
+        >
       </div>
 
       <!-- step - 4 -->
@@ -269,9 +288,7 @@ export default {
         filelocation: "",
       },
 
-      step4: {
-
-      },
+      step4: {},
     };
   },
   components: {
@@ -620,7 +637,7 @@ export default {
 }
 
 .git-title img {
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ffffff;
   border-radius: 32px;
   margin: 0px;
   width: 64px;
@@ -706,9 +723,11 @@ export default {
   display: flex;
 }
 
-.select-gap i {
+.select-gap img {
   margin-left: 10px;
-  margin-top: 5px;
+  margin-top: 6px;
+  width: 22px;
+  height: 22px;
 }
 
 .select-repo {
