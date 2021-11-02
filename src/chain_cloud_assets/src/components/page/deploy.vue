@@ -220,6 +220,15 @@
         <el-button class="deploy-btn deploy-view" @click="deployAction"
           >Deploy site</el-button
         >
+
+        <!-- 1. Send a request to backend with params and tigger backend process to download source code from specified repo;
+        2. According to the params, backend process choose certain docker jobs to build the source code to static files;
+        3. Backend run `dfx init` to init an default canister project if the source code do not contain the `dfx.json` file;
+        4. Backend replace the build output file with the original static website file;
+        5. Backend tigger deploy process using `dfx deploy`;
+        ps: Sometime there will need to generate a new canister and topup some cycle into it. -->
+
+        
       </div>
 
       <!-- step - 4 -->
