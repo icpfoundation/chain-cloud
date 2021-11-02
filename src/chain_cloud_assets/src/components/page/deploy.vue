@@ -55,7 +55,7 @@
             <el-row class="title-row">
               <el-col :span="18" class="title-col">
                 <div>
-                  <img :src="step2.useravatar" alt="avatar" />
+                  <img class="avatar-image" :src="step2.useravatar" alt="avatar" />
                   <span>{{ step2.username }}</span>
                 </div>
               </el-col>
@@ -97,12 +97,6 @@
             <span>Can’t find your GitHub repo？</span>
             <a href="">Choose more</a>
           </div>
-
-          <!-- <div class="confirm">
-            <el-button type="primary" size="medium"
-              >Confirm<i class="el-icon-arrow-right el-icon-right"></i
-            ></el-button>
-          </div> -->
         </div>
       </div>
 
@@ -124,7 +118,7 @@
           with these settings.
         </div>
 
-        <div class="select-repo">
+        <div class="select-repo select-gap">
           <el-input
             :placeholder="step3.selectedRepo.name"
             v-model="step3.selectedRepo.name"
@@ -133,7 +127,7 @@
           </el-input>
         </div>
 
-        <div class="select-branch">
+        <div class="select-branch select-gap">
           <el-select v-model="step3.selectbranch" placeholder="Select">
             <el-option
               v-for="(item, index) in step3.branchoptions"
@@ -151,6 +145,62 @@
           If you're using a static site generator or build tool, we'll need
           these settings to build your site.
         </div>
+
+        <div class="select-framework select-gap">
+          <el-select v-model="step3.selectframework" placeholder="Select">
+            <el-option
+              v-for="(item, index) in step3.framworkoption"
+              :key="index"
+              :label="item.value"
+              :value="item.value"
+              size="large"
+            >
+            </el-option>
+          </el-select>
+          <i class="el-icon-info"></i>
+        </div>
+
+        <div class="select-docker select-gap">
+          <el-input
+            placeholder="Docker Image"
+            v-model="step3.dockerimage"
+            size="medium"
+          >
+          </el-input>
+          <i class="el-icon-info"></i>
+        </div>
+
+        <div class="select-builder select-gap">
+          <el-input
+            placeholder="Build Command"
+            v-model="step3.buildtool"
+            size="medium"
+          >
+          </el-input>
+          <i class="el-icon-info"></i>
+        </div>
+
+        <div class="select-file-location select-gap">
+          <el-input
+            placeholder="Static File Location"
+            v-model="step3.filelocation"
+            size="medium"
+          >
+          </el-input>
+          <i class="el-icon-info"></i>
+        </div>
+
+        <div class="actiontitle">Environment Variables</div>
+        <div class="actionsubtitle">
+          Define environment variables for more control and flexibility over
+          your build.
+        </div>
+
+        <div class="select-env-val select-gap">
+          <el-button @click="newVariablesAction">New variables</el-button>
+        </div>
+
+        <el-button class="deploy-btn deploy-view" @click="deployAction">Deploy site</el-button>
       </div>
 
       <!-- step - 4 -->
@@ -162,7 +212,7 @@
           v-on:click="backaction4"
           >back</el-button
         >
-        <div>Auth from giuthub</div>
+        <div>View deploy precess</div>
       </div>
     </div>
 
@@ -211,6 +261,16 @@ export default {
 
         selectbranch: "",
         branchoptions: [],
+
+        selectframework: "",
+        framworkoption: [],
+        dockerimage: "",
+        buildtool: "",
+        filelocation: "",
+      },
+
+      step4: {
+
       },
     };
   },
@@ -237,6 +297,8 @@ export default {
       this.step = 1;
       this.percentage = 25;
     }
+
+    this.setupFrontendFramework();
   },
   methods: {
     connetgithubaction: function (event) {
@@ -373,6 +435,7 @@ export default {
     },
     selectRepoAction: function (index) {
       this.step = 3;
+      this.percentage = 75;
       this.step3.selectedRepo = this.step2.repos[index];
 
       this.getBranchInfo(
@@ -380,6 +443,49 @@ export default {
         this.step3.selectedRepo.owner.login,
         this.step3.selectedRepo.name
       );
+    },
+    setupFrontendFramework: function () {
+      this.step3.framworkoption = [
+        {
+          name: "nextjs",
+          value: "NextJS",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nextjs.png",
+        },
+        {
+          name: "reactjs",
+          value: "Creat React App",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/cra.png",
+        },
+        {
+          name: "hugo",
+          value: "Hugo",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/hugo.png",
+        },
+        {
+          name: "nuxtjs",
+          value: "NuxtJS",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nuxtjs.png",
+        },
+        {
+          name: "jekyll",
+          value: "Jekyll",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/jekyll.png",
+        },
+        {
+          name: "wordpress",
+          value: "Wordpress",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/wp.png",
+        },
+      ];
+    },
+    newVariablesAction: function () {
+      console.log("new variables action");
+    },
+    deployAction: function () {
+      //tigger deploy action
+      console.log("tigger deploy action");
+      this.step = 4;
+      this.percentage = 100;
     },
     backaction2: function (event) {
       if (event) {
@@ -514,10 +620,12 @@ export default {
 }
 
 .git-title img {
+  border: 1px solid #FFFFFF;
+  border-radius: 32px;
   margin: 0px;
   width: 64px;
   height: 64px;
-  padding-left: 24px;
+  margin-left: 24px;
   display: inline;
   vertical-align: middle;
 }
@@ -591,15 +699,37 @@ export default {
 </style>
 
 <style scoped>
-.select-repo {
+.select-gap {
   width: 225px;
   margin-top: 20px;
   margin-bottom: 20px;
+  display: flex;
+}
+
+.select-gap i {
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+.select-repo {
 }
 
 .select-branch {
-  width: 225px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+}
+
+.select-framework {
+}
+
+.deploy-view {
+  margin-top: 30px;
+  width: 145px;
+  height: 34px;
+  font-size: 15px;
+  background-color: #171717;
+}
+
+.deploy-btn {
+  color: white;
+  font-weight: bold;
 }
 </style>
