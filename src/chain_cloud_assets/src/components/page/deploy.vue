@@ -163,12 +163,14 @@
           </el-select>
 
           <el-tooltip placement="right">
-            <div slot="content">The frontend static website framework yor based</div>
+            <div slot="content">
+              The frontend static website framework yor based
+            </div>
             <img src="../../../assets/img/info.png" alt="" />
           </el-tooltip>
         </div>
 
-        <div class="select-docker select-gap">
+        <!-- <div class="select-docker select-gap">
           <el-input
             placeholder="Docker Image"
             v-model="step3.dockerimage"
@@ -176,10 +178,13 @@
           >
           </el-input>
           <el-tooltip placement="right">
-            <div slot="content">The docker image and tag from the docker hub to use as a base when build your site</div>
+            <div slot="content">
+              The docker image and tag from the docker hub to use as a base when
+              build your site
+            </div>
             <img src="../../../assets/img/info.png" alt="" />
           </el-tooltip>
-        </div>
+        </div> -->
 
         <div class="select-builder select-gap">
           <el-input
@@ -189,7 +194,9 @@
           >
           </el-input>
           <el-tooltip placement="right">
-            <div slot="content">The build command used to build your website</div>
+            <div slot="content">
+              The build command used to build your website
+            </div>
             <img src="../../../assets/img/info.png" alt="" />
           </el-tooltip>
         </div>
@@ -227,8 +234,6 @@
         4. Backend replace the build output file with the original static website file;
         5. Backend tigger deploy process using `dfx deploy`;
         ps: Sometime there will need to generate a new canister and topup some cycle into it. -->
-
-        
       </div>
 
       <!-- step - 4 -->
@@ -240,7 +245,12 @@
           v-on:click="backaction4"
           >back</el-button
         >
-        <div>View deploy precess</div>
+        <div class="actiontitle">View deploy process</div>
+        <div class="actionsubtitle">Here you can view the deploy log</div>
+
+        <div class="deploy-log">
+          {{ step4.deployLog }}
+        </div>
       </div>
     </div>
 
@@ -290,14 +300,17 @@ export default {
         selectbranch: "",
         branchoptions: [],
 
-        selectframework: "",
+        selectframework: "dfx",
         framworkoption: [],
         dockerimage: "",
         buildtool: "",
         filelocation: "",
       },
 
-      step4: {},
+      step4: {
+        tiggerBuildUrl: "http://localhost:9091/public/build",
+        deployLog: "",
+      },
     };
   },
   components: {
@@ -420,6 +433,9 @@ export default {
             .concat(installation_id)
             .concat("/repositories"),
           {
+            params: {
+              per_page: 100,
+            },
             headers: {
               Authorization: "Bearer ".concat(access_token),
             },
@@ -464,6 +480,9 @@ export default {
       this.percentage = 75;
       this.step3.selectedRepo = this.step2.repos[index];
 
+      console.log("select repo");
+      console.log(this.step3.selectedRepo);
+
       this.getBranchInfo(
         this.access_token,
         this.step3.selectedRepo.owner.login,
@@ -472,6 +491,11 @@ export default {
     },
     setupFrontendFramework: function () {
       this.step3.framworkoption = [
+        {
+          name: "dfx",
+          value: "DFX",
+          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nextjs.png",
+        },
         {
           name: "nextjs",
           value: "NextJS",
@@ -508,10 +532,29 @@ export default {
       console.log("new variables action");
     },
     deployAction: function () {
-      //tigger deploy action
-      console.log("tigger deploy action");
       this.step = 4;
       this.percentage = 100;
+
+      let that = this;
+      this.axios
+        .get(this.step4.tiggerBuildUrl, {
+          params: {
+            framework: this.step3.selectframework,
+            reponame: this.step3.selectedRepo.name,
+            repourl: this.step3.selectedRepo.clone_url,
+            branch: this.step3.selectbranch,
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+          response.data.Logs.forEach(element => {
+            that.step4.deployLog += element;
+            that.step4.deployLog += "\n";
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     backaction2: function (event) {
       if (event) {
@@ -759,5 +802,20 @@ export default {
 .deploy-btn {
   color: white;
   font-weight: bold;
+}
+</style>
+
+<style scoped>
+.deploy-log {
+  background-color: black;
+  color: white;
+  width: 100%;
+  margin-top: 20px;
+  padding: 20px;
+  white-space: pre-line;
+  font-size: 18px;
+  line-height: 1.25;
+  min-height: 200px;
+  overflow-wrap: break-word;
 }
 </style>
