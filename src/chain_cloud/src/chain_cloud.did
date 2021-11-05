@@ -1,0 +1,74 @@
+type Metadata = record {
+   canister: principal;
+   caller: principal;
+   cycle: nat;
+   method_name: text;
+   memo:text;
+   transaction_time: nat;
+   stable_size: nat;
+ };
+
+type Result = variant {
+      Ok : null;
+      Err : text;
+};
+
+
+type CanisterStatus = variant{
+    running:null;
+    stopping:null;
+    stopped:null;
+};
+type CallType = variant {
+    Local:null;
+    Remote:null;
+};
+type CanisterSettings = record {
+   controller: opt  principal;
+    compute_allocation: opt nat;
+    memory_allocation: opt nat;
+    freezing_threshold: opt nat;
+};
+
+
+type  CanisterStatusFormat = record {
+    status: CanisterStatus;
+    settings: CanisterSettings;
+    module_hash:opt text;
+    controller: principal;
+    memory_size: nat;
+    cycles: nat;
+};
+
+
+type StatusResult =  variant{
+    Ok:CanisterStatusFormat;
+    Err:text;
+};
+
+type ICPTs = record {
+        e8s:nat;
+};
+
+type createCanisterResult = variant {
+    Ok:principal;
+    Err:text;
+};
+
+type updateResult = variant {
+    Ok: null;
+    Err:text;
+};
+
+
+service :{
+    "createEvent": (Metadata) -> (Result);
+    "getCanisterEvent":(principal,nat,nat) ->(vec Metadata) query;
+    "getCallerEvent":(principal,nat,nat) ->(vec Metadata) query;
+    "getLastEvent":(nat) -> (vec Metadata) query;
+    "getCanisterLastEvent":(principal,nat) -> (vec Metadata) query;
+    "getCanisterList":() -> (vec principal) query;
+    "getCanisterStatus":(principal,CallType) -> (StatusResult);
+    "getBalance":(text) -> (ICPTs);
+    "getLocalCanisterList":() -> (vec CanisterStatusFormat);
+}
