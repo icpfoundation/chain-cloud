@@ -65,10 +65,18 @@ async fn get_local_canister_list() -> Vec<CanisterStatusFormat> {
 
 #[query(name = "getBalance")]
 async fn account_balance_dfx(account: String) -> ICPTs {
-
     operation::account_balance_dfx(account).await
 }
 
+#[update(name = "commitCanister")]
+async fn commit_canister(canister:CommitCanister)->(){
+    return operation::commit_canister(canister).await
+}
+
+#[query(name = "getCanisterByPrinciple")]
+async fn get_canister_by_principle(principle:Principal) -> Vec<CommitCanister>{
+    return operation::get_canister_by_principle(principle).await;
+}
 /// Before the upgrade task starts, you need to persist the data in memory
 #[pre_upgrade]
 fn pre_upgrade() {

@@ -12,6 +12,8 @@ use std::collections::HashMap;
 use std::str;
 use types::*;
 type CanisterInfo = HashMap<Principal, CanisterStatusFormat>;
+type CanisterBucket = HashMap<Principal, Vec<CommitCanister>>;
+
 pub const LEDGET_CANISTERID: &str = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 
 pub async fn get_canister_status(
@@ -184,4 +186,27 @@ async fn update_settings(
             return Err(format!("update canister faile: {}: {}", code as u8, msg));
         }
     };
+}
+
+pub async fn commit_canister(canister: CommitCanister) -> () {
+    let canister_bucket = storage::get_mut::<CanisterBucket>();
+    if !canister_bucket.contains_key(&canister.principle) {
+        canister_bucket.insert(canister.principle.clone(), vec![canister]);
+        return;
+    }
+    canister_bucket
+        .get_mut(&canister.principle)
+        .unwrap()
+        .push(canister);
+}
+
+
+pub async fn get_canister_by_principle(principle:Principal) -> Vec<CommitCanister>{
+    let canister_bucket = storage::get::<CanisterBucket>();
+    if !canister_bucket.contains_key(&principle) {
+        return vec![];
+    }
+    let canister_info =  canister_bucket.get(&principle).unwrap().to_vec();
+
+    return canister_info;
 }

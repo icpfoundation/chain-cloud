@@ -121,3 +121,17 @@ pub struct Db {
     pub callerEvent: Vec<Snapshot<Vec<usize>>>,
     pub event: Vec<metadata::Metadata>,
 }
+
+#[derive(CandidType, Deserialize,Clone)]
+pub struct CommitCanister{
+    pub canister_id:Principal,
+    pub status:CanisterStatus,
+    pub controller:Principal,
+    pub memory_size:Nat,
+    pub balance:Nat,
+    pub module_hash:String,
+    pub principle:Principal,
+    pub create_time:Nat,
+    pub subnet:String,
+}
+

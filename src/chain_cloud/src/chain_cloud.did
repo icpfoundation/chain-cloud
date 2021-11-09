@@ -60,6 +60,17 @@ type updateResult = variant {
     Err:text;
 };
 
+type CommitCanister = record{
+    canister_id:principal;
+    status:CanisterStatus;
+    controller:principal;
+    memory_size:nat;
+    balance:nat;
+    module_hash:text;
+    principle:principal;
+    create_time:nat;
+    subnet:text;
+};
 
 service :{
     "createEvent": (Metadata) -> (Result);
@@ -71,4 +82,6 @@ service :{
     "getCanisterStatus":(principal,CallType) -> (StatusResult);
     "getBalance":(text) -> (ICPTs);
     "getLocalCanisterList":() -> (vec CanisterStatusFormat);
+    "commitCanister":(CommitCanister) -> ();
+    "getCanisterByPrinciple":(principal) -> (vec CommitCanister) query;
 }
