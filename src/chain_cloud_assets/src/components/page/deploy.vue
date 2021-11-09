@@ -268,7 +268,7 @@ export default {
     return {
       client_id: "Iv1.018aba55453994ac",
       client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
-      canisterid: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      canisterid: "bdcb4-2iaaa-aaaaj-aadjq-cai",
       authstate: "",
       githubapp: "chain-cloud",
       customColor: "#409eff",
@@ -281,8 +281,7 @@ export default {
       inputSearchRepo: "",
 
       queryAccessTokenUrl: "http://54.244.200.160:9091/public/token",
-      installGitHubAppUrl:
-        "https://github.com/apps/chain-cloud/installations/new",
+      installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
       installationRepoUrl: "https://api.github.com/user/installations/",
       githubUserInfo: "https://api.github.com/user",
@@ -308,7 +307,7 @@ export default {
       },
 
       step4: {
-        tiggerBuildUrl: "http://localhost:9091/public/build",
+        tiggerBuildUrl: "http://54.244.200.160:9091/public/build",
         deployLog: "",
       },
     };
