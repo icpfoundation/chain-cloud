@@ -307,6 +307,7 @@ export default {
       },
 
       step4: {
+        //54.244.200.160
         tiggerBuildUrl: "http://54.244.200.160:9091/public/build",
         deployLog: "",
       },
