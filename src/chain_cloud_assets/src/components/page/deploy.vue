@@ -281,7 +281,8 @@ export default {
       inputSearchRepo: "",
 
       queryAccessTokenUrl: "https://chaincloud.skyipfs.com:9091/public/token",
-      installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
+      installGitHubAppUrl:
+        "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
       installationRepoUrl: "https://api.github.com/user/installations/",
       githubUserInfo: "https://api.github.com/user",
@@ -307,8 +308,14 @@ export default {
       },
 
       step4: {
+        logOutUrl: "https://chaincloud.skyipfs.com:9091/public/logs",
         tiggerBuildUrl: "https://chaincloud.skyipfs.com:9091/public/build",
         deployLog: "",
+        logPoll: null,
+        startline: 1,
+        readline: 5,
+        logfile: "",
+        everread: false,
       },
     };
   },
@@ -546,13 +553,39 @@ export default {
         })
         .then(function (response) {
           console.log(response);
-          response.data.Logs.forEach(element => {
-            that.step4.deployLog += element;
-            that.step4.deployLog += "\n";
-          });
+
+          that.step4.logfile = response.data.connectionid;
+          that.step4.logPoll = window.setInterval(that.seekLogsAction, 2000);
         })
         .catch(function (error) {
           console.log(error);
+        });
+    },
+    seekLogsAction: function () {
+      let that = this;
+      this.axios
+        .get(this.step4.logOutUrl, {
+          params: {
+            startline: this.step4.startline,
+            endline: this.step4.startline + this.step4.readline,
+            file: this.step4.logfile,
+            reponame: this.step3.selectedRepo.name,
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+
+          that.step4.deployLog += response.data;
+          that.step4.startline = that.step4.startline + that.step4.readline + 1;
+          that.step4.everread = true
+
+          if (response.data == "" && that.step4.everread == true) {
+            clearInterval(that.step4.logPoll);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          clearInterval(that.step4.logPoll);
         });
     },
     backaction2: function (event) {
