@@ -3,17 +3,9 @@ mod operation;
 mod types;
 use context::{metadata, util};
 use ic_cdk::export::candid::Nat;
-use ic_cdk::export::candid::{CandidType, Deserialize};
 use ic_cdk::export::Principal;
-use ic_cdk::print;
-use ic_cdk::storage;
 use ic_cdk_macros::*;
-use std::collections::HashMap;
 use types::*;
-static mut count: Option<Nat> = None;
-static mut Event: Vec<metadata::Metadata> = vec![];
-type CanisterEvent = HashMap<Principal, Vec<usize>>;
-type CallerEvent = HashMap<Principal, Vec<usize>>;
 
 /// Add transaction
 #[update(name = "createEvent")]
@@ -77,6 +69,15 @@ async fn commit_canister(canister:CommitCanister)->(){
 async fn get_canister_by_principle(principle:Principal) -> Vec<CommitCanister>{
     return operation::get_canister_by_principle(principle).await;
 }
+
+#[query(name = "getCanisterById")]
+async fn get_canister_by_id(principle:Principal,canister_id:Principal) ->Result<CommitCanister,String>{
+    return operation::get_canister_by_id(principle,canister_id).await;
+}
+#[query(name = "getCanisterEventByTime")]
+async fn get_canister_event_by_time(canister:Principal, start_time:Nat) -> Vec<metadata::Metadata>{
+    return event::get_canister_event_by_time(canister,start_time).await;
+}
 /// Before the upgrade task starts, you need to persist the data in memory
 #[pre_upgrade]
 fn pre_upgrade() {
@@ -88,3 +89,4 @@ fn pre_upgrade() {
 fn post_update() {
     event::post_update();
 }
+

@@ -120,6 +120,18 @@ pub struct Db {
     pub canisterEvent: Vec<Snapshot<Vec<usize>>>,
     pub callerEvent: Vec<Snapshot<Vec<usize>>>,
     pub event: Vec<metadata::Metadata>,
+    pub commitCanister:Vec<Vec<CommitCanister>>,
+}
+
+#[allow(non_camel_case_types)]
+#[derive(CandidType, Deserialize, Clone)]
+pub enum CanisterType {
+    #[serde(rename = "wallet")]
+    Wallet,
+    #[serde(rename = "ui")]
+    UI,
+    #[serde(rename = "server")]
+    Server,
 }
 
 #[derive(CandidType, Deserialize,Clone)]
@@ -133,5 +145,5 @@ pub struct CommitCanister{
     pub principle:Principal,
     pub create_time:Nat,
     pub subnet:String,
+    pub canister_type:CanisterType,
 }
-

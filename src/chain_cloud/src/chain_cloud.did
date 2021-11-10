@@ -60,6 +60,13 @@ type updateResult = variant {
     Err:text;
 };
 
+
+type CanisterType = variant {
+    wallet:null;
+    ui:null;
+    server:null;
+};
+
 type CommitCanister = record{
     canister_id:principal;
     status:CanisterStatus;
@@ -70,7 +77,14 @@ type CommitCanister = record{
     principle:principal;
     create_time:nat;
     subnet:text;
+    canister_type:CanisterType;
 };
+
+type GetCanisterByIdResult = variant {
+    Ok:CommitCanister;
+    Err:text;
+};
+
 
 service :{
     "createEvent": (Metadata) -> (Result);
@@ -84,4 +98,6 @@ service :{
     "getLocalCanisterList":() -> (vec CanisterStatusFormat);
     "commitCanister":(CommitCanister) -> ();
     "getCanisterByPrinciple":(principal) -> (vec CommitCanister) query;
+    "getCanisterById":(principal,principal) -> (GetCanisterByIdResult) query;
+    "getCanisterEventByTime":(principal,nat) -> (vec Metadata)query;
 }

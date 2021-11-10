@@ -1,18 +1,17 @@
 // use context::metadata::{ Metadata,CanisterStatusResponse,CanisterIdRecord,InstallMode};
 use crate::types;
 use crate::util;
-use ic_cdk::api::call::CallResult;
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
 use ic_cdk::storage;
-use ic_cdk::{api, id, print};
+use ic_cdk::{api,print};
 use ic_cdk_macros::*;
 use num_bigint::BigUint;
 use std::collections::HashMap;
 use std::str;
 use types::*;
 type CanisterInfo = HashMap<Principal, CanisterStatusFormat>;
-type CanisterBucket = HashMap<Principal, Vec<CommitCanister>>;
+pub type CanisterBucket = HashMap<Principal, Vec<CommitCanister>>;
 
 pub const LEDGET_CANISTERID: &str = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 
@@ -123,35 +122,35 @@ async fn canister_status(canister: Principal) -> Result<CanisterStatusFormat, St
 //     };
 // }
 
-pub async fn install_canister(
-    canister_id: &Principal,
-    wasm_module: Vec<u8>,
-    args: Vec<u8>,
-) -> Result<(), String> {
-    let install_config = CanisterInstall {
-        mode: types::InstallMode::Install,
-        canister_id: canister_id.clone(),
-        wasm_module: wasm_module.clone(),
-        arg: args,
-    };
+// pub async fn install_canister(
+//     canister_id: &Principal,
+//     wasm_module: Vec<u8>,
+//     args: Vec<u8>,
+// ) -> Result<(), String> {
+//     let install_config = CanisterInstall {
+//         mode: types::InstallMode::Install,
+//         canister_id: canister_id.clone(),
+//         wasm_module: wasm_module.clone(),
+//         arg: args,
+//     };
 
-    match api::call::call(
-        Principal::management_canister(),
-        "install_code",
-        (install_config,),
-    )
-    .await
-    {
-        Ok(x) => x,
-        Err((code, msg)) => {
-            return Err(format!(
-                "An error happened during the call: {}: {}",
-                code as u8, msg
-            ))
-        }
-    };
-    Ok(())
-}
+//     match api::call::call(
+//         Principal::management_canister(),
+//         "install_code",
+//         (install_config,),
+//     )
+//     .await
+//     {
+//         Ok(x) => x,
+//         Err((code, msg)) => {
+//             return Err(format!(
+//                 "An error happened during the call: {}: {}",
+//                 code as u8, msg
+//             ))
+//         }
+//     };
+//     Ok(())
+// }
 
 #[update(name = "updateSettings")]
 async fn update_settings(
@@ -209,4 +208,17 @@ pub async fn get_canister_by_principle(principle:Principal) -> Vec<CommitCaniste
     let canister_info =  canister_bucket.get(&principle).unwrap().to_vec();
 
     return canister_info;
+}
+
+pub async fn get_canister_by_id(principle:Principal,canister_id:Principal) ->Result<CommitCanister,String>{
+    let canister_bucket = storage::get::<CanisterBucket>();
+    if !canister_bucket.contains_key(&principle){
+       return  Err("not found".to_string());
+    }
+    for i in canister_bucket.get(&principle).unwrap().iter(){
+        if i.canister_id == canister_id{
+            return Ok(i.clone());
+        }
+    }
+    return  Err("not found".to_string());
 }
