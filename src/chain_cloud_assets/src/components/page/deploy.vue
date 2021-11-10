@@ -280,7 +280,7 @@ export default {
       installation_id: "",
       inputSearchRepo: "",
 
-      queryAccessTokenUrl: "http://54.244.200.160:9091/public/token",
+      queryAccessTokenUrl: "https://chaincloud.skyipfs.com:9091/public/token",
       installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
       installationRepoUrl: "https://api.github.com/user/installations/",
@@ -307,8 +307,7 @@ export default {
       },
 
       step4: {
-        //54.244.200.160
-        tiggerBuildUrl: "http://54.244.200.160:9091/public/build",
+        tiggerBuildUrl: "https://chaincloud.skyipfs.com:9091/public/build",
         deployLog: "",
       },
     };
@@ -782,14 +781,14 @@ export default {
   height: 22px;
 }
 
-.select-repo {
+/* .select-repo {
 }
 
 .select-branch {
 }
 
 .select-framework {
-}
+} */
 
 .deploy-view {
   margin-top: 30px;
