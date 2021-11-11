@@ -268,7 +268,7 @@ export default {
     return {
       client_id: "Iv1.018aba55453994ac",
       client_secret: "e6a5b65152a4dca9754fa2e13df80f3c087019e7",
-      canisterid: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      canisterid: "bdcb4-2iaaa-aaaaj-aadjq-cai",
       authstate: "",
       githubapp: "chain-cloud",
       customColor: "#409eff",
@@ -280,7 +280,7 @@ export default {
       installation_id: "",
       inputSearchRepo: "",
 
-      queryAccessTokenUrl: "http://54.244.200.160:9091/public/token",
+      queryAccessTokenUrl: "https://chaincloud.skyipfs.com:9091/public/token",
       installGitHubAppUrl:
         "https://github.com/apps/chain-cloud/installations/new",
       installationAppUrl: "https://api.github.com/user/installations",
@@ -308,8 +308,16 @@ export default {
       },
 
       step4: {
-        tiggerBuildUrl: "http://localhost:9091/public/build",
+        logOutUrl: "https://chaincloud.skyipfs.com:9091/public/logs",
+        tiggerBuildUrl: "https://chaincloud.skyipfs.com:9091/public/build",
         deployLog: "",
+        logPoll: null,
+        startline: 1,
+        readline: 5,
+        logfile: "",
+        everread: false,
+        emptyNumber: 0,
+        alreadyArr: [],
       },
     };
   },
@@ -547,13 +555,70 @@ export default {
         })
         .then(function (response) {
           console.log(response);
-          response.data.Logs.forEach(element => {
-            that.step4.deployLog += element;
-            that.step4.deployLog += "\n";
-          });
+
+          that.step4.logfile = response.data.connectionid;
+          that.step4.logPoll = window.setInterval(that.seekLogsAction, 2000);
         })
         .catch(function (error) {
           console.log(error);
+        });
+    },
+    seekLogsAction: function () {
+      let that = this;
+      this.axios
+        .get(this.step4.logOutUrl, {
+          params: {
+            startline: this.step4.startline,
+            endline: this.step4.startline + this.step4.readline,
+            file: this.step4.logfile,
+            reponame: this.step3.selectedRepo.name,
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+
+          let lines = response.data.split("\n");
+          let lineNumber = lines.length - 1;
+
+          for (let i = 0; i < lines.length - 1; i++) {
+            const element = lines[i];
+
+            let isin = false;
+            for (let j = 0; j < that.step4.alreadyArr.length; j++) {
+              const alreadyEle = that.step4.alreadyArr[j];
+              if (element == alreadyEle) {
+                isin = true;
+                break;
+              }
+            }
+
+            if (isin) {
+              continue;
+            }
+
+            that.step4.alreadyArr.push(element);
+            that.step4.deployLog += element;
+            that.step4.deployLog += "\n";
+          }
+
+          if (response.data != "" && lineNumber == that.step4.readline) {
+            that.step4.startline =
+              that.step4.startline + that.step4.readline + 1;
+            that.step4.everread = true;
+          } else if (
+            (response.data == "" && that.step4.everread == true) ||
+            (response.data != "" && lineNumber != that.step4.readline)
+          ) {
+            that.step4.emptyNumber++;
+
+            if (that.step4.emptyNumber >= 6) {
+              clearInterval(that.step4.logPoll);
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          clearInterval(that.step4.logPoll);
         });
     },
     backaction2: function (event) {
@@ -782,14 +847,14 @@ export default {
   height: 22px;
 }
 
-.select-repo {
+/* .select-repo {
 }
 
 .select-branch {
 }
 
 .select-framework {
-}
+} */
 
 .deploy-view {
   margin-top: 30px;
