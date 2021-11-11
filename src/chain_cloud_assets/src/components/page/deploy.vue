@@ -621,6 +621,13 @@ export default {
       if (event) {
         this.step = 3;
         this.percentage = 75;
+
+        this.step4.deployLog = "";
+        this.step4.logPoll = null;
+        this.step4.logfile = "";
+        this.step4.alreadyArr = [];
+        this.step4.sameResultObj = null;
+        this.step4.sameResultNumber = 0;
       }
     },
   },
