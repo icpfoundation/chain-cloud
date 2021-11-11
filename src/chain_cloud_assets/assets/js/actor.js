@@ -1,9 +1,12 @@
-import { createActor } from "../../../declarations/chain_cloud";
+import { createActor, chain_cloud } from "../../../declarations/chain_cloud";
 import ChainCloudCanister from "./chain_cloud";
-let createActorTest = createActor("rrkah-fqaaa-aaaaa-aaaaq-cai", {
-    agentOptions: {
-      host: "http://localhost:8000",
-    },
+const canisterId = process.env.CHAIN_CLOUD_CANISTER_ID;
+var createActorLocal = createActor(canisterId, {
+  agentOptions: {
+    host: "http://localhost:8000",
+  },
 });
-const chainCloud = new ChainCloudCanister(createActorTest); 
-export { chainCloud }
+const chainCloudLocal = new ChainCloudCanister(createActorLocal);
+const chainCloud = new ChainCloudCanister(chain_cloud)
+
+export { chainCloudLocal, chainCloud }
