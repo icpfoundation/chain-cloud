@@ -1,19 +1,14 @@
 // use context::metadata::{ Metadata,CanisterStatusResponse,CanisterIdRecord,InstallMode};
 use crate::types;
-use crate::util;
-use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
 use ic_cdk::storage;
 use ic_cdk::{api,print};
-use ic_cdk_macros::*;
 use num_bigint::BigUint;
 use std::collections::HashMap;
-use std::str;
 use types::*;
 type CanisterInfo = HashMap<Principal, CanisterStatusFormat>;
 pub type CanisterBucket = HashMap<Principal, Vec<CommitCanister>>;
 
-pub const LEDGET_CANISTERID: &str = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 
 pub async fn get_canister_status(
     canister: Principal,
@@ -45,13 +40,6 @@ pub async fn get_local_canister_list() -> Vec<CanisterStatusFormat> {
     return result;
 }
 
-pub async fn account_balance_dfx(account: String) -> ICPTs {
-    let ledger = Principal::from_text(LEDGET_CANISTERID).unwrap();
-    let account = AccountBalanceArgs { account: account };
-
-    let res: Result<(ICPTs,), _> = api::call::call(ledger, "account_balance_dfx", (account,)).await;
-    return res.unwrap().0;
-}
 
 async fn canister_status(canister: Principal) -> Result<CanisterStatusFormat, String> {
     let canister_id = CanisterIdRecord {
@@ -152,40 +140,40 @@ async fn canister_status(canister: Principal) -> Result<CanisterStatusFormat, St
 //     Ok(())
 // }
 
-#[update(name = "updateSettings")]
-async fn update_settings(
-    canister: Principal,
-    controller: Principal,
-    mem: Nat,
-    cycle: Nat,
-) -> Result<(), String> {
-    let cycle = util::nat_to_u64(cycle).unwrap();
-    let args = CanisterSettings {
-        controller: Some(controller),
-        compute_allocation: None,
-        memory_allocation: Some(Nat::from(mem)),
-        freezing_threshold: None,
-    };
-    let in_arg = UpdateCanister {
-        canister_id: canister,
-        settings: args,
-    };
-    match api::call::call_with_payment(
-        Principal::management_canister(),
-        "update_settings",
-        (in_arg,),
-        cycle as u64,
-    )
-    .await
-    {
-        Ok(()) => {
-            return Ok(());
-        }
-        Err((code, msg)) => {
-            return Err(format!("update canister faile: {}: {}", code as u8, msg));
-        }
-    };
-}
+// #[update(name = "updateSettings")]
+// async fn update_settings(
+//     canister: Principal,
+//     controller: Principal,
+//     mem: Nat,
+//     cycle: Nat,
+// ) -> Result<(), String> {
+//     let cycle = util::nat_to_u64(cycle).unwrap();
+//     let args = CanisterSettings {
+//         controller: Some(controller),
+//         compute_allocation: None,
+//         memory_allocation: Some(Nat::from(mem)),
+//         freezing_threshold: None,
+//     };
+//     let in_arg = UpdateCanister {
+//         canister_id: canister,
+//         settings: args,
+//     };
+//     match api::call::call_with_payment(
+//         Principal::management_canister(),
+//         "update_settings",
+//         (in_arg,),
+//         cycle as u64,
+//     )
+//     .await
+//     {
+//         Ok(()) => {
+//             return Ok(());
+//         }
+//         Err((code, msg)) => {
+//             return Err(format!("update canister faile: {}: {}", code as u8, msg));
+//         }
+//     };
+// }
 
 pub async fn commit_canister(canister: CommitCanister) -> () {
     let canister_bucket = storage::get_mut::<CanisterBucket>();

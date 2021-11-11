@@ -65,11 +65,6 @@ pub struct CanisterInstall {
 }
 
 #[derive(CandidType, Debug, Deserialize)]
-pub struct ICPTs {
-    pub e8s: Nat,
-}
-
-#[derive(CandidType, Debug, Deserialize)]
 pub struct AccountBalanceArgs {
     pub account: String,
 }

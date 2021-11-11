@@ -1,11 +1,10 @@
-
+use crate::types::{CommitCanister, Db, Snapshot};
 use context::{metadata, util};
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
-use ic_cdk::storage;
 use ic_cdk::print;
+use ic_cdk::storage;
 use std::collections::HashMap;
-use crate::types::{Db, Snapshot,CommitCanister};
 static mut Event: Vec<metadata::Metadata> = vec![];
 type CanisterEvent = HashMap<Principal, Vec<usize>>;
 type CallerEvent = HashMap<Principal, Vec<usize>>;
@@ -152,25 +151,28 @@ pub async fn get_canister_list() -> Vec<Principal> {
     return res;
 }
 
-pub async fn get_canister_event_by_time(canister:Principal, start_time:Nat) -> Vec<metadata::Metadata>{
+pub async fn get_canister_event_by_time(
+    canister: Principal,
+    start_time: Nat,
+) -> Vec<metadata::Metadata> {
     let mut res: Vec<metadata::Metadata> = vec![];
     let canister_event = storage::get::<CanisterEvent>();
     if !canister_event.contains_key(&canister) {
         return res;
     }
     let bucket = canister_event.get(&canister).unwrap();
-    unsafe{
-        let mut i = bucket.len() -1;
+    unsafe {
+        let mut i = bucket.len() - 1;
         loop {
             if Event[bucket[i]].transaction_time >= start_time {
-               res.push(Event[bucket[i]].clone())
-            }else{
+                res.push(Event[bucket[i]].clone())
+            } else {
                 return res;
             }
-            if i == 0{
+            if i == 0 {
                 return res;
-            }  
-            i = i -1;
+            }
+            i = i - 1;
         }
     }
 }
@@ -195,9 +197,9 @@ pub fn pre_upgrade() {
         caller_event_snapshot.push(snapshot);
     }
 
-    let mut  commit_canister_bucket:Vec<Vec<CommitCanister>> = vec![];
-    let bucket =  storage::get::<operation::CanisterBucket>();
-    for i in bucket.values(){
+    let mut commit_canister_bucket: Vec<Vec<CommitCanister>> = vec![];
+    let bucket = storage::get::<operation::CanisterBucket>();
+    for i in bucket.values() {
         commit_canister_bucket.push(i.to_vec());
     }
     unsafe {
@@ -205,15 +207,14 @@ pub fn pre_upgrade() {
             canisterEvent: canister_event_snapshot,
             callerEvent: caller_event_snapshot,
             event: Event.to_vec(),
-            commitCanister:commit_canister_bucket,
+            commitCanister: commit_canister_bucket,
         };
-        storage::stable_save((db,));
+        storage::stable_save((db,)).expect("stable_save failed");
     }
     let size = ic_cdk::api::stable::stable_size();
     let size = format!("Current used memory page size: {}", size);
     print(size);
 }
-
 
 pub fn post_update() {
     let db = storage::stable_restore::<(Db,)>().expect("Data recovery failed");
@@ -232,8 +233,8 @@ fn data_load(db: Db) {
     for e in db.callerEvent.into_iter() {
         canister_event.insert(e.key.clone(), e.value);
     }
-    let  bucket = storage::get_mut::<operation::CanisterBucket>();
-    for e in db.commitCanister.into_iter(){
-        bucket.insert(e[0].principle,e);
+    let bucket = storage::get_mut::<operation::CanisterBucket>();
+    for e in db.commitCanister.into_iter() {
+        bucket.insert(e[0].principle, e);
     }
 }

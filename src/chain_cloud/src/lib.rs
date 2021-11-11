@@ -1,7 +1,7 @@
 mod event;
 mod operation;
 mod types;
-use context::{metadata, util};
+use context::{metadata};
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
 use ic_cdk_macros::*;
@@ -53,11 +53,6 @@ async fn get_canister_status(
 #[query(name = "getLocalCanisterList")]
 async fn get_local_canister_list() -> Vec<CanisterStatusFormat> {
     operation::get_local_canister_list().await
-}
-
-#[query(name = "getBalance")]
-async fn account_balance_dfx(account: String) -> ICPTs {
-    operation::account_balance_dfx(account).await
 }
 
 #[update(name = "commitCanister")]

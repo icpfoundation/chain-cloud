@@ -46,9 +46,6 @@ type StatusResult =  variant{
     Err:text;
 };
 
-type ICPTs = record {
-        e8s:nat;
-};
 
 type createCanisterResult = variant {
     Ok:principal;
@@ -94,8 +91,7 @@ service :{
     "getCanisterLastEvent":(principal,nat) -> (vec Metadata) query;
     "getCanisterList":() -> (vec principal) query;
     "getCanisterStatus":(principal,CallType) -> (StatusResult);
-    "getBalance":(text) -> (ICPTs);
-    "getLocalCanisterList":() -> (vec CanisterStatusFormat);
+    "getLocalCanisterList":() -> (vec CanisterStatusFormat) query;
     "commitCanister":(CommitCanister) -> ();
     "getCanisterByPrinciple":(principal) -> (vec CommitCanister) query;
     "getCanisterById":(principal,principal) -> (GetCanisterByIdResult) query;
