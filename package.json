@@ -30,8 +30,8 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@dfinity/agent": "^0.10.1",
-    "@dfinity/candid": "0.10.1",
+    "@dfinity/agent": "^0.9.0",
+    "@dfinity/candid": "^0.9.0",
     "@dfinity/principal": "0.10.1",
     "assert": "2.0.0",
     "buffer": "6.0.3",
