@@ -316,6 +316,7 @@ export default {
         readline: 5,
         logfile: "",
         everread: false,
+        emptyNumber: 0,
       },
     };
   },
@@ -575,12 +576,19 @@ export default {
         .then(function (response) {
           console.log(response);
 
-          that.step4.deployLog += response.data;
-          that.step4.startline = that.step4.startline + that.step4.readline + 1;
-          that.step4.everread = true
+          if (response.data != "") {
+            that.step4.deployLog += response.data;
+            that.step4.startline =
+              that.step4.startline + that.step4.readline + 1;
+            that.step4.everread = true;
+          }
 
           if (response.data == "" && that.step4.everread == true) {
-            clearInterval(that.step4.logPoll);
+            that.step4.emptyNumber++;
+
+            if (that.step4.emptyNumber >= 5) {
+              clearInterval(that.step4.logPoll);
+            }
           }
         })
         .catch(function (error) {
