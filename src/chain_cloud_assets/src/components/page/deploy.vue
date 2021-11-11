@@ -317,6 +317,7 @@ export default {
         logfile: "",
         everread: false,
         emptyNumber: 0,
+        alreadyArr: [],
       },
     };
   },
@@ -576,17 +577,41 @@ export default {
         .then(function (response) {
           console.log(response);
 
-          if (response.data != "") {
-            that.step4.deployLog += response.data;
+          let lines = response.data.split("\n");
+          let lineNumber = lines.length - 1;
+
+          for (let i = 0; i < lines.length - 1; i++) {
+            const element = lines[i];
+
+            let isin = false;
+            for (let j = 0; j < that.step4.alreadyArr.length; j++) {
+              const alreadyEle = that.step4.alreadyArr[j];
+              if (element == alreadyEle) {
+                isin = true;
+                break;
+              }
+            }
+
+            if (isin) {
+              continue;
+            }
+
+            that.step4.alreadyArr.push(element);
+            that.step4.deployLog += element;
+            that.step4.deployLog += "\n";
+          }
+
+          if (response.data != "" && lineNumber == that.step4.readline) {
             that.step4.startline =
               that.step4.startline + that.step4.readline + 1;
             that.step4.everread = true;
-          }
-
-          if (response.data == "" && that.step4.everread == true) {
+          } else if (
+            (response.data == "" && that.step4.everread == true) ||
+            (response.data != "" && lineNumber != that.step4.readline)
+          ) {
             that.step4.emptyNumber++;
 
-            if (that.step4.emptyNumber >= 5) {
+            if (that.step4.emptyNumber >= 6) {
               clearInterval(that.step4.logPoll);
             }
           }
