@@ -552,8 +552,6 @@ export default {
           },
         })
         .then(function (response) {
-          console.log(response);
-
           that.step4.logfile = response.data.connectionid;
           that.step4.logPoll = window.setInterval(that.seekLogsAction, 2000);
         })
@@ -571,11 +569,9 @@ export default {
           },
         })
         .then(function (response) {
-          console.log(response);
-
           if (that.step4.sameResultObj == response.data) {
             that.step4.sameResultNumber++;
-            if (that.step4.sameResultNumber >= 4) {
+            if (that.step4.sameResultNumber >= 10) {
               clearInterval(that.step4.logPoll);
             }
           } else {
