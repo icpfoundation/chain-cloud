@@ -312,12 +312,10 @@ export default {
         tiggerBuildUrl: "https://chaincloud.skyipfs.com:9091/public/build",
         deployLog: "",
         logPoll: null,
-        startline: 1,
-        readline: 5,
         logfile: "",
-        everread: false,
-        emptyNumber: 0,
         alreadyArr: [],
+        sameResultObj: null,
+        sameResultNumber: 0,
       },
     };
   },
@@ -554,8 +552,6 @@ export default {
           },
         })
         .then(function (response) {
-          console.log(response);
-
           that.step4.logfile = response.data.connectionid;
           that.step4.logPoll = window.setInterval(that.seekLogsAction, 2000);
         })
@@ -568,18 +564,21 @@ export default {
       this.axios
         .get(this.step4.logOutUrl, {
           params: {
-            startline: this.step4.startline,
-            endline: this.step4.startline + this.step4.readline,
             file: this.step4.logfile,
             reponame: this.step3.selectedRepo.name,
           },
         })
         .then(function (response) {
-          console.log(response);
+          if (that.step4.sameResultObj == response.data) {
+            that.step4.sameResultNumber++;
+            if (that.step4.sameResultNumber >= 10) {
+              clearInterval(that.step4.logPoll);
+            }
+          } else {
+            that.step4.sameResultObj = response.data;
+          }
 
           let lines = response.data.split("\n");
-          let lineNumber = lines.length - 1;
-
           for (let i = 0; i < lines.length - 1; i++) {
             const element = lines[i];
 
@@ -599,21 +598,6 @@ export default {
             that.step4.alreadyArr.push(element);
             that.step4.deployLog += element;
             that.step4.deployLog += "\n";
-          }
-
-          if (response.data != "" && lineNumber == that.step4.readline) {
-            that.step4.startline =
-              that.step4.startline + that.step4.readline + 1;
-            that.step4.everread = true;
-          } else if (
-            (response.data == "" && that.step4.everread == true) ||
-            (response.data != "" && lineNumber != that.step4.readline)
-          ) {
-            that.step4.emptyNumber++;
-
-            if (that.step4.emptyNumber >= 6) {
-              clearInterval(that.step4.logPoll);
-            }
           }
         })
         .catch(function (error) {
