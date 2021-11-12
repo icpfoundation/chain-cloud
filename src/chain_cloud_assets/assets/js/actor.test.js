@@ -102,6 +102,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
         canister: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
         caller: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
         stable_size: 3,
-      });
+    });
+    console.log("模拟测试数据结束");
 }
 export {generateTestData}

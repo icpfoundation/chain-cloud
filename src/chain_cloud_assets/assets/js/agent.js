@@ -7,7 +7,7 @@ const decoder = new borc.Decoder({
         55799: (val) => val,
     },
 });
-const agent = new HttpAgent({
+export const agent = new HttpAgent({
     host: "https://ic0.app"
 })
 
@@ -50,7 +50,6 @@ const getCanisterInfo = async (canisterId) => {
     } else {
         throw new Error('cert verify failed')
     }
-
 }
 
 export {getCanisterInfo}
