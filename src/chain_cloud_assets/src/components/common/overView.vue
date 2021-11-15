@@ -190,6 +190,7 @@ p {
   flex-wrap: wrap;
   height: 35%;
   justify-content: space-around;
+  margin-top: 10px;
 }
 .canister_content_left {
   background-color: white;
@@ -237,7 +238,7 @@ p {
 .canister_content_bottom_title span:last-child label {
   color: rgb(18, 135, 231);
   font-weight: 900;
-  cursor: pointer;
+  cursor: pointer;  
 }
 
 .canister_content_top_content {
@@ -257,7 +258,6 @@ p {
   width: 100%;
   height: 100%;
   flex-wrap: wrap;
-
   align-items: center;
   justify-content: space-around;
 }

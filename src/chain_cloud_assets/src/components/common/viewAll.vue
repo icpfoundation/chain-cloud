@@ -68,19 +68,21 @@ p {
   font-size: 15px;
   font-weight: 900;
   align-items: center;
-  height: 10%;
+  height: 8%;
   width: 100%;
   background-color: white;
   text-indent: 10px;
 }
 .canister_content_top_content {
   display: flex;
-  width: 98%;
+  width: 96%;
   align-content: center;
   justify-items: center;
-  height: 83%;
+  height: 85%;
   margin-left: 1%;
   background-color: white;
+  border-radius: 10px;
+  padding: 10px;
 }
 .canister_content_top_ul {
   margin: 0;

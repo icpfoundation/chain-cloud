@@ -165,7 +165,7 @@ export default {
 .sidebar_content {
   width: 83%;
   display: flex;
-  height: 85%;
+  height: 90%;
   background-color: rgb(239, 241, 241);
 }
 </style>

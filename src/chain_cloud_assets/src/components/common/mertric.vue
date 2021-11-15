@@ -483,7 +483,7 @@ export default {
 }
 .mertirc_title {
   display: flex;
-  height: 10%;
+  height: 8%;
   width: 100%;
   background: white;
   align-items: center;

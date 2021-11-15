@@ -82,7 +82,7 @@ export default {
       console.log("Network connection failed, error reason:", err);
       return;
     }
-    loadInstance.close()
+    loadInstance.close();
     if (result.length == 0 || !result) {
       this.noData = true;
       return;
@@ -94,7 +94,6 @@ export default {
         tearm: "*****",
         lastTime: formatDate(i.create_time, "yyyy-MM-dd hh:mm:ss"),
       });
-      
     }
   },
   methods: {
@@ -133,20 +132,21 @@ p {
   font-size: 15px;
   font-weight: 900;
   align-items: center;
-  height: 10%;
+  height: 8%;
   width: 100%;
   background-color: white;
   text-indent: 10px;
 }
 .hosteslist_content {
   display: flex;
-  height: 82%;
+  height: 90%;
   width: 98%;
   flex-wrap: wrap;
   margin-left: 1%;
   flex-direction: row;
   background-color: white;
   border-radius: 10px;
+  margin-top: 10px;
 }
 .hosteslist_content_title {
   display: flex;
