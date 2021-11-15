@@ -83,12 +83,7 @@ export default {
     doSomething: async function (event) {
       if (event) {
         let principal = localStorage.getItem("principal");
-        if (principal != "" || principal == undefined || principal == null) {
-          console.log(this.$router.path);
-          if (this.$router.path != "/xxx") {
-            this.$router.push("/xxx");
-          }
-        } else {
+        if (principal == "" || principal == undefined || principal == null) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
@@ -109,6 +104,11 @@ export default {
               console.log("Error while logging with II: " + str);
             },
           });
+        } else {
+          console.log(this.$router.path);
+          if (this.$router.path != "/xxx") {
+            this.$router.push("/xxx");
+          }
         }
       }
     },
