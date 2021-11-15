@@ -75,14 +75,13 @@ p {
 }
 .canister_content_top_content {
   display: flex;
-  width: 96%;
+  width: 98%;
   align-content: center;
   justify-items: center;
-  height: 85%;
+  height: 88%;
   margin-left: 1%;
   background-color: white;
   border-radius: 10px;
-  padding: 10px;
 }
 .canister_content_top_ul {
   margin: 0;
@@ -93,7 +92,7 @@ p {
   display: inline-block;
   width: 100%;
   height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 .canister_content_top_ul li {
   display: inline-block;
@@ -126,5 +125,9 @@ p {
 .canister_content_top_ul li p:last-child {
   font-size: 12px;
   color: rgb(161, 161, 161);
+}
+.el-empty {
+  width: 100%;
+  height: 100%;
 }
 </style>

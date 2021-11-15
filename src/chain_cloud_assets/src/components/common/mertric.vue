@@ -413,7 +413,7 @@ export default {
   },
   async mounted() {
     let time = new Date().getTime();
-    let res =[];
+    let res = [];
     try {
       res = await chainCloudLocal.getCanisterEventByTime(
         "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -421,7 +421,6 @@ export default {
       );
     } catch (err) {
       console.log("Network connection failed, error reason:", err);
-    
     }
 
     for (let i of res) {
@@ -452,7 +451,6 @@ export default {
       this.memoryProfileOption.series[0].data[hours] = Number(
         (i.stable_size / 16384) * 100
       );
-       
     }
 
     var chartDom = document.getElementById("loadAvg");

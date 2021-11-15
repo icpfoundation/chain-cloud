@@ -98,6 +98,7 @@ export default {
   width: 100%;
   background-color: white;
   text-indent: 10px;
+
 }
 
 .canister_log_content {
@@ -106,9 +107,10 @@ export default {
   width: 96%;
   background: white;
   margin-left: 1%;
-  border: 10px;
   border-radius: 10px;
-  padding: 10px;
+  margin-top: 10px;
+  padding: 1%;
+
 }
 .el-empty {
   width: 100%;
