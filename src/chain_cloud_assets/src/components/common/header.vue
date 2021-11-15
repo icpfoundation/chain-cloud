@@ -83,7 +83,7 @@ export default {
     doSomething: async function (event) {
       if (event) {
         let principal = localStorage.getItem("principal");
-        if (principal != "") {
+        if (principal != "" || principal == undefined || principal == null) {
           console.log(this.$router.path);
           if (this.$router.path != "/xxx") {
             this.$router.push("/xxx");
