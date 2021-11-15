@@ -1,5 +1,5 @@
 use crate::types::{CommitCanister, Db, Snapshot};
-use context::{metadata, util};
+use chain_cloud_util::{metadata, util};
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
 use ic_cdk::print;
