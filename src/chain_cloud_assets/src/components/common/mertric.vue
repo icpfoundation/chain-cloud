@@ -413,7 +413,7 @@ export default {
   },
   async mounted() {
     let time = new Date().getTime();
-    let res;
+    let res =[];
     try {
       res = await chainCloudLocal.getCanisterEventByTime(
         "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -421,7 +421,7 @@ export default {
       );
     } catch (err) {
       console.log("Network connection failed, error reason:", err);
-      return;
+    
     }
 
     for (let i of res) {
@@ -452,6 +452,7 @@ export default {
       this.memoryProfileOption.series[0].data[hours] = Number(
         (i.stable_size / 16384) * 100
       );
+       
     }
 
     var chartDom = document.getElementById("loadAvg");
@@ -482,13 +483,13 @@ export default {
 }
 .mertirc_title {
   display: flex;
-  height: 8%;
+  height: 10%;
   width: 100%;
   background: white;
   align-items: center;
+  text-indent: 10px;
 }
 .mertirc_title label {
-  margin-left: 2%;
   font-size: 15px;
   font-weight: 900;
 }

@@ -170,21 +170,20 @@
           </el-tooltip>
         </div>
 
-        <!-- <div class="select-docker select-gap">
+        <div class="select-docker select-gap">
           <el-input
-            placeholder="Docker Image"
-            v-model="step3.dockerimage"
+            placeholder="Canister Name"
+            v-model="step3.canistername"
             size="medium"
           >
           </el-input>
           <el-tooltip placement="right">
             <div slot="content">
-              The docker image and tag from the docker hub to use as a base when
-              build your site
+              The canister name that your site will be installed
             </div>
             <img src="../../../assets/img/info.png" alt="" />
           </el-tooltip>
-        </div> -->
+        </div>
 
         <div class="select-builder select-gap">
           <el-input
@@ -220,7 +219,17 @@
           your build.
         </div>
 
-        <div class="select-env-val select-gap">
+        <div class="select-env-val">
+          <div class="env-var" v-for="(item, index) in step3.envs" :key="index">
+            <el-input placeholder="name" v-model="item.name" size="medium">
+            </el-input>
+
+            <el-input placeholder="value" v-model="item.value" size="medium">
+            </el-input>
+          </div>
+        </div>
+
+        <div class="select-gap">
           <el-button @click="newVariablesAction">New variables</el-button>
         </div>
 
@@ -296,15 +305,15 @@ export default {
 
       step3: {
         selectedRepo: null,
-
         selectbranch: "",
         branchoptions: [],
-
         selectframework: "dfx",
         framworkoption: [],
-        dockerimage: "",
+        canistername: "",
+        resourcepath: "build",
         buildtool: "",
         filelocation: "",
+        envs: [],
       },
 
       step4: {
@@ -536,6 +545,10 @@ export default {
     },
     newVariablesAction: function () {
       console.log("new variables action");
+      this.step3.envs.push({
+        name: "",
+        value: "",
+      });
     },
     deployAction: function () {
       this.step = 4;
@@ -549,11 +562,14 @@ export default {
             reponame: this.step3.selectedRepo.name,
             repourl: this.step3.selectedRepo.clone_url,
             branch: this.step3.selectbranch,
+            location: "local",
+            canistername: this.step3.canistername,
+            resourcepath: this.step3.resourcepath,
           },
         })
         .then(function (response) {
           that.step4.logfile = response.data.connectionid;
-          that.step4.logPoll = window.setInterval(that.seekLogsAction, 2000);
+          that.step4.logPoll = window.setInterval(that.seekLogsAction, 3000);
         })
         .catch(function (error) {
           console.log(error);
@@ -621,6 +637,13 @@ export default {
       if (event) {
         this.step = 3;
         this.percentage = 75;
+
+        this.step4.deployLog = "";
+        this.step4.logPoll = null;
+        this.step4.logfile = "";
+        this.step4.alreadyArr = [];
+        this.step4.sameResultObj = null;
+        this.step4.sameResultNumber = 0;
       }
     },
   },
@@ -818,7 +841,7 @@ export default {
 
 <style scoped>
 .select-gap {
-  width: 225px;
+  width: 300px;
   margin-top: 20px;
   margin-bottom: 20px;
   display: flex;
@@ -831,14 +854,18 @@ export default {
   height: 22px;
 }
 
-/* .select-repo {
+.select-env-val {
+  width: 500px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.select-branch {
+.env-var {
+  display: flex;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
-
-.select-framework {
-} */
 
 .deploy-view {
   margin-top: 30px;

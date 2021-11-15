@@ -1,11 +1,11 @@
 <template>
-  <div id="canister_log">
-    <div class="canister_log_title">
+  <div id="detail">
+    <div class="detail_title">
       <label>canisterLog</label>
     </div>
-    <div class="canister_log_content">
-      <div class="canister_log_content_left">
-        <label class="canister_log_content_left_title">Basic Infomation</label>
+    <div class="detail_content">
+      <div class="detail_content_left">
+        <label class="detail_content_left_title">Basic Infomation</label>
         <p><label>host Name: </label> aaa-bbb-ccc-ddd</p>
         <p><label>host Location: </label> aaa-bbb-ccc-ddd</p>
         <p><label>Subnet Name: </label> {{ canister.subnet }}</p>
@@ -16,8 +16,8 @@
         <p><label>Owner: </label> {{ canister.controller }}</p>
         <p><label>Versions: </label> aaa-bbb-ccc-ddd</p>
       </div>
-      <div class="canister_log_content_right">
-        <div class="canister_log_content_right_title">
+      <div class="detail_content_right">
+        <div class="detail_content_right_title">
           <p>Assest Infomaction</p>
           <p>
             Create Time: {{ canister.createTime }} &emsp; Update Time:
@@ -25,9 +25,9 @@
           </p>
           <p>Cycle wallet balance: {{ canister.balance }}</p>
         </div>
-        <div class="canister_log_content_right_bottom">
-          <div id="canister_log_content_right_bottom_pie"></div>
-          <div class="canister_log_content_right_bottom_list">
+        <div class="detail_content_right_bottom">
+          <div id="detail_content_right_bottom_pie"></div>
+          <div class="detail_content_right_bottom_list">
             <tr v-for="item in service" :key="item[0]">
               <td>{{ item[0] }}</td>
               <td>{{ item[1] }}</td>
@@ -191,7 +191,7 @@ export default {
     }
 
     var chartDom = document.getElementById(
-      "canister_log_content_right_bottom_pie"
+      "detail_content_right_bottom_pie"
     );
     var myChart = echarts.init(chartDom);
     myChart.setOption(this.option);
@@ -203,13 +203,13 @@ p {
   margin: 0;
   padding: 0;
 }
-#canister_log {
+#detail {
   display: flex;
   width: 100%;
   height: 100%;
   flex-wrap: wrap;
 }
-.canister_log_title {
+.detail_title {
   display: flex;
   font-size: 15px;
   font-weight: 900;
@@ -218,18 +218,18 @@ p {
   width: 100%;
   background-color: white;
 }
-.canister_log_title label {
+.detail_title label {
   margin-left: 3%;
   font-size: 15px;
   font-weight: 900;
 }
-.canister_log_content {
+.detail_content {
   display: flex;
   width: 100%;
   height: 90%;
   justify-content: space-around;
 }
-.canister_log_content_left {
+.detail_content_left {
   display: flex;
   width: 49%;
   height: 60%;
@@ -239,7 +239,7 @@ p {
   margin-top: 10px;
   border-radius: 10px;
 }
-.canister_log_content_left p {
+.detail_content_left p {
   display: flex;
   width: 90%;
   color: #646363;
@@ -247,23 +247,23 @@ p {
   align-items: center;
   margin-left: 5%;
 }
-.canister_log_content_left p label {
+.detail_content_left p label {
   width: 25%;
 }
-.canister_log_content_right {
+.detail_content_right {
   display: flex;
   width: 49%;
   height: 98%;
   flex-wrap: wrap;
   margin-top: 1%;
 }
-.canister_log_content_left_title {
+.detail_content_left_title {
   font-size: 15px;
   font-weight: 900;
   margin-top: 1%;
   margin-left: 1%;
 }
-.canister_log_content_right_title {
+.detail_content_right_title {
   font-size: 15px;
   font-weight: 900;
   display: flex;
@@ -273,11 +273,11 @@ p {
   background-color: white;
   border-radius: 10px;
 }
-.canister_log_content_right_title p:first-child {
+.detail_content_right_title p:first-child {
   font-size: 15px;
   text-indent: 5px;
 }
-.canister_log_content_right_title p:first-child ~ p {
+.detail_content_right_title p:first-child ~ p {
   display: block;
   color: #646363;
   font-size: 12px;
@@ -285,7 +285,7 @@ p {
   text-indent: 5px;
 }
 
-.canister_log_content_right_bottom {
+.detail_content_right_bottom {
   display: flex;
   height: 78%;
   width: 100%;
@@ -295,13 +295,13 @@ p {
   background-color: white;
 }
 
-#canister_log_content_right_bottom_pie {
+#detail_content_right_bottom_pie {
   display: flex;
   width: 100%;
   height: 60%;
   border-radius: 10px 10px 0 0;
 }
-.canister_log_content_right_bottom_list {
+.detail_content_right_bottom_list {
   display: flex;
   width: 100%;
   height: auto;
@@ -311,13 +311,13 @@ p {
   padding-bottom: 10px;
   border-radius: 0 0 10px 10px;
 }
-.canister_log_content_right_bottom_list tr {
+.detail_content_right_bottom_list tr {
   border: 1px solid rgb(241, 241, 241);
   display: flex;
   width: 90%;
   margin-left: 5%;
 }
-.canister_log_content_right_bottom_list tr td {
+.detail_content_right_bottom_list tr td {
   display: flex;
   width: 50%;
   align-items: center;

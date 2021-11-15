@@ -11,10 +11,10 @@
           >
             <el-submenu index="1">
               <template slot="title">
-                <i class="el-icon-location"> </i>
+                <i class="el-icon-location" style='background-image: url("../../../assets/img/logo_difinity@2x.png");'> </i>
                 <span>{{ this.principle }}</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group >
                 <el-menu-item index="1-1" @click="changingOver('overView')"
                   >Overview</el-menu-item
                 >
@@ -77,6 +77,9 @@ export default {
           }
           break;
         case "canisterLog":
+          if (this.$route.path != "/sidebar/canisterLog") {
+            this.$router.replace("/sidebar/canisterLog");
+          }
       }
     },
   },
@@ -134,8 +137,10 @@ export default {
   width: 30%;
 }
 .el-icon-location {
-  height: 80%;
-  /* background-image: url("../../../assets/img/logo_difinity@2x.png");  */
+  height: 50px;
+  width: 50px !important;
+  /* width:25% !important; */
+   /* background-image: url("../../../assets/img/logo_difinity@2x.png");   */
   background-position: center;
   background-size: 80%;
   border-radius: 50%;

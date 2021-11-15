@@ -43,10 +43,10 @@ export default {
   },
   async mounted() {
     let loadInstance = Loading.service({
-      target: ".hosteslist_content_content",
+      target: ".canister_log_content",
     });
     let principle = this.$store.getters.getPrinciple();
-    let result;
+    let result = [];
     try {
       result = await chainCloudLocal.getCanisterByPrinciple(
         principle.toString()

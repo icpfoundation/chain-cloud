@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import ElementUI from 'element-ui';
@@ -7,7 +6,7 @@ import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
 import ElementLocale from 'element-ui/lib/locale'
 import 'babel-polyfill';
-import store from "../assets/js/store/"
+
 import App from './App.vue';
 import router from './router';
 
@@ -20,7 +19,6 @@ Vue.use(ElementUI, {
     size: 'small'
 });
 Vue.use(VueAxios, axios);
-
 const i18n = new VueI18n({
     locale: 'en',
     messages
@@ -57,6 +55,5 @@ router.beforeEach((to, from, next) => {
 new Vue({
     router,
     i18n,
-    store,
     render: h => h(App)
 }).$mount('#app');

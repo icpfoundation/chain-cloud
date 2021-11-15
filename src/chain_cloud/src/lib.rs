@@ -1,17 +1,25 @@
+
+mod authority;
 mod event;
 mod operation;
 mod types;
-use context::{metadata};
+use context::metadata;
+use ic_cdk::api;
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
 use ic_cdk_macros::*;
 use types::*;
 
+#[init]
+fn init() {
+    authority::set_owner(api::caller());
+}
 /// Add transaction
 #[update(name = "createEvent")]
 async fn create_event(metadata: metadata::Metadata) -> Result<(), String> {
     event::create_event(metadata).await
 }
+
 
 #[query(name = "getCanisterEvent")]
 async fn get_canister_event(
@@ -56,27 +64,33 @@ async fn get_local_canister_list() -> Vec<CanisterStatusFormat> {
 }
 
 #[update(name = "commitCanister")]
-async fn commit_canister(canister:CommitCanister)->(){
-    return operation::commit_canister(canister).await
+async fn commit_canister(canister: CommitCanister) -> () {
+    return operation::commit_canister(canister).await;
 }
 
 #[query(name = "getCanisterByPrinciple")]
-async fn get_canister_by_principle(principle:Principal) -> Vec<CommitCanister>{
+async fn get_canister_by_principle(principle: Principal) -> Vec<CommitCanister> {
     return operation::get_canister_by_principle(principle).await;
 }
 
 #[query(name = "getCanisterById")]
-async fn get_canister_by_id(principle:Principal,canister_id:Principal) ->Result<CommitCanister,String>{
-    return operation::get_canister_by_id(principle,canister_id).await;
+async fn get_canister_by_id(
+    principle: Principal,
+    canister_id: Principal,
+) -> Result<CommitCanister, String> {
+    return operation::get_canister_by_id(principle, canister_id).await;
 }
 #[query(name = "getCanisterEventByTime")]
-async fn get_canister_event_by_time(canister:Principal, start_time:Nat) -> Vec<metadata::Metadata>{
-    return event::get_canister_event_by_time(canister,start_time).await;
+async fn get_canister_event_by_time(
+    canister: Principal,
+    start_time: Nat,
+) -> Vec<metadata::Metadata> {
+    return event::get_canister_event_by_time(canister, start_time).await;
 }
 /// Before the upgrade task starts, you need to persist the data in memory
 #[pre_upgrade]
 fn pre_upgrade() {
-    event::pre_upgrade();
+   event::pre_upgrade();
 }
 
 /// Before the upgrade task ends, you need to reload the persistent data into memory
@@ -84,4 +98,3 @@ fn pre_upgrade() {
 fn post_update() {
     event::post_update();
 }
-

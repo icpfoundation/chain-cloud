@@ -7,7 +7,7 @@
           <div class="canister_content_top_title">
             <span>Activity Canister</span>
             <span>
-              <label> View All </label>
+              <label @click="viewAll"> View All </label>
             </span>
           </div>
           <div class="canister_content_top_content">
@@ -30,7 +30,9 @@
             <span>Subnet:<br />{{ subnetCount }}</span>
           </p>
           <p>
-            <label> Cycle wallet: {{ cycleWallet }}</label>
+            <label>
+              Cycle wallet: <span>{{ cycleWallet }}</span></label
+            >
           </p>
         </div>
       </div>
@@ -66,6 +68,7 @@ import { chainCloudLocal } from "../../../assets/js/actor";
 import { generateTestData } from "../../../assets/js/actor.test";
 import { getCanisterInfo } from "../../../assets/js/agent";
 import { Loading } from "element-ui";
+import chainCloudApi from "../../../assets/js/request";
 export default {
   name: "canister",
   data() {
@@ -75,7 +78,7 @@ export default {
       canisterCount: 0,
       subnetCount: 0,
       tableData: [],
-      size: 6,
+      size: 5,
       cycleWallet: "********",
     };
   },
@@ -92,13 +95,15 @@ export default {
     let bottomInstance = Loading.service({
       target: ".canister_content_bottom_content",
     });
-
     let principle = this.$store.getters.getPrinciple();
 
     // let subnet = await getCanisterInfo("z73ze-xqaaa-aaaah-aazsa-cai");
     // console.log("subnet", subnet);
 
-    // await generateTestData(chainCloudLocal,principle)
+     //await generateTestData(chainCloudLocal,principle)
+    console.log(
+      await chainCloudApi.getCanisterInfo("dtems-oqaaa-aaaag-qaala-cai")
+    );
     let result;
     try {
       result = await chainCloudLocal.getCanisterByPrinciple(
@@ -119,26 +124,29 @@ export default {
     if (result.length > 0) {
       this.cycleWallet = result[0].controller.toString();
     }
-
+    this.canisterCount = result.length;
     for (let i = 0; i < result.length; i++) {
-      if (i > this.size) {
-        break;
+      if (i <= this.size) {
+        Object.defineProperty(result[i], "id", {
+          value: i,
+          writable: true,
+        });
+        this.canister.push(result[i]);
+        this.tableData.push({
+          event: `add canister  ${result[i].canister_id.toString()}`,
+          time: formatDate(result[i].create_time, "yyyy-MM-dd hh:mm:ss"),
+        });
+        this.canister[i].create_time = past(result[i].create_time);
       }
-      Object.defineProperty(result[i], "id", {
-        value: i,
-        writable: true,
-      });
-      this.canister.push(result[i]);
-      this.tableData.push({
-        event: `add canister  ${result[i].canister_id.toString()}`,
-        time: formatDate(result[i].create_time, "yyyy-MM-dd hh:mm:ss"),
-      });
-      this.canister[i].create_time = past(result[i].create_time);
-      this.canisterCount++;
       set.add(result[i].subnet);
     }
 
     this.subnetCount = set.size;
+  },
+  methods: {
+    viewAll() {
+      this.$router.replace("/sidebar/viewall");
+    },
   },
 };
 </script>
@@ -167,12 +175,14 @@ p {
   flex-wrap: wrap;
 }
 .canister_content_overview {
+  display: flex;
   width: 100%;
   font-size: 15px;
   font-weight: 900;
-  padding: 10px 0 10px 0;
+  height: 8%;
   background-color: white;
-  margin-bottom: 1%;
+  text-indent: 10px;
+  align-items: center;
 }
 .canister_content_top {
   display: flex;
@@ -227,6 +237,7 @@ p {
 .canister_content_bottom_title span:last-child label {
   color: rgb(18, 135, 231);
   font-weight: 900;
+  cursor: pointer;
 }
 
 .canister_content_top_content {
@@ -288,7 +299,7 @@ p {
   background-color: white;
   margin-left: 0.75%;
   border-radius: 10px;
-  margin-top: 1%;
+  margin-top: 0.5%;
 }
 .canister_content_bottom_title,
 .canister_content_bottom_content {
@@ -325,6 +336,9 @@ p {
 .canister_content_top_right p:last-child label {
   font-size: 15px;
   margin: 3% 0 0 5%;
+}
+.canister_content_top_right p:last-child label span {
+  font-size: 12px;
 }
 .el-table__header-wrapper {
   background-color: rgb(239, 241, 241) !important;

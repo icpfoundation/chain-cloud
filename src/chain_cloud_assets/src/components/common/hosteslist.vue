@@ -51,6 +51,7 @@ import { createActor } from "../../../../declarations/chain_cloud";
 import { Principal } from "@dfinity/principal";
 import { chainCloudLocal } from "../../../assets/js/actor";
 import { formatDate, past } from "../../../assets/js/util";
+import { Loading } from "element-ui";
 export default {
   name: "hostesList",
   data() {
@@ -68,6 +69,9 @@ export default {
     }
   },
   async mounted() {
+    let loadInstance = Loading.service({
+      target: ".hosteslist_content_content",
+    });
     let principle = this.$store.getters.getPrinciple();
     let result;
     try {
@@ -78,6 +82,7 @@ export default {
       console.log("Network connection failed, error reason:", err);
       return;
     }
+    loadInstance.close()
     if (result.length == 0 || !result) {
       this.noData = true;
       return;
@@ -89,6 +94,7 @@ export default {
         tearm: "*****",
         lastTime: formatDate(i.create_time, "yyyy-MM-dd hh:mm:ss"),
       });
+      
     }
   },
   methods: {
@@ -119,7 +125,7 @@ p {
 #hosteslist {
   display: flex;
   width: 100%;
-  height: 67%;
+  height: 100%;
   flex-wrap: wrap;
 }
 .hosteslist_title {
@@ -163,7 +169,6 @@ p {
   height: 77%;
   float: left;
   flex-wrap: wrap;
-  margin-top: 0;
 }
 
 .pagination {
