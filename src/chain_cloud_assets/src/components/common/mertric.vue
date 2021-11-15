@@ -413,7 +413,7 @@ export default {
   },
   async mounted() {
     let time = new Date().getTime();
-    let res;
+    let res =[];
     try {
       res = await chainCloudLocal.getCanisterEventByTime(
         "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -421,7 +421,7 @@ export default {
       );
     } catch (err) {
       console.log("Network connection failed, error reason:", err);
-      return;
+    
     }
 
     for (let i of res) {

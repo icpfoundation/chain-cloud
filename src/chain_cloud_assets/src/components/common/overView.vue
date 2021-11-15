@@ -89,7 +89,6 @@ export default {
     }
   },
   async mounted() {
-
     let topInstance = Loading.service({
       target: ".canister_content_top_content",
     });
