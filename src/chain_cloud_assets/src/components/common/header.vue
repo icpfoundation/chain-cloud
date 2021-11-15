@@ -80,7 +80,7 @@ export default {
   components: {},
   methods: {
     handleSelect: () => {},
-    doSomething: async function (event) {
+    loginAction: async function (event) {
       if (event) {
         let principal = localStorage.getItem("principal");
         if (principal == "" || principal == undefined || principal == null) {
@@ -111,6 +111,9 @@ export default {
           }
         }
       }
+    },
+    logoutAction: async function () {
+      this.authClient.logout();
     },
   },
   mounted() {
