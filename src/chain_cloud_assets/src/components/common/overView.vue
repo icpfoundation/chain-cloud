@@ -100,7 +100,7 @@ export default {
     // let subnet = await getCanisterInfo("z73ze-xqaaa-aaaah-aazsa-cai");
     // console.log("subnet", subnet);
 
-    // await generateTestData(chainCloudLocal,principle)
+     //await generateTestData(chainCloudLocal,principle)
     console.log(
       await chainCloudApi.getCanisterInfo("dtems-oqaaa-aaaag-qaala-cai")
     );

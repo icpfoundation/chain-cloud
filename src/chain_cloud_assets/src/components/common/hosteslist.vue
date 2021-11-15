@@ -72,7 +72,6 @@ export default {
     let loadInstance = Loading.service({
       target: ".hosteslist_content_content",
     });
-    return 
     let principle = this.$store.getters.getPrinciple();
     let result;
     try {
