@@ -82,24 +82,34 @@ export default {
     handleSelect: () => {},
     doSomething: async function (event) {
       if (event) {
-        let that = this
-        this.authClient.login({
-          identityProvider: this.IDENTITY_URL,
-          onSuccess: () => {
-            let identity = this.authClient.getIdentity();
-            let principle = identity.getPrincipal();
-            that.principal = principle;
+        let principal = localStorage.getItem("principal");
+        if (principal != "") {
+          console.log(this.$router.path);
+          if (this.$router.path != "/xxx") {
+            this.$router.push("/xxx");
+          }
+        } else {
+          let that = this;
+          this.authClient.login({
+            identityProvider: this.IDENTITY_URL,
+            onSuccess: () => {
+              let identity = this.authClient.getIdentity();
+              let principle = identity.getPrincipal();
+              that.principal = principle;
 
-            //mddqv-su6qd-sf36a-oyjxd-rw46x-jbzp7-676e6-erlgh-atism-kr46c-zqe
+              //mddqv-su6qd-sf36a-oyjxd-rw46x-jbzp7-676e6-erlgh-atism-kr46c-zqe
 
-            console.log(identity);
-            console.log("Logged in with II principle:  " + principle);
-            console.log("Logged in with II principle: " + that.principle);
-          },
-          onError: (str) => {
-            console.log("Error while logging with II: " + str);
-          },
-        });
+              localStorage.setItem("principal", that.principal);
+
+              console.log(identity);
+              console.log("Logged in with II principle:  " + principle);
+              console.log("Logged in with II principle: " + that.principle);
+            },
+            onError: (str) => {
+              console.log("Error while logging with II: " + str);
+            },
+          });
+        }
       }
     },
   },
