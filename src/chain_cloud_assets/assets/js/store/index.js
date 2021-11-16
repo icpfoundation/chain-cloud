@@ -14,19 +14,24 @@ export default new Vuex.Store({
     getters: {
         getPrinciple: (ICIdentity) => () => {
             if (!ICIdentity.principle) {
-                let identity = localStorage.getItem("chain_cloud")
+                let identity = localStorage.getItem("principal")
                 if (identity) {
-                    let parse_identity = JSON.parse(identity)
-                    if (Object.prototype.hasOwnProperty.call(parse_identity, '_arr')) {
-                        let arr = new Array()
-                        for (let i = 0; ; i++) {
-                            if (!parse_identity._arr[i]) {
-                                break
+                    try {
+                        let parse_identity = JSON.parse(identity)
+                        if (Object.prototype.hasOwnProperty.call(parse_identity, '_arr')) {
+                            let arr = new Array()
+                            for (let i = 0; ; i++) {
+                                if (!parse_identity._arr[i]) {
+                                    break
+                                }
+                                arr.push(parse_identity._arr[i])
                             }
-                            arr.push(parse_identity._arr[i])
+                            ICIdentity.principle = new Principal(arr)
                         }
-                        ICIdentity.principle = new Principal(arr)
+                    } catch (err) {
+                        console.log("parse error", err)
                     }
+              
                 }
             }
             return ICIdentity.principle
@@ -39,6 +44,10 @@ export default new Vuex.Store({
         ICIdentityConfig(ICIdentity, principle) {
             ICIdentity.principle = principle
         },
+        CleanIdentity(ICIdentity) {
+            ICIdentity.principle = null
+            localStorage.removeItem('principal')
+        },
         CommitCanisterConfig(CanisterInfo, canister) {
             CanisterInfo.CommitCanister = canister
         }
@@ -48,9 +57,12 @@ export default new Vuex.Store({
             if (!principle) {
                 return
             }
-            localStorage.setItem("chain_cloud", JSON.stringify(principle))
+            localStorage.setItem("principal", JSON.stringify(principle))
             commit('ICIdentityConfig', principle)
 
+        },
+        removeICIdentity({ commit }) {
+            commit('CleanIdentity')
         },
         setCommitCanisterConfig({ commit }, canister) {
             commit('CommitCanisterConfig', canister)

@@ -1,6 +1,6 @@
 <template>
   <div id="sidebar">
-    <div class="sidebar_head"><Header :activeIndex="activeIndex"></Header></div>
+    <div class="sidebar_head"><Header></Header></div>
     <div class="sidebar_left">
       <el-row class="tac">
         <el-col :span="12">
@@ -64,13 +64,15 @@ export default {
   components: { Header },
   data() {
     return {
-      activeIndex: "4", 
       openeds: ["1"],
       principle: null,
     };
   },
-  created(){
-  localStorage.setItem('chain_cloud','{"_arr":{"0":48,"1":155,"2":18,"3":7,"4":33,"5":139,"6":178,"7":61,"8":208,"9":83,"10":202,"11":118,"12":163,"13":249,"14":223,"15":104,"16":105,"17":64,"18":79,"19":62,"20":11,"21":11,"22":70,"23":55,"24":238,"25":133,"26":243,"27":231,"28":2},"_isPrincipal":true}')
+  created() {
+    localStorage.setItem(
+      "chain_cloud",
+      '{"_arr":{"0":48,"1":155,"2":18,"3":7,"4":33,"5":139,"6":178,"7":61,"8":208,"9":83,"10":202,"11":118,"12":163,"13":249,"14":223,"15":104,"16":105,"17":64,"18":79,"19":62,"20":11,"21":11,"22":70,"23":55,"24":238,"25":133,"26":243,"27":231,"28":2},"_isPrincipal":true}'
+    );
   },
   mounted() {
     let principle = this.$store.getters.getPrinciple();
@@ -175,7 +177,7 @@ export default {
   #sidebar {
     overflow: scroll;
   }
-  }
+}
 .sidebar_head {
   width: 100%;
 }
