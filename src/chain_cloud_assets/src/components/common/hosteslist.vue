@@ -10,12 +10,12 @@
           :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
           v-if="!noData"
         >
-          <el-table-column prop="name" label="Name" width="180">
+          <el-table-column prop="name" label="Name" width="320">
           </el-table-column>
-          <el-table-column prop="canisterId" label="Canister ID " width="280">
+          <el-table-column prop="canisterId" label="Canister ID " width="320">
           </el-table-column>
-          <el-table-column prop="tearm" label="Tearm"> </el-table-column>
-          <el-table-column prop="lastTime" label="LastTime" width="280">
+
+          <el-table-column prop="lastTime" label="LastTime" width="320">
           </el-table-column>
           <el-table-column prop="operate" label="Operate">
             <template slot-scope="scope">
@@ -82,7 +82,7 @@ export default {
       console.log("Network connection failed, error reason:", err);
       return;
     }
-    loadInstance.close()
+    loadInstance.close();
     if (result.length == 0 || !result) {
       this.noData = true;
       return;
@@ -94,7 +94,6 @@ export default {
         tearm: "*****",
         lastTime: formatDate(i.create_time, "yyyy-MM-dd hh:mm:ss"),
       });
-      
     }
   },
   methods: {
@@ -133,20 +132,22 @@ p {
   font-size: 15px;
   font-weight: 900;
   align-items: center;
-  height: 10%;
+  height: 8%;
   width: 100%;
   background-color: white;
   text-indent: 10px;
 }
 .hosteslist_content {
   display: flex;
-  height: 82%;
+  height: 90%;
   width: 98%;
   flex-wrap: wrap;
   margin-left: 1%;
   flex-direction: row;
   background-color: white;
   border-radius: 10px;
+  margin-top: 10px;
+  align-content: flex-start;
 }
 .hosteslist_content_title {
   display: flex;
@@ -166,9 +167,10 @@ p {
   display: flex;
   width: 98%;
   margin-left: 1%;
-  height: 77%;
+  height: auto;
   float: left;
   flex-wrap: wrap;
+  align-content: flex-start;
 }
 
 .pagination {
@@ -178,6 +180,7 @@ p {
   justify-content: flex-end;
   background-color: white;
   border-radius: 0 0 10px 10px;
+  border: none;
 }
 .el-empty {
   width: 100%;

@@ -214,7 +214,7 @@ p {
   font-size: 15px;
   font-weight: 900;
   align-items: center;
-  height: 10%;
+  height: 8%;
   width: 100%;
   background-color: white;
 }

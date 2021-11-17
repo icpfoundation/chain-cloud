@@ -1,15 +1,19 @@
 use crate::types::{CommitCanister, Db, Snapshot};
-use context::{metadata, util};
+use chain_cloud_util::{metadata, util};
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
 use ic_cdk::print;
 use ic_cdk::storage;
 use std::collections::HashMap;
+use ic_cdk::api::call::{RejectionCode};
 static mut Event: Vec<metadata::Metadata> = vec![];
 type CanisterEvent = HashMap<Principal, Vec<usize>>;
 type CallerEvent = HashMap<Principal, Vec<usize>>;
 use crate::operation;
 pub async fn create_event(metadata: metadata::Metadata) -> Result<(), String> {
+    if metadata.memo.len() > 30 {
+        return Err("memo too long".to_string());
+    }
     let position: usize;
     unsafe {
         Event.push(metadata.clone());

@@ -13,7 +13,7 @@ serde = "1.0.111"
 hyper = "0.10.15"
 serde_json = "1.0.68"
 num-bigint = "0.3.3"
-context = { git = "https://github.com/0x000000000000000/context.git" }
+chain_cloud_util = { git = "https://github.com/icpfoundation/chain_cloud_util.git" }
 candid = "0.7.4"
 serde_bytes = "0.11"
 

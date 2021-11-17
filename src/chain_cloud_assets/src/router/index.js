@@ -3,11 +3,16 @@ import Router from 'vue-router';
 import Home from '../components/common/home.vue';
 import I18n from '../components/common/i18n.js';
 import P404 from '../components/page/404.vue';
-import Overview from '../components/page/overview.vue';
 
 import Deploy from '../components/page/deploy.vue';
 import Authorized from '../components/page/authorized.vue';
-
+import Sidebar from '../components/common/sidebar.vue'
+import OverView from '../components/common/overView.vue'
+import HostesList from '../components/common/hosteslist.vue'
+import Mertric from '../components/common/mertric.vue'
+import Detail from '../components/common/detail.vue'
+import CanisterLog from '../components/common/canisterLog.vue'
+import ViewAll from '../components/common/viewAll.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -47,6 +52,43 @@ export default new Router({
     {
         path: '*',
         redirect: '/404'
+    },
+    {
+        path: '/sidebar',
+        component: Sidebar,
+        title: 'sidebar',
+        children: [
+            {
+                path: '/',
+                meta: { title: "OverView" },
+                component: OverView,
+            }, {
+                path: 'hosteslist',
+                meta: { title: "HostesList" },
+                component: HostesList,
+            }, {
+                path: 'mertric',
+                meta: { title: "Mertric" },
+                component: Mertric,
+
+            }, {
+                path: 'detail',
+                name: 'detail',
+                meta: { title: "Detail" },
+                component: Detail,
+            }, {
+                path: 'canisterLog',
+                name: 'canisterLog',
+                meta: { title: "CanisterLog" },
+                component: CanisterLog,
+            }, {
+                path: 'viewall',
+                name: 'viewall',
+                meta: { title: "ViewAll" },
+                component: ViewAll,
+            },
+
+        ]
     }
     ]
 });

@@ -100,7 +100,7 @@ export default {
     // let subnet = await getCanisterInfo("z73ze-xqaaa-aaaah-aazsa-cai");
     // console.log("subnet", subnet);
 
-     //await generateTestData(chainCloudLocal,principle)
+    //await generateTestData(chainCloudLocal,principle)
     console.log(
       await chainCloudApi.getCanisterInfo("dtems-oqaaa-aaaag-qaala-cai")
     );
@@ -156,7 +156,6 @@ body {
 }
 p {
   margin: 0;
-  padding: 0;
 }
 #canister {
   display: flex;
@@ -190,6 +189,7 @@ p {
   flex-wrap: wrap;
   height: 35%;
   justify-content: space-around;
+  margin-top: 10px;
 }
 .canister_content_left {
   background-color: white;
@@ -257,7 +257,6 @@ p {
   width: 100%;
   height: 100%;
   flex-wrap: wrap;
-
   align-items: center;
   justify-content: space-around;
 }
@@ -292,14 +291,15 @@ p {
 }
 .canister_content_bottom {
   display: flex;
-  height: 53%;
+  height: 52%;
   width: 98.5%;
   flex-wrap: wrap;
   justify-content: center;
   background-color: white;
   margin-left: 0.75%;
   border-radius: 10px;
-  margin-top: 0.5%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .canister_content_bottom_title,
 .canister_content_bottom_content {

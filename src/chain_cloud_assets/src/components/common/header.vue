@@ -35,15 +35,22 @@
         </el-select>
       </el-col>
 
-      <el-col :span="2">
-        <div class="loginview" v-on:click="doSomething">
-          <span> {{ principal }} </span>
+      <el-col
+        :span="2"
+        class="loginviewCol hide"
+        @mouseenter.native="enter"
+        @mouseleave.native="leave"
+      >
+        <div class="loginview" @click.self="doSomething">
+          <span> {{ principleShort }} </span>
           <img
             class="dfxlogo"
             src="../../../assets/img/logo_difinity@2x.png"
             alt="dfinity logo"
           />
         </div>
+        <p @click.stop="doSomething">MORE</p>
+        <p @click.stop="logoutAction">SIGNOUT</p>
       </el-col>
     </el-row>
   </div>
@@ -54,12 +61,11 @@ import { AuthClient } from "@dfinity/auth-client";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { DelegationIdentity } from "@dfinity/identity";
 import { Principal } from "@dfinity/principal";
-
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "headerview",
   data() {
     return {
-      activeIndex: "1",
       options: [
         {
           value: "English",
@@ -72,38 +78,84 @@ export default {
       ],
       value: "",
       IDENTITY_URL: "https://identity.ic0.app",
-      principal: "LOGIN",
+      principle: "",
+      principleShort: "LOGIN",
       maxTimeToLive: 120,
       authClient: null,
+      activeIndex: "1",
     };
+  },
+  computed: {
+    ...mapGetters(["getPrinciple"]),
   },
   components: {},
   methods: {
+    ...mapActions(["setICIdentityConfig", "removeICIdentity"]),
     handleSelect: () => {},
-    doSomething: async function (event) {
-      if (event) {
-        let that = this
-        this.authClient.login({
-          identityProvider: this.IDENTITY_URL,
-          onSuccess: () => {
-            let identity = this.authClient.getIdentity();
-            let principle = identity.getPrincipal();
-            that.principal = principle;
-
-            //mddqv-su6qd-sf36a-oyjxd-rw46x-jbzp7-676e6-erlgh-atism-kr46c-zqe
-
-            console.log(identity);
-            console.log("Logged in with II principle:  " + principle);
-            console.log("Logged in with II principle: " + that.principle);
-          },
-          onError: (str) => {
-            console.log("Error while logging with II: " + str);
-          },
-        });
+    enter() {
+      // let principal = this.getPrinciple();
+      let principle = window.localStorage.getItem("principleString");
+      if (principle) {
+        let loginview = document.getElementsByClassName("loginviewCol");
+        loginview[0].setAttribute("class", "loginviewCol exhibit");
       }
     },
+    leave() {
+      let loginview = document.getElementsByClassName("loginviewCol");
+      loginview[0].setAttribute("class", "loginviewCol hide");
+    },
+    doSomething: async function (event) {
+      if (event) {
+        // let principle = this.getPrinciple();
+        let principle = window.localStorage.getItem("principleString");
+        if (principle == "" || principle == undefined || principle == null) {
+          let that = this;
+          this.authClient.login({
+            identityProvider: this.IDENTITY_URL,
+            onSuccess: () => {
+              let identity = this.authClient.getIdentity();
+              let principle = identity.getPrincipal();
+
+              that.principle = principle;
+              that.principleShort = principle.toString().substring(0, 8) + "...";
+
+              that.setICIdentityConfig(principle);
+
+              window.localStorage.setItem("principleString", principle.toString());
+
+              console.log("Logged in with II principle: " + principle.toString());
+            },
+            onError: (str) => {
+              console.log("Error while logging with II: " + str);
+            },
+          });
+        } else {
+          console.log(this.$router.path);
+          if (this.$router.path != "/sidebar") {
+            this.$router.push("/sidebar");
+          }
+        }
+      }
+    },
+    logoutAction: async function () {
+      this.authClient.logout();
+      this.removeICIdentity();
+      this.principal = "LOGIN";
+      this.principleShort = "LOGIN";
+      this.leave();
+    },
   },
+
   mounted() {
+    // let principle = this.getPrinciple();
+    let principle = window.localStorage.getItem("principleString");
+    console.log("principle " + principle);
+
+    if (principle) {
+      this.principal = principle.toString();
+      this.principleShort = principle.toString().substring(0, 8) + "...";
+    }
+
     const init = async () => {
       this.authClient = await AuthClient.create();
     };
@@ -141,24 +193,58 @@ export default {
 .loginview {
   width: 122px;
   height: 30px;
-  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
   box-shadow: 0px 10px 26px 0px rgba(0, 35, 84, 0.5);
   border-radius: 4px;
-
   padding-left: 10px;
-  margin-top: 12%;
+  margin-top: 1%;
   font-size: 14px;
   text-align: center;
   display: flex;
   flex-direction: row;
   align-items: center;
+  overflow: hidden;
+  transition: height 0.5s;
 }
 
 .loginview span {
   color: #ffffff;
   line-height: 17px;
 }
+.loginviewCol {
+  width: 122px;
+  margin-top: 1%;
+  position: absolute;
+  right: 0;
+  width: auto;
+  transition: height 1s;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
+}
+.loginviewCol p {
+  margin: 0;
+  padding: 0;
+  display: block;
+  width: 100%;
+  height: 0px;
+  color: white;
+  transition: height 0.5s;
+  text-align: center;
+  font-size: 13px;
+  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
+  line-height: 30px;
+}
 
+.hide p {
+  height: 0px;
+}
+.exhibit p {
+  height: 30px;
+}
+.exhibit p:hover {
+  background: rgb(8, 101, 189);
+}
 .dfxlogo {
   width: 26px;
   height: 13px;

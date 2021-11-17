@@ -1,6 +1,6 @@
 <template>
   <div id="sidebar">
-    <div><Header></Header></div>
+    <div class="sidebar_head"><Header></Header></div>
     <div class="sidebar_left">
       <el-row class="tac">
         <el-col :span="12">
@@ -11,20 +11,38 @@
           >
             <el-submenu index="1">
               <template slot="title">
-                <i class="el-icon-location" style='background-image: url("../../../assets/img/logo_difinity@2x.png");'> </i>
+                <i
+                  class="el-icon-location"
+                  style="
+                    background-image: url('../../../assets/img/logo_difinity@2x.png');
+                  "
+                >
+                </i>
                 <span>{{ this.principle }}</span>
               </template>
-              <el-menu-item-group >
-                <el-menu-item index="1-1" @click="changingOver('overView')"
+              <el-menu-item-group>
+                <el-menu-item
+                  index="1-1"
+                  class="overView"
+                  @click="changingOver('overView')"
                   >Overview</el-menu-item
                 >
-                <el-menu-item index="1-2" @click="changingOver('hosteslist')"
+                <el-menu-item
+                  index="1-2"
+                  class="hosteslist"
+                  @click="changingOver('hosteslist')"
                   >Hostes List</el-menu-item
                 >
-                <el-menu-item index="1-3" @click="changingOver('mertric')"
+                <el-menu-item
+                  index="1-3"
+                  class="mertric"
+                  @click="changingOver('mertric')"
                   >Canister Mertric</el-menu-item
                 >
-                <el-menu-item index="1-4" @click="changingOver('canisterLog')"
+                <el-menu-item
+                  index="1-4"
+                  class="canisterLog"
+                  @click="changingOver('canisterLog')"
                   >Canister Log</el-menu-item
                 >
               </el-menu-item-group>
@@ -50,12 +68,38 @@ export default {
       principle: null,
     };
   },
+  created() {
+    // localStorage.setItem(
+    //   "chain_cloud",
+    //   '{"_arr":{"0":48,"1":155,"2":18,"3":7,"4":33,"5":139,"6":178,"7":61,"8":208,"9":83,"10":202,"11":118,"12":163,"13":249,"14":223,"15":104,"16":105,"17":64,"18":79,"19":62,"20":11,"21":11,"22":70,"23":55,"24":238,"25":133,"26":243,"27":231,"28":2},"_isPrincipal":true}'
+    // );
+  },
   mounted() {
-    let principle = this.$store.getters.getPrinciple();
+    // let principle = this.$store.getters.getPrinciple();
+     let principle = window.localStorage.getItem("principleString");
     if (!principle) {
+      alert("Please login");
       this.$router.replace("/404");
     }
     this.principle = principle.toString();
+    switch (this.$route.path) {
+      case "/sidebar":
+        let overView = document.getElementsByClassName("overView");
+        overView[0].click();
+        break;
+      case "/sidebar/hosteslist":
+        let hosteslist = document.getElementsByClassName("hosteslist");
+        hosteslist[0].click();
+        break;
+      case "/sidebar/mertric":
+        let mertric = document.getElementsByClassName("mertric");
+        mertric[0].click();
+        break;
+      case "/sidebar/canisterLog":
+        let canisterLog = document.getElementsByClassName("canisterLog");
+        canisterLog[0].click();
+        break;
+    }
   },
   methods: {
     changingOver(tag) {
@@ -88,17 +132,55 @@ export default {
 <style  scoped>
 #sidebar {
   position: fixed;
+  top: 0;
+  left: 0;
   background: white;
   width: 100%;
   height: 100%;
 }
-.sidebar_left {
-  width: 15%;
-  bottom: 0;
-  float: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.sidebar_head {
+  height: 8%;
+}
+
+@media screen and (min-width: 700px) {
+  .sidebar_left {
+    width: 15%;
+    bottom: 0;
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sidebar_content {
+    width: 84%;
+    display: flex;
+    height: 90%;
+    background-color: rgb(239, 241, 241);
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar_left {
+    width: 100%;
+    bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sidebar_content {
+    width: 100%;
+    display: flex;
+    height: 100%;
+
+    background-color: rgb(239, 241, 241);
+  }
+
+  #sidebar {
+    overflow: scroll;
+  }
+}
+.sidebar_head {
+  width: 100%;
 }
 .el-col-12 {
   width: 90%;
@@ -139,8 +221,6 @@ export default {
 .el-icon-location {
   height: 50px;
   width: 50px !important;
-  /* width:25% !important; */
-   /* background-image: url("../../../assets/img/logo_difinity@2x.png");   */
   background-position: center;
   background-size: 80%;
   border-radius: 50%;
@@ -161,11 +241,5 @@ export default {
 }
 .el-menu-vertical-demo .el-menu::before {
   content: none !important;
-}
-.sidebar_content {
-  width: 83%;
-  display: flex;
-  height: 85%;
-  background-color: rgb(239, 241, 241);
 }
 </style>

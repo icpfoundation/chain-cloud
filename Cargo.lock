@@ -204,11 +204,27 @@ name = "chain_cloud"
 version = "0.1.0"
 dependencies = [
  "candid",
- "context",
+ "chain_cloud_util",
  "hyper 0.10.16",
  "ic-cdk",
  "ic-cdk-macros",
  "num-bigint 0.3.3",
+ "reqwest",
+ "serde",
+ "serde_bytes",
+ "serde_json",
+]
+
+[[package]]
+name = "chain_cloud_util"
+version = "0.1.0"
+source = "git+https://github.com/icpfoundation/chain_cloud_util.git#966a8880f9c61ce2f9c6fae982eef6251d486ab1"
+dependencies = [
+ "event",
+ "event_macro",
+ "hyper 0.10.16",
+ "ic-cdk",
+ "ic-cdk-macros",
  "reqwest",
  "serde",
  "serde_bytes",
@@ -223,22 +239,6 @@ checksum = "3538270d33cc669650c4b093848450d380def10c331d38c768e34cac80576e6e"
 dependencies = [
  "termcolor",
  "unicode-width",
-]
-
-[[package]]
-name = "context"
-version = "0.1.0"
-source = "git+https://github.com/0x000000000000000/context.git#25498a5fff0ce8679800bc4980a502f301899b1c"
-dependencies = [
- "event",
- "event_macro",
- "hyper 0.10.16",
- "ic-cdk",
- "ic-cdk-macros",
- "reqwest",
- "serde",
- "serde_bytes",
- "serde_json",
 ]
 
 [[package]]
@@ -355,7 +355,7 @@ dependencies = [
 [[package]]
 name = "event"
 version = "0.1.0"
-source = "git+https://github.com/0x000000000000000/context.git#25498a5fff0ce8679800bc4980a502f301899b1c"
+source = "git+https://github.com/icpfoundation/chain_cloud_util.git#966a8880f9c61ce2f9c6fae982eef6251d486ab1"
 dependencies = [
  "ic-cdk",
 ]
@@ -363,7 +363,7 @@ dependencies = [
 [[package]]
 name = "event_macro"
 version = "0.1.0"
-source = "git+https://github.com/0x000000000000000/context.git#25498a5fff0ce8679800bc4980a502f301899b1c"
+source = "git+https://github.com/icpfoundation/chain_cloud_util.git#966a8880f9c61ce2f9c6fae982eef6251d486ab1"
 dependencies = [
  "event",
  "ic-cdk",

@@ -3,7 +3,7 @@ mod authority;
 mod event;
 mod operation;
 mod types;
-use context::metadata;
+use chain_cloud_util::metadata;
 use ic_cdk::api;
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
@@ -19,7 +19,6 @@ fn init() {
 async fn create_event(metadata: metadata::Metadata) -> Result<(), String> {
     event::create_event(metadata).await
 }
-
 
 #[query(name = "getCanisterEvent")]
 async fn get_canister_event(

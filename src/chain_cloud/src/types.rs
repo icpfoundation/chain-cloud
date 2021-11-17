@@ -1,4 +1,4 @@
-use context::metadata;
+use chain_cloud_util::metadata;
 use ic_cdk::export::candid::CandidType;
 use ic_cdk::export::candid::{Deserialize, Nat};
 use ic_cdk::export::Principal;
