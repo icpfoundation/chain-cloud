@@ -554,6 +554,8 @@ export default {
       this.step = 4;
       this.percentage = 100;
 
+      let principle = window.localStorage.getItem("principleString");
+
       let that = this;
       this.axios
         .get(this.step4.tiggerBuildUrl, {
@@ -565,6 +567,7 @@ export default {
             location: "local",
             canistername: this.step3.canistername,
             resourcepath: this.step3.resourcepath,
+            principle: principle,
           },
         })
         .then(function (response) {
