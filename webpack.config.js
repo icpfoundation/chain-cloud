@@ -136,6 +136,7 @@ module.exports = {
     //   },
     // },
     hot: true,
+    host: "0.0.0.0",
     contentBase: path.resolve(__dirname, "./src/chain_cloud_assets"),
     watchContentBase: true
   },

@@ -42,7 +42,7 @@
         @mouseleave.native="leave"
       >
         <div class="loginview" @click.self="doSomething">
-          <span> {{ principal }} </span>
+          <span> {{ principleShort }} </span>
           <img
             class="dfxlogo"
             src="../../../assets/img/logo_difinity@2x.png"
@@ -78,7 +78,8 @@ export default {
       ],
       value: "",
       IDENTITY_URL: "https://identity.ic0.app",
-      principal: "LOGIN",
+      principle: "",
+      principleShort: "LOGIN",
       maxTimeToLive: 120,
       authClient: null,
       activeIndex: "1",
@@ -104,24 +105,21 @@ export default {
     },
     doSomething: async function (event) {
       if (event) {
-        let principal = this.getPrinciple();
-        //  let principal = localStorage.getItem("principal");
-        if (principal == "" || principal == undefined || principal == null) {
+        let principle = this.getPrinciple();
+        if (principle == "" || principle == undefined || principle == null) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
             onSuccess: () => {
               let identity = this.authClient.getIdentity();
-
               let principle = identity.getPrincipal();
-              that.principal = principle;
 
-              //mddqv-su6qd-sf36a-oyjxd-rw46x-jbzp7-676e6-erlgh-atism-kr46c-zqe
-
-              // localStorage.setItem("principal", that.principal);
+              that.principle = principle;
+              that.principleShort =
+                principle.toString().substring(0, 8) + "...";
               this.setICIdentityConfig(principle);
-              console.log("Logged in with II principle:  " + principle);
-              console.log("Logged in with II principle: " + that.principle);
+
+              console.log("Logged in with II principle: " + principle.toString());
             },
             onError: (str) => {
               console.log("Error while logging with II: " + str);
@@ -138,18 +136,23 @@ export default {
     logoutAction: async function () {
       this.authClient.logout();
       this.removeICIdentity();
-      this.principal = "LOGIN"
-      this.leave()
+      this.principal = "LOGIN";
+      this.principleShort = "LOGIN";
+      this.leave();
     },
   },
 
   mounted() {
+    let principle = this.getPrinciple();
+    console.log("principle " + principle);
+
+    if (principle) {
+      this.principal = principle.toString();
+      this.principleShort = principle.toString().substring(0, 8) + "...";
+    }
+
     const init = async () => {
       this.authClient = await AuthClient.create();
-      let principle = this.getPrinciple();
-      if (principle) {
-        this.principal = principle.toString();
-      }
     };
 
     init();
