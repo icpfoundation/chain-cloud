@@ -69,13 +69,14 @@ export default {
     };
   },
   created() {
-    localStorage.setItem(
-      "chain_cloud",
-      '{"_arr":{"0":48,"1":155,"2":18,"3":7,"4":33,"5":139,"6":178,"7":61,"8":208,"9":83,"10":202,"11":118,"12":163,"13":249,"14":223,"15":104,"16":105,"17":64,"18":79,"19":62,"20":11,"21":11,"22":70,"23":55,"24":238,"25":133,"26":243,"27":231,"28":2},"_isPrincipal":true}'
-    );
+    // localStorage.setItem(
+    //   "chain_cloud",
+    //   '{"_arr":{"0":48,"1":155,"2":18,"3":7,"4":33,"5":139,"6":178,"7":61,"8":208,"9":83,"10":202,"11":118,"12":163,"13":249,"14":223,"15":104,"16":105,"17":64,"18":79,"19":62,"20":11,"21":11,"22":70,"23":55,"24":238,"25":133,"26":243,"27":231,"28":2},"_isPrincipal":true}'
+    // );
   },
   mounted() {
-    let principle = this.$store.getters.getPrinciple();
+    // let principle = this.$store.getters.getPrinciple();
+     let principle = window.localStorage.getItem("principleString");
     if (!principle) {
       alert("Please login");
       this.$router.replace("/404");

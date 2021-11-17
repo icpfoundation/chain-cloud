@@ -93,8 +93,9 @@ export default {
     ...mapActions(["setICIdentityConfig", "removeICIdentity"]),
     handleSelect: () => {},
     enter() {
-      let principal = this.getPrinciple();
-      if (principal) {
+      // let principal = this.getPrinciple();
+      let principle = window.localStorage.getItem("principleString");
+      if (principle) {
         let loginview = document.getElementsByClassName("loginviewCol");
         loginview[0].setAttribute("class", "loginviewCol exhibit");
       }
@@ -105,7 +106,8 @@ export default {
     },
     doSomething: async function (event) {
       if (event) {
-        let principle = this.getPrinciple();
+        // let principle = this.getPrinciple();
+        let principle = window.localStorage.getItem("principleString");
         if (principle == "" || principle == undefined || principle == null) {
           let that = this;
           this.authClient.login({
@@ -115,9 +117,11 @@ export default {
               let principle = identity.getPrincipal();
 
               that.principle = principle;
-              that.principleShort =
-                principle.toString().substring(0, 8) + "...";
-              this.setICIdentityConfig(principle);
+              that.principleShort = principle.toString().substring(0, 8) + "...";
+
+              that.setICIdentityConfig(principle);
+
+              window.localStorage.setItem("principleString", principle.toString());
 
               console.log("Logged in with II principle: " + principle.toString());
             },
@@ -143,7 +147,8 @@ export default {
   },
 
   mounted() {
-    let principle = this.getPrinciple();
+    // let principle = this.getPrinciple();
+    let principle = window.localStorage.getItem("principleString");
     console.log("principle " + principle);
 
     if (principle) {
