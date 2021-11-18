@@ -13,9 +13,9 @@
           <div class="canister_content_top_content">
             <ul class="canister_content_top_ul" v-if="!noData">
               <li v-for="item in canister" :key="item.id">
-                <p>{{ item.canister_id }}</p>
+                <p>{{ item.canisterId }}</p>
                 <p>subnet: {{ item.subnet }}</p>
-                <p>{{ item.create_time }}</p>
+                <p>{{ item.createTime }}</p>
               </li>
             </ul>
             <el-empty :image-size="50" description="No data" v-else> </el-empty>
@@ -51,7 +51,7 @@
             :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
             v-if="!noData"
           >
-            <el-table-column prop="event" label="Behave" width="280">
+            <el-table-column prop="operation" label="Behave" width="380">
             </el-table-column>
             <el-table-column prop="time" label="Time" align="right">
             </el-table-column>
@@ -63,10 +63,6 @@
   </div>
 </template>
 <script>
-import { formatDate, past } from "../../../assets/js/util";
-import { chainCloudLocal } from "../../../assets/js/actor";
-import { generateTestData } from "../../../assets/js/actor.test";
-import { getCanisterInfo } from "../../../assets/js/agent";
 import { Loading } from "element-ui";
 import chainCloudApi from "../../../assets/js/request";
 export default {
@@ -96,52 +92,61 @@ export default {
       target: ".canister_content_bottom_content",
     });
     let principle = this.$store.getters.getPrinciple();
-
-    // let subnet = await getCanisterInfo("z73ze-xqaaa-aaaah-aazsa-cai");
-    // console.log("subnet", subnet);
-
-    //await generateTestData(chainCloudLocal,principle)
-    console.log(
-      await chainCloudApi.getCanisterInfo("dtems-oqaaa-aaaag-qaala-cai")
-    );
     let result;
     try {
-      result = await chainCloudLocal.getCanisterByPrinciple(
-        principle.toString()
-      );
+      result = await chainCloudApi.getCanisterList(principle);
+      console.log('result',result)
     } catch (err) {
       console.log("Network connection failed, error reason:", err);
       return;
     }
+    let parseResult = JSON.parse(result.result);
+    if (parseResult.length == 0) {
+      this.$store.dispatch("setCommitCanisterConfig",[])
+      this.noData = true
+    } else {
+      this.canisterCount = parseResult.length;
+      let set = new Set();
 
+      try {
+        for (let i = 0; i < parseResult.length; i++) {
+          let subnet = chainCloudApi.getCanisterSubnet(parseResult[i]);
+          let info = chainCloudApi.getCanisterInfo(principle, parseResult[i]);
+          let result = await Promise.all([subnet, info]);
+          if (i <= this.size) {
+            this.canister.push({
+              id: i,
+              canisterId: parseResult[i],
+              subnet: result[0].name,
+              createTime: result[1].createtimestamp,
+              controllerId: result[0].controllerId,
+              name: result[1].name,
+              network: result[1].network,
+              type: result[1].type,
+              updateTimestamp: result[1].updateTimestamp,
+            });
+            
+            this.tableData.push({
+              operation: `add canister ${parseResult[i]}`,
+              time: result[1].createtimestamp,
+            });
+            this.tableData.push({
+              operation: `update canister ${parseResult[i]}`,
+              time: result[1].updateTimestamp,
+            });
+          }
+          set.add(result[0].name);
+        }
+      } catch (err) {
+        console.log("Failed to get data");
+        return;
+      }
+      this.subnetCount = set.size;
+      this.cycleWallet = this.canister[0].controllerId;
+      this.$store.dispatch("setCommitCanisterConfig", this.canister);
+    }
     topInstance.close();
     bottomInstance.close();
-    if (result.length == 0) {
-      this.noData = true;
-    }
-    this.$store.dispatch("setCommitCanisterConfig", result);
-    let set = new Set();
-    if (result.length > 0) {
-      this.cycleWallet = result[0].controller.toString();
-    }
-    this.canisterCount = result.length;
-    for (let i = 0; i < result.length; i++) {
-      if (i <= this.size) {
-        Object.defineProperty(result[i], "id", {
-          value: i,
-          writable: true,
-        });
-        this.canister.push(result[i]);
-        this.tableData.push({
-          event: `add canister  ${result[i].canister_id.toString()}`,
-          time: formatDate(result[i].create_time, "yyyy-MM-dd hh:mm:ss"),
-        });
-        this.canister[i].create_time = past(result[i].create_time);
-      }
-      set.add(result[i].subnet);
-    }
-
-    this.subnetCount = set.size;
   },
   methods: {
     viewAll() {

@@ -14,24 +14,9 @@ export default new Vuex.Store({
     getters: {
         getPrinciple: (ICIdentity) => () => {
             if (!ICIdentity.principle) {
-                let identity = localStorage.getItem("principal")
+                let identity = localStorage.getItem("principleString")
                 if (identity) {
-                    try {
-                        let parse_identity = JSON.parse(identity)
-                        if (Object.prototype.hasOwnProperty.call(parse_identity, '_arr')) {
-                            let arr = new Array()
-                            for (let i = 0; ; i++) {
-                                if (!parse_identity._arr[i]) {
-                                    break
-                                }
-                                arr.push(parse_identity._arr[i])
-                            }
-                            ICIdentity.principle = new Principal(arr)
-                        }
-                    } catch (err) {
-                        console.log("parse error", err)
-                    }
-              
+                    ICIdentity.principle = identity;
                 }
             }
             return ICIdentity.principle
@@ -46,7 +31,7 @@ export default new Vuex.Store({
         },
         CleanIdentity(ICIdentity) {
             ICIdentity.principle = null
-            localStorage.removeItem('principal')
+            localStorage.removeItem('principleString')
         },
         CommitCanisterConfig(CanisterInfo, canister) {
             CanisterInfo.CommitCanister = canister
@@ -57,9 +42,8 @@ export default new Vuex.Store({
             if (!principle) {
                 return
             }
-            localStorage.setItem("principal", JSON.stringify(principle))
+            localStorage.setItem("principleString",principle )
             commit('ICIdentityConfig', principle)
-
         },
         removeICIdentity({ commit }) {
             commit('CleanIdentity')

@@ -42,11 +42,13 @@ var CHAIN_CLOUD_HOST = "https://chaincloud.skyipfs.com:9091";
 var ChainCloudApi = /** @class */ (function () {
     function ChainCloudApi(host) {
         var _this = this;
-        this.getCanisterList = function () { return __awaiter(_this, void 0, void 0, function () {
+        this.getCanisterList = function (controller) { return __awaiter(_this, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.api.get('/public/canisterlist')];
+                    case 0: return [4 /*yield*/, this.api.get('/public/canisterlist', {
+                            params: { 'controller': controller }
+                        })];
                     case 1:
                         result = _a.sent();
                         if (result) {
@@ -61,38 +63,33 @@ var ChainCloudApi = /** @class */ (function () {
                 }
             });
         }); };
-        this.getCanisterInfo = function (canisterid) { return __awaiter(_this, void 0, void 0, function () {
-            var result, res, parseData, err_1;
+        this.getCanisterSubnet = function (canisterid) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, agent_1.getCanisterInfo)(canisterid)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        }); };
+        this.getCanisterInfo = function (controller, canisterid) { return __awaiter(_this, void 0, void 0, function () {
+            var result, parseData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.api.get('/public/canisterinfo', {
-                            params: { 'canisterid': canisterid }
+                            params: { 'canisterid': canisterid, 'controller': controller }
                         })];
                     case 1:
                         result = _a.sent();
-                        if (!result) return [3 /*break*/, 5];
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 4, , 5]);
-                        return [4 /*yield*/, (0, agent_1.getCanisterInfo)(canisterid)];
-                    case 3:
-                        res = _a.sent();
-                        parseData = JSON.parse(result.data.data);
-                        console.log('parseData', parseData);
-                        return [2 /*return*/, {
-                                subnetId: res.subnet,
-                                subnetName: res.name,
-                                moduleHash: res.moduleHash,
-                                controller: res.controllerId,
-                                canisterType: parseData.type,
-                                network: parseData.network,
-                                canisterId: canisterid,
-                                name: parseData.name
-                            }];
-                    case 4:
-                        err_1 = _a.sent();
-                        return [2 /*return*/, err_1];
-                    case 5: return [2 /*return*/, null];
+                        if (result) {
+                            try {
+                                parseData = JSON.parse(result.data.data);
+                                return [2 /*return*/, parseData];
+                            }
+                            catch (err) {
+                                return [2 /*return*/, err];
+                            }
+                        }
+                        return [2 /*return*/, null];
                 }
             });
         }); };

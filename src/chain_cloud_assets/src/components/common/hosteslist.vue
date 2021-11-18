@@ -76,7 +76,7 @@ export default {
     let result;
     try {
       result = await chainCloudLocal.getCanisterByPrinciple(
-        principle.toString()
+        principle
       );
     } catch (err) {
       console.log("Network connection failed, error reason:", err);

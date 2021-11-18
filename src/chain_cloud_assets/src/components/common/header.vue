@@ -115,14 +115,10 @@ export default {
             onSuccess: () => {
               let identity = this.authClient.getIdentity();
               let principle = identity.getPrincipal();
-
               that.principle = principle;
               that.principleShort = principle.toString().substring(0, 8) + "...";
-
               that.setICIdentityConfig(principle);
-
               window.localStorage.setItem("principleString", principle.toString());
-
               console.log("Logged in with II principle: " + principle.toString());
             },
             onError: (str) => {

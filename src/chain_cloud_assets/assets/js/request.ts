@@ -21,39 +21,31 @@ class ChainCloudApi {
         })
     }
 
-    getCanisterList = async (): Promise<Array<any>> => {
-        let result = await this.api.get('/public/canisterlist')
+    getCanisterList = async (controller: string): Promise<Array<any>> => {
+        let result = await this.api.get('/public/canisterlist', {
+            params: { 'controller': controller }
+        })
         if (result) {
             try {
                 return result.data
             } catch (err) {
                 return err
             }
-
         }
         return null
     }
-    getCanisterInfo = async (canisterid: string): Promise<CanisterInfo> => {
+    getCanisterSubnet = async (canisterid: string): Promise<any> => {
+        return await getCanisterInfo(canisterid)
+    }
+    getCanisterInfo = async (controller: string, canisterid: string): Promise<any> => {
 
         let result = await this.api.get('/public/canisterinfo', {
-            params: { 'canisterid': canisterid }
+            params: { 'canisterid': canisterid, 'controller': controller }
         })
         if (result) {
             try {
-                let res = await getCanisterInfo(canisterid)
                 let parseData = JSON.parse(result.data.data)
-                console.log('parseData',parseData)
-                return {
-                    subnetId: res.subnet,
-                    subnetName: res.name,
-                    moduleHash: res.moduleHash,
-                    controller: res.controllerId,
-                    canisterType: parseData.type,
-                    network: parseData.network,
-                    canisterId: canisterid,
-                    name: parseData.name
-                }
-
+                return parseData
             } catch (err) {
                 return err
             }
