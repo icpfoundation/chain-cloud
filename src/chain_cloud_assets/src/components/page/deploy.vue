@@ -156,7 +156,7 @@
               v-for="(item, index) in step3.framworkoption"
               :key="index"
               :label="item.value"
-              :value="item.value"
+              :value="item.name"
               size="large"
             >
             </el-option>
@@ -518,7 +518,7 @@ export default {
         },
         {
           name: "reactjs",
-          value: "Creat React App",
+          value: "Creat-React-App",
           logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/cra.png",
         },
         {
@@ -564,7 +564,7 @@ export default {
             reponame: this.step3.selectedRepo.name,
             repourl: this.step3.selectedRepo.clone_url,
             branch: this.step3.selectbranch,
-            location: "local",
+            location: "main",
             canistername: this.step3.canistername,
             resourcepath: this.step3.resourcepath,
             principle: principle,

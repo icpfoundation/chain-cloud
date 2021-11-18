@@ -24,7 +24,7 @@
       </el-col>
 
       <el-col :span="2">
-        <el-select class="selectlang" v-model="value" placeholder="English">
+        <!-- <el-select class="selectlang" v-model="value" placeholder="English">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -32,7 +32,7 @@
             :value="item.value"
           >
           </el-option>
-        </el-select>
+        </el-select> -->
       </el-col>
 
       <el-col
