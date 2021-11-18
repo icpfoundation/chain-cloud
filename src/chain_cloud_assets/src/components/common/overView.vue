@@ -14,8 +14,8 @@
             <ul class="canister_content_top_ul" v-if="!noData">
               <li v-for="item in canister" :key="item.id">
                 <p>{{ item.canisterId }}</p>
-                <p>subnet: {{ item.subnet }}</p>
-                <p>{{ item.createTime }}</p>
+                <p>subnet: {{ item.subnetName }}</p>
+                <p>{{ item.createtimestamp }}</p>
               </li>
             </ul>
             <el-empty :image-size="50" description="No data" v-else> </el-empty>
@@ -63,6 +63,7 @@
   </div>
 </template>
 <script>
+import { formatDate } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 import chainCloudApi from "../../../assets/js/request";
 export default {
@@ -92,58 +93,41 @@ export default {
       target: ".canister_content_bottom_content",
     });
     let principle = this.$store.getters.getPrinciple();
-    let result;
-    try {
-      result = await chainCloudApi.getCanisterList(principle);
-      console.log('result',result)
-    } catch (err) {
-      console.log("Network connection failed, error reason:", err);
-      return;
-    }
-    let parseResult = JSON.parse(result.result);
-    if (parseResult.length == 0) {
-      this.$store.dispatch("setCommitCanisterConfig",[])
-      this.noData = true
-    } else {
-      this.canisterCount = parseResult.length;
-      let set = new Set();
-
+    let result = this.$store.getters.getCommitCanister();
+    if (!result) {
       try {
-        for (let i = 0; i < parseResult.length; i++) {
-          let subnet = chainCloudApi.getCanisterSubnet(parseResult[i]);
-          let info = chainCloudApi.getCanisterInfo(principle, parseResult[i]);
-          let result = await Promise.all([subnet, info]);
-          if (i <= this.size) {
-            this.canister.push({
-              id: i,
-              canisterId: parseResult[i],
-              subnet: result[0].name,
-              createTime: result[1].createtimestamp,
-              controllerId: result[0].controllerId,
-              name: result[1].name,
-              network: result[1].network,
-              type: result[1].type,
-              updateTimestamp: result[1].updateTimestamp,
-            });
-            
-            this.tableData.push({
-              operation: `add canister ${parseResult[i]}`,
-              time: result[1].createtimestamp,
-            });
-            this.tableData.push({
-              operation: `update canister ${parseResult[i]}`,
-              time: result[1].updateTimestamp,
-            });
-          }
-          set.add(result[0].name);
-        }
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
       } catch (err) {
-        console.log("Failed to get data");
+        console.log("failed to getAllCanister:", err);
         return;
       }
+    }
+
+    if (result.length == 0) {
+      this.noData = true;
+    } else {
+      this.canisterCount = result.length;
+      this.canister = [];
+      let set = new Set();
+      for (let i = 0; i < result.length; i++) {
+        if (i <= this.size) {
+          this.canister.push(result[i]);
+          this.tableData.push({
+            operation: `add canister ${this.canister[i].canisterId}`,
+            time: this.canister[i].createtimestamp,
+          });
+          this.tableData.push({
+            operation: `update canister ${this.canister[i].canisterId}`,
+            time: this.canister[i].updateTimestamp,
+          });
+        }
+        set.add(this.canister[i].subnetName);
+      }
       this.subnetCount = set.size;
-      this.cycleWallet = this.canister[0].controllerId;
-      this.$store.dispatch("setCommitCanisterConfig", this.canister);
+      if (this.canister.length > 0) {
+        this.cycleWallet = this.canister[0].controllerId;
+      }
     }
     topInstance.close();
     bottomInstance.close();

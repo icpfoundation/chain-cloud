@@ -5,8 +5,8 @@
       <ul class="canister_content_top_ul" v-if="!noData">
         <li v-for="item in canister" :key="item.id">
           <p>{{ item.canisterId }}</p>
-          <p>subnet: {{ item.subnet }}</p>
-          <p>{{ item.createTime }}</p>
+          <p>subnet: {{ item.subnetName }}</p>
+          <p>{{ item.createtimestamp }}</p>
         </li>
       </ul>
       <el-empty :image-size="50" description="No data" v-else> </el-empty>
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { formatDate } from "../../../assets/js/util";
 import chainCloudApi from "../../../assets/js/request";
 import { Loading } from "element-ui";
 export default {
@@ -25,7 +26,6 @@ export default {
     };
   },
   created() {
-    console.log();
     let principle = this.$store.getters.getPrinciple();
     if (!principle) {
       this.$router.replace("/404");
@@ -39,29 +39,17 @@ export default {
     let result = this.$store.getters.getCommitCanister();
     let principle = this.$store.getters.getPrinciple();
     if (!result) {
-      result = await chainCloudApi.getCanisterList(principle);
-      result = JSON.parse(result.result);
-      for (let i = 0; i < result.length; i++) {
-        let subnet = chainCloudApi.getCanisterSubnet(parseResult[i]);
-        let info = chainCloudApi.getCanisterInfo(principle, parseResult[i]);
-        let result = await Promise.all([subnet, info]);
-        if (i <= this.size) {
-          this.canister.push({
-            id: i,
-            canisterId: parseResult[i],
-            subnet: result[0].name,
-            createTime: result[1].createtimestamp,
-            controllerId: result[0].controllerId,
-            name: result[1].name,
-            network: result[1].network,
-            type: result[1].type,
-            updateTimestamp: result[1].updateTimestamp,
-          });
-        }
+      try {
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
+      } catch (err) {
+        console.log("failed to getAllCanister:", err);
+        return;
       }
-      this.$store.dispatch("setCommitCanisterConfig", this.canister);
-    } else {
-      this.canister = result;
+    }
+
+    for (let i = 0; i < result.length; i++) {
+      this.canister.push(result[i]);
     }
     topInstance.close();
     if (this.canister.length == 0) {

@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var axios_1 = require("axios");
 var agent_1 = require("./agent");
+var util_1 = require("./util");
 var CHAIN_CLOUD_HOST = "https://chaincloud.skyipfs.com:9091";
 var ChainCloudApi = /** @class */ (function () {
     function ChainCloudApi(host) {
@@ -90,6 +91,51 @@ var ChainCloudApi = /** @class */ (function () {
                             }
                         }
                         return [2 /*return*/, null];
+                }
+            });
+        }); };
+        this.getAllCanister = function (controller) { return __awaiter(_this, void 0, void 0, function () {
+            var data, result, arr, i, subnet, info, canisterResult, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, this.getCanisterList(controller)];
+                    case 1:
+                        data = _a.sent();
+                        result = JSON.parse(data.result);
+                        arr = [];
+                        i = 0;
+                        _a.label = 2;
+                    case 2:
+                        if (!(i < result.length)) return [3 /*break*/, 5];
+                        subnet = this.getCanisterSubnet(result[i]);
+                        info = this.getCanisterInfo(controller, result[i]);
+                        return [4 /*yield*/, Promise.all([subnet, info])];
+                    case 3:
+                        canisterResult = _a.sent();
+                        arr.push({
+                            id: i,
+                            type: canisterResult[1].type,
+                            canisterId: result[i],
+                            controllerId: canisterResult[0].controllerId,
+                            name: canisterResult[1].name,
+                            subnetId: canisterResult[0].subnet,
+                            subnetName: canisterResult[0].name,
+                            network: canisterResult[1].network,
+                            createtimestamp: (0, util_1.formatDate)(canisterResult[1].createtimestamp * 1000, "yyyy-MM-dd hh:mm:ss"),
+                            updateTimestamp: (0, util_1.formatDate)(canisterResult[1].updateTimestamp * 1000, "yyyy-MM-dd hh:mm:ss")
+                        });
+                        _a.label = 4;
+                    case 4:
+                        i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [2 /*return*/, arr];
+                    case 6:
+                        err_1 = _a.sent();
+                        console.log('get getAllCanister fail :', err_1);
+                        return [2 /*return*/, null];
+                    case 7: return [2 /*return*/];
                 }
             });
         }); };

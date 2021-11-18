@@ -34,6 +34,7 @@ export default new Vuex.Store({
             localStorage.removeItem('principleString')
         },
         CommitCanisterConfig(CanisterInfo, canister) {
+            console.log('canister>>>>>',canister)
             CanisterInfo.CommitCanister = canister
         }
     },

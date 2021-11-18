@@ -43,7 +43,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
       memo: "burn",
       cycle: 1000000000000,
       method_name: "burn",
-      canister: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+      canister: Principal.fromText("cmm7f-niaaa-aaaag-qaapq-cai"),
       caller: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
       stable_size: 1,
     });
@@ -52,7 +52,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
         memo: "burn",
         cycle: 1000000000000,
         method_name: "burn",
-        canister: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+        canister: Principal.fromText("cmm7f-niaaa-aaaag-qaapq-cai"),
         caller: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
         stable_size: 1,
       });
@@ -61,7 +61,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
         memo: "burn",
         cycle: 1000000000000,
         method_name: "burn",
-        canister: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+        canister: Principal.fromText("cmm7f-niaaa-aaaag-qaapq-cai"),
         caller: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
         stable_size: 1,
       });
@@ -71,7 +71,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
         memo: "mint",
         cycle: 900000000,
         method_name: "mint",
-        canister: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
+        canister: Principal.fromText("cmm7f-niaaa-aaaag-qaapq-cai"),
         caller: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
         stable_size: 2,
     });
@@ -90,7 +90,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
         memo: "approve",
         cycle: 800000000,
         method_name: "transfer",
-        canister: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
+        canister: Principal.fromText("cmm7f-niaaa-aaaag-qaapq-cai"),
         caller: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
         stable_size: 3,
     });
@@ -99,7 +99,7 @@ const generateTestData = async (chainCloudLocal,principle) => {
         memo: "transforfrom",
         cycle: 800000000,
         method_name: "transfer",
-        canister: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
+        canister: Principal.fromText("cmm7f-niaaa-aaaag-qaapq-cai"),
         caller: Principal.fromText("rwlgt-iiaaa-aaaaa-aaaaa-cai"),
         stable_size: 3,
     });

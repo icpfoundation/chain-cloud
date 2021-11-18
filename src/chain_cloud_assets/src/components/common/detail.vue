@@ -11,9 +11,9 @@
         <p><label>Subnet Name: </label> {{ canister.subnet }}</p>
         <p><label>Subnet Type: </label>{{ canister.subnet }}</p>
         <p><label>Canistr ID: </label>{{ canister.canisterId }}</p>
-        <p><label>Canister Name: </label> {{ canister.canisterId }}</p>
+        <p><label>Canister Name: </label> {{ canister.name }}</p>
         <p><label>Cycle Wallet ID: </label>{{ canister.controller }}</p>
-        <p><label>Owner: </label> {{ canister.controller }}</p>
+        <p><label>Owner: </label> {{ canister.owner }}</p>
         <p><label>Versions: </label> aaa-bbb-ccc-ddd</p>
       </div>
       <div class="detail_content_right">
@@ -21,7 +21,7 @@
           <p>Assest Infomaction</p>
           <p>
             Create Time: {{ canister.createTime }} &emsp; Update Time:
-            {{ canister.createTime }}
+            {{ canister.updateTime }}
           </p>
           <p>Cycle wallet balance: {{ canister.balance }}</p>
         </div>
@@ -50,6 +50,9 @@ import { PieChart } from "echarts/charts";
 import { LabelLayout } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 import { chainCloudLocal } from "../../../assets/js/actor";
+import { formatDate } from "../../../assets/js/util";
+import chainCloudApi from "../../../assets/js/request";
+import { generateTestData } from "../../../assets/js/actor.test";
 echarts.use([
   TitleComponent,
   TooltipComponent,
@@ -68,10 +71,11 @@ export default {
         controller: "",
         memorySize: 0,
         balance: 0,
-        moduleHash: "",
-        principle: "",
-        createTime: 0,
+        owner: "",
+        createTime: "",
+        updateTime: "",
         subnet: "",
+        name: "",
       },
       option: {
         title: {
@@ -123,33 +127,31 @@ export default {
   },
   async mounted() {
     let principle = this.$store.getters.getPrinciple();
+    // await generateTestData(chainCloudLocal,principle)
     var params = this.$route.query;
-    let canisterInfo;
-    try {
-      canisterInfo = await chainCloudLocal.getCanisterById(
-        principle.toString(),
-        params.canisterId
-      );
-    } catch (err) {
-      console.log("Network connection failed, error reason:", err);
-      return;
-    }
-    if (!canisterInfo) {
-      return;
-    }
-    let time = new Date(new Number(canisterInfo.create_time)).toUTCString();
-    this.canister = {
-      canisterId: canisterInfo.canister_id.toString(),
-      status: canisterInfo.status,
-      controller: canisterInfo.controller.toString(),
-      memorySize: canisterInfo.memory_size,
-      balance: canisterInfo.balance,
-      moduleHash: canisterInfo.module_hash,
-      principle: canisterInfo.principle.toString(),
-      createTime: time,
-      subnet: canisterInfo.subnet,
-    };
+    let result = this.$store.getters.getCommitCanister();
 
+    if (!result) {
+      try {
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
+      } catch (err) {
+        console.log("failed to getAllCanister:", err);
+        return;
+      }
+    }
+    for (let i = 0; i < result.length; i++) {
+      if (result[i].canisterId == params.canisterId) {
+        this.canister.canisterId = result[i].canisterId;
+        this.canister.controller = result[i].controllerId;
+        this.canister.owner = principle;
+        this.canister.subnet = result[i].subnetName;
+        this.canister.name = result[i].name;
+        this.canister.createTime = result[i].createtimestamp;
+        this.canister.updateTime = result[i].updateTimestamp;
+        break;
+      }
+    }
     let event = await chainCloudLocal.getCanisterEventByTime(
       params.canisterId,
       new Date().getTime() - 24 * 3600 * 1000
@@ -190,9 +192,7 @@ export default {
       this.service.push(["Service for other", 0]);
     }
 
-    var chartDom = document.getElementById(
-      "detail_content_right_bottom_pie"
-    );
+    var chartDom = document.getElementById("detail_content_right_bottom_pie");
     var myChart = echarts.init(chartDom);
     myChart.setOption(this.option);
   },
