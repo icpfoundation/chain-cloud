@@ -58,6 +58,7 @@ import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 import { chainCloudLocal } from "../../../assets/js/actor";
 import chainCloudApi from "../../../assets/js/request";
+import { Loading } from "element-ui";
 echarts.use([
   TitleComponent,
   ToolboxComponent,
@@ -446,6 +447,9 @@ export default {
     }
   },
   async mounted() {
+    let Instance = Loading.service({
+      target: ".canister_list",
+    });
     this.showCharts("ryjl3-tyaaa-aaaaa-aaaba-cai");
     let result = this.$store.getters.getCommitCanister();
     if (!result) {
@@ -458,7 +462,7 @@ export default {
         return;
       }
     }
-
+    Instance.close()
     this.canister = result;
   },
   methods: {
@@ -577,6 +581,6 @@ export default {
   color: rgb(129, 128, 128);
 }
 .canisterList p:hover {
-  color: blue;
+  color: rgb(0, 68, 255);
 }
 </style>
