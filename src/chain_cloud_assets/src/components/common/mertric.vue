@@ -18,7 +18,7 @@
           size="20%"
           :modal="false"
           :show-close="false"
-          style="font-size: 15px;"
+          style="font-size: 15px"
         >
           <div class="canisterList">
             <p
@@ -574,9 +574,9 @@ export default {
 .canisterList p {
   font-size: 15px;
   cursor: pointer;
+  color: rgb(129, 128, 128);
 }
 .canisterList p:hover {
-  background: rgb(218, 218, 218);
+  color: blue;
 }
-
 </style>
