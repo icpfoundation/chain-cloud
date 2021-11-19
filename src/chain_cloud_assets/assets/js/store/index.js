@@ -6,7 +6,8 @@ import { Principal } from '@dfinity/principal';
 Vue.use(Vuex)
 export default new Vuex.Store({
     ICIdentity: {
-        principle: null
+        principle: null,
+        identity:null
     },
     CanisterInfo: {
         CommitCanister: null
@@ -14,9 +15,9 @@ export default new Vuex.Store({
     getters: {
         getPrinciple: (ICIdentity) => () => {
             if (!ICIdentity.principle) {
-                let identity = localStorage.getItem("principleString")
-                if (identity) {
-                    ICIdentity.principle = identity;
+                let principle = localStorage.getItem("principleString")
+                if (principle) {
+                    ICIdentity.principle = principle;
                 }
             }
             return ICIdentity.principle
@@ -26,24 +27,27 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        ICIdentityConfig(ICIdentity, principle) {
+        ICIdentityConfig(ICIdentity, principle,identity) {
             ICIdentity.principle = principle
+            ICIdentity.identity = identity
         },
         CleanIdentity(ICIdentity) {
             ICIdentity.principle = null
+            ICIdentity.identity = null
             localStorage.removeItem('principleString')
+            localStorage.removeItem('identity')
         },
         CommitCanisterConfig(CanisterInfo, canister) {
-            console.log('canister>>>>>',canister)
             CanisterInfo.CommitCanister = canister
         }
     },
     actions: {
-        setICIdentityConfig({ commit }, principle) {
+        setICIdentityConfig({ commit }, principle,identity) {
             if (!principle) {
                 return
             }
-            localStorage.setItem("principleString",principle )
+            localStorage.setItem("principleString", principle)
+            localStorage.setItem("identity",identity)
             commit('ICIdentityConfig', principle)
         },
         removeICIdentity({ commit }) {

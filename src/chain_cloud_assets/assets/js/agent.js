@@ -2,13 +2,15 @@ import { Certificate, HttpAgent } from "@dfinity/agent";
 import { blobFromText, blobFromUint8Array } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import borc from "borc";
+import { walletActor } from "../js/canister/wallet";
+const IC0 = "https://ic0.app"
 const decoder = new borc.Decoder({
     tags: {
         55799: (val) => val,
     },
 });
 export const agent = new HttpAgent({
-    host: "https://ic0.app"
+    host: IC0
 })
 
 const getCanisterInfo = async (canisterId) => {
@@ -52,4 +54,22 @@ const getCanisterInfo = async (canisterId) => {
     }
 }
 
-export {getCanisterInfo}
+const getWalletCycle = async (identity, canisterid) => {
+    try {
+        let createActorLocal = walletActor(
+            canisterid,
+            {
+              agentOptions: {
+                host: IC0,
+                identity,
+              },
+            }
+          );
+        let balance = await createActorLocal.wallet_balance()
+        return balance
+    } catch (err) {
+        return err
+    }
+}
+
+export {getCanisterInfo,getWalletCycle}

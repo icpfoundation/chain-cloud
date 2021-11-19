@@ -50,9 +50,8 @@ import { PieChart } from "echarts/charts";
 import { LabelLayout } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 import { chainCloudLocal } from "../../../assets/js/actor";
-import { formatDate } from "../../../assets/js/util";
 import chainCloudApi from "../../../assets/js/request";
-import { generateTestData } from "../../../assets/js/actor.test";
+import { getWalletCycle } from "../../../assets/js/agent";
 echarts.use([
   TitleComponent,
   TooltipComponent,
@@ -195,6 +194,13 @@ export default {
     var chartDom = document.getElementById("detail_content_right_bottom_pie");
     var myChart = echarts.init(chartDom);
     myChart.setOption(this.option);
+    try {
+      let identity = localStorage.getItem("identity");
+      let balance = await getWalletCycle(identity, this.canister.controller);
+      console.log("balance", balance);
+    } catch (err) {
+      console.log("get balance failed", err);
+    }
   },
 };
 </script>

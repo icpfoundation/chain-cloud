@@ -48,9 +48,7 @@ export default {
     let principle = this.$store.getters.getPrinciple();
     let result = [];
     try {
-      result = await chainCloudLocal.getCanisterByPrinciple(
-        principle
-      );
+      result = await chainCloudLocal.getCanisterByPrinciple(principle);
     } catch (err) {
       console.log("Network connection failed, error reason:", err);
       return;
@@ -98,7 +96,6 @@ export default {
   width: 100%;
   background-color: white;
   text-indent: 10px;
-
 }
 
 .canister_log_content {
@@ -110,7 +107,6 @@ export default {
   border-radius: 10px;
   margin-top: 10px;
   padding: 1%;
-
 }
 .el-empty {
   width: 100%;
