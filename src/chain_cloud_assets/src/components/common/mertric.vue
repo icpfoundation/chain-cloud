@@ -2,7 +2,37 @@
   <div id="mertirc">
     <div class="mertirc_title">
       <label> Canister Mertric </label>
+      <div>
+        <el-button
+          @click="drawer = true"
+          type="primary"
+          style="margin-left: 16px"
+        >
+          select canister
+        </el-button>
+
+        <el-drawer
+          title="canister list"
+          custom-class="canister_list"
+          :visible.sync="drawer"
+          size="20%"
+          :modal="false"
+          :show-close="false"
+          style="font-size: 15px;"
+        >
+          <div class="canisterList">
+            <p
+              v-for="item in canister"
+              :key="item.id"
+              @click="selectCanister(item.canisterId)"
+            >
+              {{ item.canisterId }}
+            </p>
+          </div>
+        </el-drawer>
+      </div>
     </div>
+
     <div class="mertirc_content">
       <ul>
         <li id="loadAvg"></li>
@@ -27,6 +57,7 @@ import { LineChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 import { chainCloudLocal } from "../../../assets/js/actor";
+import chainCloudApi from "../../../assets/js/request";
 echarts.use([
   TitleComponent,
   ToolboxComponent,
@@ -40,6 +71,9 @@ echarts.use([
 export default {
   data() {
     return {
+      canister: [],
+      drawer: false,
+      innerDrawer: false,
       loadAvgOption: {
         title: {
           text: "Load Avg",
@@ -412,62 +446,83 @@ export default {
     }
   },
   async mounted() {
-    let time = new Date().getTime();
-    let res = [];
-    try {
-      res = await chainCloudLocal.getCanisterEventByTime(
-        "rrkah-fqaaa-aaaaa-aaaaq-cai",
-        time - 12 * 3600 * 1000
-      );
-    } catch (err) {
-      console.log("Network connection failed, error reason:", err);
-    }
-
-    for (let i of res) {
-      let time = new Date(Number(i.transaction_time));
-      let hours = time.getUTCHours();
-      if (hours > 11) {
-        continue;
+    this.showCharts("ryjl3-tyaaa-aaaaa-aaaba-cai");
+    let result = this.$store.getters.getCommitCanister();
+    if (!result) {
+      try {
+        let principle = this.$store.getters.getPrinciple();
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
+      } catch (err) {
+        console.log("failed to getAllCanister:", err);
+        return;
       }
-      this.cpuProfileOption.series[0].data[hours] =
-        Number(this.cpuProfileOption.series[0].data[hours]) +
-        Number((1 / res.length).toFixed(2));
-      let min = time.getUTCMinutes();
-      this.loadAvgOption.series[0].data[hours] =
-        Number(this.loadAvgOption.series[0].data[hours]) + 1 / 60;
-      this.loadAvgOption.series[1].data[hours] =
-        Number(this.loadAvgOption.series[1].data[hours]) + 1 / 12;
-      this.loadAvgOption.series[2].data[hours] =
-        Number(this.loadAvgOption.series[2].data[hours]) + 1 / 4;
-
-      i.transaction_time = Number(i.transaction_time);
-      i.stable_size = Number(i.stable_size);
-      i.cycle = Number(i.cycle);
-      let info = JSON.stringify(i);
-      let buf = Buffer.from(info, "utf8");
-      this.networkBandwithOption.series[0].data[hours] =
-        Number(this.networkBandwithOption.series[0].data[hours]) + buf.length;
-
-      this.memoryProfileOption.series[0].data[hours] = Number(
-        (i.stable_size / 16384) * 100
-      );
     }
 
-    var chartDom = document.getElementById("loadAvg");
-    var myChart = echarts.init(chartDom);
-    myChart.setOption(this.loadAvgOption);
+    this.canister = result;
+  },
+  methods: {
+    selectCanister(canisterid) {
+      this.showCharts(canisterid);
+    },
+    async showCharts(canisterId) {
+      let time = new Date().getTime();
+      let res = [];
+      try {
+        res = await chainCloudLocal.getCanisterEventByTime(
+          canisterId,
+          time - 12 * 3600 * 1000
+        );
+      } catch (err) {
+        console.log("Network connection failed, error reason:", err);
+      }
 
-    var cupchartDom = document.getElementById("cpuProfile");
-    var myChartcpu = echarts.init(cupchartDom);
-    myChartcpu.setOption(this.cpuProfileOption);
+      for (let i of res) {
+        let time = new Date(Number(i.transaction_time));
+        let hours = time.getUTCHours();
+        if (hours > 11) {
+          continue;
+        }
+        this.cpuProfileOption.series[0].data[hours] =
+          Number(this.cpuProfileOption.series[0].data[hours]) +
+          Number((1 / res.length).toFixed(2));
+        let min = time.getUTCMinutes();
+        this.loadAvgOption.series[0].data[hours] =
+          Number(this.loadAvgOption.series[0].data[hours]) + 1 / 60;
+        this.loadAvgOption.series[1].data[hours] =
+          Number(this.loadAvgOption.series[1].data[hours]) + 1 / 12;
+        this.loadAvgOption.series[2].data[hours] =
+          Number(this.loadAvgOption.series[2].data[hours]) + 1 / 4;
 
-    var memorychartDom = document.getElementById("memoryProfile");
-    var memorymyChart = echarts.init(memorychartDom);
-    memorymyChart.setOption(this.memoryProfileOption);
+        i.transaction_time = Number(i.transaction_time);
+        i.stable_size = Number(i.stable_size);
+        i.cycle = Number(i.cycle);
+        let info = JSON.stringify(i);
+        let buf = Buffer.from(info, "utf8");
+        this.networkBandwithOption.series[0].data[hours] =
+          Number(this.networkBandwithOption.series[0].data[hours]) + buf.length;
 
-    var networkchartDom = document.getElementById("networkBandwith");
-    var networkmyChart = echarts.init(networkchartDom);
-    networkmyChart.setOption(this.networkBandwithOption);
+        this.memoryProfileOption.series[0].data[hours] = Number(
+          (i.stable_size / 16384) * 100
+        );
+      }
+
+      var chartDom = document.getElementById("loadAvg");
+      var myChart = echarts.init(chartDom);
+      myChart.setOption(this.loadAvgOption);
+
+      var cupchartDom = document.getElementById("cpuProfile");
+      var myChartcpu = echarts.init(cupchartDom);
+      myChartcpu.setOption(this.cpuProfileOption);
+
+      var memorychartDom = document.getElementById("memoryProfile");
+      var memorymyChart = echarts.init(memorychartDom);
+      memorymyChart.setOption(this.memoryProfileOption);
+
+      var networkchartDom = document.getElementById("networkBandwith");
+      var networkmyChart = echarts.init(networkchartDom);
+      networkmyChart.setOption(this.networkBandwithOption);
+    },
   },
 };
 </script>
@@ -516,4 +571,12 @@ export default {
   padding: 5px;
   background-color: white;
 }
+.canisterList p {
+  font-size: 15px;
+  cursor: pointer;
+}
+.canisterList p:hover {
+  background: rgb(218, 218, 218);
+}
+
 </style>
