@@ -15,7 +15,11 @@
           <el-table-column prop="canisterId" label="Canister ID " width="320">
           </el-table-column>
 
-          <el-table-column prop="lastTime" label="LastTime" width="320">
+          <el-table-column
+            prop="createtimestamp"
+            label="createTime"
+            width="320"
+          >
           </el-table-column>
           <el-table-column prop="operate" label="Operate">
             <template slot-scope="scope">
@@ -47,9 +51,7 @@
 </template>
 
 <script>
-import { createActor } from "../../../../declarations/chain_cloud";
-import { Principal } from "@dfinity/principal";
-import { chainCloudLocal } from "../../../assets/js/actor";
+import chainCloudApi from "../../../assets/js/request";
 import { formatDate, past } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 export default {
@@ -73,27 +75,22 @@ export default {
       target: ".hosteslist_content_content",
     });
     let principle = this.$store.getters.getPrinciple();
-    let result;
-    try {
-      result = await chainCloudLocal.getCanisterByPrinciple(
-        principle.toString()
-      );
-    } catch (err) {
-      console.log("Network connection failed, error reason:", err);
-      return;
+    let result = this.$store.getters.getCommitCanister();
+    if (!result) {
+      try {
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
+      } catch (err) {
+        console.log("failed to getAllCanister:", err);
+        return;
+      }
+    }
+    for (let i = 0; i < result.length; i++) {
+      this.tableData.push(result[i])
     }
     loadInstance.close();
-    if (result.length == 0 || !result) {
+    if (result.length == 0) {
       this.noData = true;
-      return;
-    }
-    for (let i of result) {
-      this.tableData.push({
-        name: i.canister_id.toString(),
-        canisterId: i.canister_id.toString(),
-        tearm: "*****",
-        lastTime: formatDate(i.create_time, "yyyy-MM-dd hh:mm:ss"),
-      });
     }
   },
   methods: {

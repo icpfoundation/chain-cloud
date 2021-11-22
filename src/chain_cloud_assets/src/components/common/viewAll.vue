@@ -2,24 +2,27 @@
   <div id="viewAll">
     <div class="viewAll_title">viewAll</div>
     <div class="canister_content_top_content">
-      <ul class="canister_content_top_ul">
+      <ul class="canister_content_top_ul" v-if="!noData">
         <li v-for="item in canister" :key="item.id">
-          <p>{{ item.canister_id }}</p>
-          <p>subnet: {{ item.subnet }}</p>
-          <p>{{ item.create_time }}</p>
+          <p>{{ item.canisterId }}</p>
+          <p>subnet: {{ item.subnetName }}</p>
+          <p>{{ item.createtimestamp }}</p>
         </li>
       </ul>
+      <el-empty :image-size="50" description="No data" v-else> </el-empty>
     </div>
   </div>
 </template>
 
 <script>
-import { formatDate, past } from "../../../assets/js/util";
-import { chainCloudLocal } from "../../../assets/js/actor";
+import { formatDate } from "../../../assets/js/util";
+import chainCloudApi from "../../../assets/js/request";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
       canister: [],
+      noData: false,
     };
   },
   created() {
@@ -27,26 +30,30 @@ export default {
     if (!principle) {
       this.$router.replace("/404");
     }
-    this.principle = principle.toString();
+    this.principle = principle;
   },
   async mounted() {
+    let topInstance = Loading.service({
+      target: ".canister_content_top_content",
+    });
+    let result = this.$store.getters.getCommitCanister();
     let principle = this.$store.getters.getPrinciple();
-    let result;
-    try {
-      result = await chainCloudLocal.getCanisterByPrinciple(
-        principle.toString()
-      );
-    } catch (err) {
-      console.log("Network connection failed, error reason:", err);
-      return;
+    if (!result) {
+      try {
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
+      } catch (err) {
+        console.log("failed to getAllCanister:", err);
+        return;
+      }
     }
+
     for (let i = 0; i < result.length; i++) {
-      Object.defineProperty(result[i], "id", {
-        value: i,
-        writable: true,
-      });
       this.canister.push(result[i]);
-      this.canister[i].create_time = past(result[i].create_time);
+    }
+    topInstance.close();
+    if (this.canister.length == 0) {
+      this.noData = true;
     }
   },
 };
