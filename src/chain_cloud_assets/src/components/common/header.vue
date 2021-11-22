@@ -58,10 +58,8 @@
 
 <script>
 import { AuthClient } from "@dfinity/auth-client";
-import { Actor, HttpAgent } from "@dfinity/agent";
-import { DelegationIdentity } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
 import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "headerview",
   data() {
@@ -93,7 +91,6 @@ export default {
     ...mapActions(["setICIdentityConfig", "removeICIdentity"]),
     handleSelect: () => {},
     enter() {
-      // let principal = this.getPrinciple();
       let principle = window.localStorage.getItem("principleString");
       if (principle) {
         let loginview = document.getElementsByClassName("loginviewCol");
@@ -106,24 +103,26 @@ export default {
     },
     doSomething: async function (event) {
       if (event) {
-        // let principle = this.getPrinciple();
         let principle = window.localStorage.getItem("principleString");
         if (principle == "" || principle == undefined || principle == null) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
-            onSuccess: () => {
+            onSuccess: async () => {
               let identity = this.authClient.getIdentity();
+              localStorage.setItem("identity", identity);
               let principle = identity.getPrincipal();
-
               that.principle = principle;
-              that.principleShort = principle.toString().substring(0, 8) + "...";
-
-              that.setICIdentityConfig(principle);
-
-              window.localStorage.setItem("principleString", principle.toString());
-
-              console.log("Logged in with II principle: " + principle.toString());
+              that.principleShort =
+                principle.toString().substring(0, 8) + "...";
+              that.setICIdentityConfig(principle, identity);
+              window.localStorage.setItem(
+                "principleString",
+                principle.toString()
+              );
+              console.log(
+                "Logged in with II principle: " + principle.toString()
+              );
             },
             onError: (str) => {
               console.log("Error while logging with II: " + str);
@@ -147,9 +146,7 @@ export default {
   },
 
   mounted() {
-    // let principle = this.getPrinciple();
     let principle = window.localStorage.getItem("principleString");
-    console.log("principle " + principle);
 
     if (principle) {
       this.principal = principle.toString();
@@ -250,3 +247,5 @@ export default {
   height: 13px;
 }
 </style>
+
+

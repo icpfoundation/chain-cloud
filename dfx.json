@@ -29,7 +29,7 @@
   "dfx": "0.8.1",
   "networks": {
     "local": {
-      "bind": "0.0.0.0:8000",
+      "bind": "127.0.0.1:8000",
       "type": "ephemeral"
     }
   },

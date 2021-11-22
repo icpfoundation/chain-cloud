@@ -151,7 +151,7 @@
         </div>
 
         <div class="select-framework select-gap">
-          <el-select v-model="step3.selectframework" placeholder="Select">
+          <el-select v-model="step3.selectframework" placeholder="Select" @select="selectAction">
             <el-option
               v-for="(item, index) in step3.framworkoption"
               :key="index"
@@ -203,7 +203,7 @@
         <div class="select-file-location select-gap">
           <el-input
             placeholder="Static File Location"
-            v-model="step3.filelocation"
+            v-model="step3.resourcepath"
             size="medium"
           >
           </el-input>
