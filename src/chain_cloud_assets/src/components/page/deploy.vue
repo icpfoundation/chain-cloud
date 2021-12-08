@@ -290,10 +290,16 @@ export default {
       inputSearchRepo: "",
 
       queryAccessTokenUrl: "https://chaincloud.skyipfs.com:9091/public/token",
-      installGitHubAppUrl:
-        "https://github.com/apps/chain-cloud/installations/new",
+
+      installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
+
+      loginGitHubUrl: "https://github.com/login/oauth/authorize",
+
+      refreshTokenUrl: "https://chaincloud.skyipfs.com:9091/public/refresh",
+
       installationAppUrl: "https://api.github.com/user/installations",
       installationRepoUrl: "https://api.github.com/user/installations/",
+
       githubUserInfo: "https://api.github.com/user",
       githubBranchInfo: "https://api.github.com/repos",
 
@@ -335,6 +341,8 @@ export default {
   mounted() {
     //installation_id
     //setup_action
+    this.refreshTokenAction()
+
     let local_token = window.localStorage.getItem("access_token");
     let local_code = window.localStorage.getItem("installation_id");
     if (local_token != null) {
@@ -358,15 +366,86 @@ export default {
     connetgithubaction: function (event) {
       if (event) {
         // start install github app: chain-cloud
-        this.authstate = this.canisterid.concat("-").concat(Date.now());
-        window.open(
-          this.installGitHubAppUrl + "?state=" + this.authstate,
-          "width:800px; height:500px",
-          "blank"
-        );
+        let github_app_name = window.localStorage.getItem("github_app_name");
+        if (github_app_name != null) {
+            logingGithubAction(event)
+        } else {
+          this.authstate = this.canisterid.concat("-").concat(Date.now());
+          window.open(
+            this.installGitHubAppUrl + "?state=" + this.authstate,
+            "width:800px; height:500px",
+            "blank"
+          );
 
-        //start poll task
-        this.repopoll = window.setInterval(this.pollAccessToken, 2000);
+          //start poll task
+          this.repopoll = window.setInterval(this.pollAccessToken, 2000);
+        }
+      }
+    },
+    logingGithubAction: function (event) {
+      if (event) {
+        this.authstate = this.canisterid.concat("-").concat(Date.now());
+
+        this.axios
+          .get(this.loginGitHubUrl, {
+            params: {
+              client_id: this.client_id,
+              redirect_uri: "https://chaincloud.skyipfs.com:9091/public/auth/",
+              state: this.authstate,
+              login: "",
+              allow_signup: true,
+            }
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+          /////
+      }
+    },
+    refreshTokenAction: function () {
+      let that = this;
+
+      let now = Date.now();
+      let utill = window.localStorage.getItem("utill_timing");
+      if (utill == null || now >= utill) { // >=
+
+        //need to refresh access_token
+        let refresh_token = window.localStorage.getItem("refresh_token");
+        if (refresh_token != null) {
+          this.axios
+            .get(this.refreshTokenUrl, {
+              params: {
+                refresh_token: refresh_token,
+                grant_type: "refresh_token",
+                client_id: this.client_id,
+                client_secret: this.client_secret,
+              }
+          })
+          .then(function (response) {
+            console.log(response);
+
+            let access_token = response.data.token.split("&")[0].split("=")[1];
+            let refresh_token = response.data.token.split("&")[2].split("=")[1];
+
+            let utill = Date.now() + 28800 * 1000
+            window.localStorage.setItem("utill_timing", utill)
+
+            window.localStorage.setItem("refresh_token", refresh_token);
+            window.localStorage.setItem("access_token", access_token);
+            that.access_token = access_token;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        } else {
+          console.log("current refresh token is null")
+        }
+      } else {
+        console.log("timing is no need to refresh token")
       }
     },
     pollAccessToken: function () {
@@ -380,8 +459,15 @@ export default {
             },
           })
           .then(function (response) {
+            console.log(response)
             let access_token = response.data.token.split("&")[0].split("=")[1];
             let installation_id = response.data.code;
+
+            let refresh_token = response.data.token.split("&")[2].split("=")[1];
+            window.localStorage.setItem("refresh_token", refresh_token);
+
+            let utill = Date.now() + 28800 * 1000
+            window.localStorage.setItem("utill_timing", utill)
 
             window.localStorage.setItem("access_token", access_token);
             that.access_token = access_token;
@@ -389,8 +475,11 @@ export default {
             window.localStorage.setItem("installation_id", installation_id);
             that.installation_id = installation_id;
 
+            window.localStorage.setItem("github_app_name", that.githubapp)
+
             that.step = 2;
             that.percentage = 50;
+
             clearInterval(that.repopoll);
 
             that.getUserInfo(access_token);
