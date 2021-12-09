@@ -13,6 +13,7 @@ import Mertric from '../components/common/mertric.vue'
 import Detail from '../components/common/detail.vue'
 import CanisterLog from '../components/common/canisterLog.vue'
 import ViewAll from '../components/common/viewAll.vue'
+
 Vue.use(Router);
 
 export default new Router({
@@ -23,7 +24,7 @@ export default new Router({
     {
         path: '/home',
         component: Home,
-        meta: { title: 'Chain-cloud' },
+        meta: { title: 'Chain-Cloud' },
         children: [
             {
                 path: '/i18n',
