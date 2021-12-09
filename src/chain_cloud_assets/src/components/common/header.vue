@@ -81,7 +81,7 @@ export default {
       principleShort: "LOGIN",
       maxTimeToLive: 120,
       authClient: null,
-      activeIndex: "1",
+      activeIndex: "",
     };
   },
   computed: {
@@ -90,7 +90,40 @@ export default {
   components: {},
   methods: {
     ...mapActions(["setICIdentityConfig", "removeICIdentity"]),
-    handleSelect: () => {},
+
+    handleSelect(key, keyPath) {
+      this.activeIndex = key;
+
+      switch (this.activeIndex) {
+        case "1":
+          if (this.$router.currentRoute.path != "/home") {
+            this.$router.push("/home");
+          }
+          break
+
+        case "2":
+          if (this.$router.currentRoute.path != "/doc") {
+            this.$router.push("/doc");
+          }
+          break
+
+        case "3":
+          if (this.$router.currentRoute.path != "/blog") {
+            this.$router.push("/blog");
+          }
+          break
+
+        case "4":
+          if (this.$router.currentRoute.path != "/service") {
+            this.$router.push("/service");
+          }
+          break
+
+        default:
+          break;
+      }
+    },
+
     enter() {
       let principle = window.localStorage.getItem("principleString");
       if (principle) {
@@ -98,10 +131,12 @@ export default {
         loginview[0].setAttribute("class", "loginviewCol exhibit");
       }
     },
+
     leave() {
       let loginview = document.getElementsByClassName("loginviewCol");
       loginview[0].setAttribute("class", "loginviewCol hide");
     },
+
     doSomething: async function (event) {
       if (event) {
         let principle = window.localStorage.getItem("principleString");
@@ -137,6 +172,7 @@ export default {
         }
       }
     },
+
     logoutAction: async function () {
       this.authClient.logout();
       this.removeICIdentity();
@@ -147,8 +183,26 @@ export default {
   },
 
   mounted() {
-    let principle = window.localStorage.getItem("principleString");
 
+    switch (this.$router.currentRoute.path) {
+      case "/home":
+        this.activeIndex = "1"
+        break;
+      case "/doc":
+        this.activeIndex = "2"
+        break;
+      case "/blog":
+        this.activeIndex = "3"
+        break;
+      case "/service":
+        this.activeIndex = "4"
+        break;
+    
+      default:
+        break;
+    }
+
+    let principle = window.localStorage.getItem("principleString");
     if (principle) {
       this.principal = principle.toString();
       this.principleShort = principle.toString().substring(0, 8) + "...";
