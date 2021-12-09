@@ -151,7 +151,7 @@
         </div>
 
         <div class="select-framework select-gap">
-          <el-select v-model="step3.selectframework" placeholder="Select" @select="selectAction">
+          <el-select v-model="step3.selectframework" placeholder="Select" @change="changeFrameworkAction">
             <el-option
               v-for="(item, index) in step3.framworkoption"
               :key="index"
@@ -599,37 +599,51 @@ export default {
           name: "dfx",
           value: "DFX",
           logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nextjs.png",
+          buildcmd: "dfx build | dfx install",
+          resource: "dist",
         },
         {
           name: "nextjs",
           value: "NextJS",
           logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nextjs.png",
+          buildcmd: "npm install | npm run build",
+          resource: ".next/server/pages",
         },
         {
           name: "reactjs",
           value: "Creat-React-App",
           logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/cra.png",
+          buildcmd: "npm install | npm run build",
+          resource: "build",
         },
-        {
-          name: "hugo",
-          value: "Hugo",
-          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/hugo.png",
-        },
+        // {
+        //   name: "hugo",
+        //   value: "Hugo",
+        //   logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/hugo.png",
+        //   buildcmd: "",
+        //   resource: "",
+        // },
         {
           name: "nuxtjs",
           value: "NuxtJS",
           logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nuxtjs.png",
+          buildcmd: "npm install | npm run build",
+          resource: "dist",
         },
-        {
-          name: "jekyll",
-          value: "Jekyll",
-          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/jekyll.png",
-        },
-        {
-          name: "wordpress",
-          value: "Wordpress",
-          logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/wp.png",
-        },
+        // {
+        //   name: "jekyll",
+        //   value: "Jekyll",
+        //   logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/jekyll.png",
+        //   buildcmd: "",
+        //   resource: "",
+        // },
+        // {
+        //   name: "wordpress",
+        //   value: "Wordpress",
+        //   logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/wp.png",
+        //   buildcmd: "",
+        //   resource: "",
+        // },
       ];
     },
     newVariablesAction: function () {
@@ -738,6 +752,16 @@ export default {
         this.step4.sameResultNumber = 0;
       }
     },
+    changeFrameworkAction: function (value) {
+      console.log(value)
+      this.step3.framworkoption.forEach(element => {
+        if (element.name == value) {
+          this.step3.resourcepath = element.resource
+          this.step3.buildtool = element.buildcmd
+          // break
+        }
+      });
+    }
   },
   destroyed() {},
 };
