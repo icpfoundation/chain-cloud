@@ -3,7 +3,7 @@
     <el-row class="nav-row-view">
       <el-col :span="3">
         <div class="logoview" @click.self="gohome">
-          <img src="../../../assets/img/nav_logo.png" alt="" />
+          <img src="../../../assets/img/nav_logo.png" @click.self="gohome" alt="" />
         </div>
       </el-col>
 
