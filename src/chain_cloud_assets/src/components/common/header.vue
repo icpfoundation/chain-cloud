@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <el-row class="nav-row-view">
       <el-col :span="3">
-        <div class="logoview">
+        <div class="logoview" @click.self="gohome">
           <img src="../../../assets/img/nav_logo.png" alt="" />
         </div>
       </el-col>
@@ -171,6 +171,12 @@ export default {
           }
         }
       }
+    },
+
+    gohome() {
+      if (this.$router.currentRoute.path != "/home") {
+            this.$router.push("/home");
+        }
     },
 
     logoutAction: async function () {
