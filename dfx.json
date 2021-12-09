@@ -1,7 +1,7 @@
 {
   "canisters": {
     "chain_cloud": {
-      "build": "cargo build --target wasm32-unknown-unknown --package chain_cloud --release",
+      "build": "./build.sh",
       "candid": "src/chain_cloud/src/chain_cloud.did",
       "wasm": "target/wasm32-unknown-unknown/release/chain_cloud.wasm",
       "type": "custom"
