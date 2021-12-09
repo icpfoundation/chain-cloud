@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%">
-    <el-row>
+    <el-row class="nav-row-view">
       <el-col :span="3">
         <div class="logoview">
           <img src="../../../assets/img/nav_logo.png" alt="" />
@@ -165,6 +165,14 @@ export default {
 </script>
 
 <style scoped>
+.nav-row-view {
+  border-bottom: solid 1px #e6e6e6;
+}
+
+.el-menu-demo {
+  border-bottom: none !important;
+}
+
 .logoview {
   width: 100%;
   min-width: 168px;
