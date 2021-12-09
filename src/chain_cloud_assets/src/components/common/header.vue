@@ -42,11 +42,12 @@
         @mouseleave.native="leave"
       >
         <div class="loginview" @click.self="doSomething">
-          <span> {{ principleShort }} </span>
+          <span @click.self="doSomething"> {{ principleShort }} </span>
           <img
             class="dfxlogo"
             src="../../../assets/img/logo_difinity@2x.png"
             alt="dfinity logo"
+            @click.self="doSomething"
           />
         </div>
         <p @click.stop="doSomething">MORE</p>
