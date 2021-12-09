@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="3">
         <div class="logoview">
-          <img src="../../../assets/img/logo_icon@2x.png" alt="" />
+          <img src="../../../assets/img/nav_logo.png" alt="" />
         </div>
       </el-col>
 
@@ -171,6 +171,8 @@ export default {
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+  padding-left: 20%;
+  padding-top: 10%;
 }
 
 .chooselang {
