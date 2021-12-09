@@ -290,11 +290,8 @@ export default {
       inputSearchRepo: "",
 
       queryAccessTokenUrl: "https://chaincloud.skyipfs.com:9091/public/token",
-
       installGitHubAppUrl: "https://github.com/apps/chain-cloud/installations/new",
-
       loginGitHubUrl: "https://github.com/login/oauth/authorize",
-
       refreshTokenUrl: "https://chaincloud.skyipfs.com:9091/public/refresh",
 
       installationAppUrl: "https://api.github.com/user/installations",
@@ -693,11 +690,16 @@ export default {
         .then(function (response) {
           if (that.step4.sameResultObj == response.data) {
             that.step4.sameResultNumber++;
-            if (that.step4.sameResultNumber >= 10) {
+            if (that.step4.sameResultNumber >= 50) {
               clearInterval(that.step4.logPoll);
             }
           } else {
             that.step4.sameResultObj = response.data;
+          }
+
+          //string.includes(substring)
+          if (response.data.includes("Encounter error while deploy")) {
+            clearInterval(that.step4.logPoll);
           }
 
           let lines = response.data.split("\n");
