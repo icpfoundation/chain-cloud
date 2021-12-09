@@ -14,6 +14,10 @@ import Detail from '../components/common/detail.vue'
 import CanisterLog from '../components/common/canisterLog.vue'
 import ViewAll from '../components/common/viewAll.vue'
 
+import DocView from "../components/page/document.vue"
+import BlogView from "../components/page/blogs.vue"
+import ServiceView from "../components/page/service.vue"
+
 Vue.use(Router);
 
 export default new Router({
@@ -37,6 +41,24 @@ export default new Router({
                 meta: { title: '404' }
             },
         ]
+    },
+    {
+        path: '/doc',
+        name: "DocView",
+        component: DocView,
+        meta: { title: 'Document' }
+    },
+    {
+        path: '/blog',
+        name: "BlogView",
+        component: BlogView,
+        meta: { title: 'Blog' }
+    },
+    {
+        path: '/service',
+        name: "ServiceView",
+        component: ServiceView,
+        meta: { title: 'Service' }
     },
     {
         path: '/deploy',

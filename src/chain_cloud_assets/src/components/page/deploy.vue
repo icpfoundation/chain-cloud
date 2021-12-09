@@ -365,7 +365,22 @@ export default {
         // start install github app: chain-cloud
         let github_app_name = window.localStorage.getItem("github_app_name");
         if (github_app_name != null) {
+          let now = Date.now();
+          let utill = window.localStorage.getItem("utill_timing");
+          if (utill == null || now >= utill) {
             logingGithubAction(event)
+          } else {
+            let that = this
+            that.step = 2;
+            that.percentage = 50;
+
+            let local_access_token = window.localStorage.getItem("access_token");
+            let local_installation_id = window.localStorage.getItem("installation_id");
+
+            that.getUserInfo(local_access_token);
+            that.installappinfo(local_access_token);
+            that.getRepoInfo(local_access_token, local_installation_id); 
+          }
         } else {
           this.authstate = this.canisterid.concat("-").concat(Date.now());
           window.open(
@@ -408,8 +423,7 @@ export default {
 
       let now = Date.now();
       let utill = window.localStorage.getItem("utill_timing");
-      if (utill == null || now >= utill) { // >=
-
+      if (utill == null || now >= utill) {
         //need to refresh access_token
         let refresh_token = window.localStorage.getItem("refresh_token");
         if (refresh_token != null) {
