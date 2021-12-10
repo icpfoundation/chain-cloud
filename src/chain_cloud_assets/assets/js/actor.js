@@ -6,7 +6,7 @@ var createActorLocal = createActor(canisterId, {
     host: "http://localhost:8000",
   },
 });
-var createActorMain = createActor(canisterId, {
+var createActorMain = createActor("bedhi-xqaaa-aaaaj-aadja-cai", {
   agentOptions: {
     host: "https://ic0.app",
   },
