@@ -49,7 +49,7 @@ import {
 import { PieChart } from "echarts/charts";
 import { LabelLayout } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
-import { chainCloudLocal } from "../../../assets/js/actor";
+import { chainCloud } from "../../../assets/js/actor";
 import chainCloudApi from "../../../assets/js/request";
 import { getWalletCycle } from "../../../assets/js/agent";
 echarts.use([
@@ -64,6 +64,7 @@ export default {
   data() {
     return {
       service: [],
+
       canister: {
         canisterId: "",
         status: "",
@@ -126,7 +127,6 @@ export default {
   },
   async mounted() {
     let principle = this.$store.getters.getPrinciple();
-    // await generateTestData(chainCloudLocal,principle)
     var params = this.$route.query;
     let result = this.$store.getters.getCommitCanister();
 
@@ -151,7 +151,7 @@ export default {
         break;
       }
     }
-    let event = await chainCloudLocal.getCanisterEventByTime(
+    let event = await chainCloud.getCanisterEventByTime(
       params.canisterId,
       new Date().getTime() - 24 * 3600 * 1000
     );
@@ -197,6 +197,10 @@ export default {
     try {
       let identity = localStorage.getItem("identity");
       let balance = await getWalletCycle(identity, this.canister.controller);
+      if (balance.constructor == TypeError || balance.constructor == Error) {
+        return
+      }
+      this.canister.balance = balance;
     } catch (err) {
       console.log("get balance failed", err);
     }

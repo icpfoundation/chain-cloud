@@ -56,7 +56,7 @@ import {
 import { LineChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
-import { chainCloudLocal } from "../../../assets/js/actor";
+import { chainCloudLocal,chainCloud } from "../../../assets/js/actor";
 import chainCloudApi from "../../../assets/js/request";
 import { Loading } from "element-ui";
 echarts.use([
@@ -473,7 +473,7 @@ export default {
       let time = new Date().getTime();
       let res = [];
       try {
-        res = await chainCloudLocal.getCanisterEventByTime(
+        res = await chainCloud.getCanisterEventByTime(
           canisterId,
           time - 12 * 3600 * 1000
         );

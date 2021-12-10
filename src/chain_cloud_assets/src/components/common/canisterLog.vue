@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { chainCloudLocal } from "../../../assets/js/actor";
+import { chainCloudLocal,chainCloud } from "../../../assets/js/actor";
 import { formatDate, past } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 export default {
@@ -48,7 +48,7 @@ export default {
     let principle = this.$store.getters.getPrinciple();
     let result = [];
     try {
-      result = await chainCloudLocal.getCanisterByPrinciple(principle);
+      result = await chainCloud.getCanisterByPrinciple(principle);
     } catch (err) {
       console.log("Network connection failed, error reason:", err);
       return;
