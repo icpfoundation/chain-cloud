@@ -52,7 +52,6 @@
 
 <script>
 import chainCloudApi from "../../../assets/js/request";
-import { formatDate, past } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 export default {
   name: "hostesList",

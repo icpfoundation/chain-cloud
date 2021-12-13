@@ -63,7 +63,6 @@
   </div>
 </template>
 <script>
-import { formatDate } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 import chainCloudApi from "../../../assets/js/request";
 export default {

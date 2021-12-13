@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { formatDate } from "../../../assets/js/util";
 import chainCloudApi from "../../../assets/js/request";
 import { Loading } from "element-ui";
 export default {
