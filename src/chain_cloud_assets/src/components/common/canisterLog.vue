@@ -26,7 +26,7 @@
 
 <script>
 import { chainCloudLocal,chainCloud } from "../../../assets/js/actor";
-import { formatDate, past } from "../../../assets/js/util";
+import { formatDate } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 export default {
   data() {

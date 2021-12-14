@@ -56,7 +56,7 @@ import {
 import { LineChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
-import { chainCloudLocal,chainCloud } from "../../../assets/js/actor";
+import { chainCloud } from "../../../assets/js/actor";
 import chainCloudApi from "../../../assets/js/request";
 import { Loading } from "element-ui";
 echarts.use([
