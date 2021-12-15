@@ -362,6 +362,8 @@ export default {
   methods: {
     connetgithubaction: function (event) {
       if (event) {
+        this.refreshTokenAction()
+
         // start install github app: chain-cloud
         let github_app_name = window.localStorage.getItem("github_app_name");
         if (github_app_name != null) {
@@ -595,9 +597,6 @@ export default {
       this.percentage = 75;
       this.step3.selectedRepo = this.step2.repos[index];
 
-      console.log("select repo");
-      console.log(this.step3.selectedRepo);
-
       this.getBranchInfo(
         this.access_token,
         this.step3.selectedRepo.owner.login,
@@ -610,7 +609,7 @@ export default {
           name: "dfx",
           value: "DFX",
           logo: "https://storage.googleapis.com/terminal-assets/images/frameworks/nextjs.png",
-          buildcmd: "dfx build | dfx install",
+          buildcmd: "",
           resource: "dist",
         },
         {
@@ -682,6 +681,7 @@ export default {
             canistername: this.step3.canistername,
             resourcepath: this.step3.resourcepath,
             principle: principle,
+            buildcmd: this.step3.buildtool,
           },
         })
         .then(function (response) {
