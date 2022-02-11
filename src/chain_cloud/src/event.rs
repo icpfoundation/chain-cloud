@@ -11,7 +11,7 @@ type CanisterEvent = HashMap<Principal, Vec<usize>>;
 type CallerEvent = HashMap<Principal, Vec<usize>>;
 use crate::operation;
 pub async fn create_event(metadata: metadata::Metadata) -> Result<(), String> {
-    if metadata.memo.len() > 30 {
+    if metadata.memo.len() > 150 {
         return Err("memo too long".to_string());
     }
     let position: usize;

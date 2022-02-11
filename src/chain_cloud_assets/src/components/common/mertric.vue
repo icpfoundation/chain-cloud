@@ -56,7 +56,7 @@ import {
 import { LineChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
-import { chainCloudLocal } from "../../../assets/js/actor";
+import { chainCloud } from "../../../assets/js/actor";
 import chainCloudApi from "../../../assets/js/request";
 import { Loading } from "element-ui";
 echarts.use([
@@ -462,7 +462,7 @@ export default {
         return;
       }
     }
-    Instance.close()
+    Instance.close();
     this.canister = result;
   },
   methods: {
@@ -470,19 +470,31 @@ export default {
       this.showCharts(canisterid);
     },
     async showCharts(canisterId) {
-      let time = new Date().getTime();
+      this.cpuProfileOption.series[0].data = this.loadAvgOption.series[0].data =
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      this.loadAvgOption.series[1].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      this.loadAvgOption.series[2].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      this.networkBandwithOption.series[0].data = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
+      this.memoryProfileOption.series[0].data = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
+      this.memoryProfileOption.series[1].data = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
+      let time = BigInt(new Date().getTime()) * BigInt(1000000);
+
+      time = time - BigInt(12 * 3600 * 1000000);
       let res = [];
       try {
-        res = await chainCloudLocal.getCanisterEventByTime(
-          canisterId,
-          time - 12 * 3600 * 1000
-        );
+        res = await chainCloud.getCanisterEventByTime(canisterId, 0);
       } catch (err) {
         console.log("Network connection failed, error reason:", err);
       }
 
       for (let i of res) {
-        let time = new Date(Number(i.transaction_time));
+        let time = new Date(Number(i.transaction_time / BigInt(1000000)));
         let hours = time.getUTCHours();
         if (hours > 11) {
           continue;

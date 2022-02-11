@@ -25,8 +25,9 @@
 </template>
 
 <script>
-import { chainCloudLocal } from "../../../assets/js/actor";
-import { formatDate, past } from "../../../assets/js/util";
+import { chainCloudLocal, chainCloud } from "../../../assets/js/actor";
+import chainCloudApi from "../../../assets/js/request";
+import { formatDate } from "../../../assets/js/util";
 import { Loading } from "element-ui";
 export default {
   data() {
@@ -46,26 +47,29 @@ export default {
       target: ".canister_log_content",
     });
     let principle = this.$store.getters.getPrinciple();
-    let result = [];
-    try {
-      result = await chainCloudLocal.getCanisterByPrinciple(principle);
-    } catch (err) {
-      console.log("Network connection failed, error reason:", err);
-      return;
+    let result = this.$store.getters.getCommitCanister();
+    if (!result) {
+      try {
+        result = await chainCloudApi.getAllCanister(principle);
+        this.$store.dispatch("setCommitCanisterConfig", result);
+      } catch (err) {
+        console.log("failed to getAllCanister:", err);
+        return;
+      }
     }
     loadInstance.close();
-
     if (result.length == 0) {
       this.noData = true;
     }
+
     for (let i of result) {
-      chainCloudLocal
-        .getCanisterLastEvent(i.canister_id.toString(), 5)
+      chainCloud
+        .getCanisterLastEvent(i.canisterId.toString(), 5)
         .then((res) => {
           res.forEach((v, k) => {
             this.tableData.push({
               transaction_time: formatDate(
-                v.transaction_time,
+                v.transaction_time  / BigInt(1000000),
                 "yyyy-MM-dd hh:mm:ss"
               ),
               canister: v.canister.toString(),
