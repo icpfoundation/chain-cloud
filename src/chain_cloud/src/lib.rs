@@ -14,12 +14,13 @@ use types::*;
 fn init() {
     authority::set_owner(api::caller());
 }
-/// Add transaction
+/// Generate a canister transaction event
 #[update(name = "createEvent")]
 async fn create_event(metadata: metadata::Metadata) -> Result<(), String> {
     event::create_event(metadata).await
 }
 
+// Query canisters event
 #[query(name = "getCanisterEvent")]
 async fn get_canister_event(
     canister: Principal,
@@ -28,7 +29,7 @@ async fn get_canister_event(
 ) -> Vec<metadata::Metadata> {
     event::get_canister_event(canister, offset, limit).await
 }
-
+// Query canisters event information of ordinary account calls
 #[query(name = "getCallerEvent")]
 async fn get_caller_event(caller: Principal, offset: Nat, limit: Nat) -> Vec<metadata::Metadata> {
     event::get_caller_event(caller, offset, limit).await
@@ -49,6 +50,8 @@ async fn get_canister_list() -> Vec<Principal> {
     event::get_canister_list().await
 }
 
+// Get canisterstatus information
+// including canisters, remaining cycles and modules_hash、controller、memory_size、status
 #[update(name = "getCanisterStatus")]
 async fn get_canister_status(
     canister: Principal,
@@ -67,6 +70,7 @@ async fn commit_canister(canister: CommitCanister) -> () {
     return operation::commit_canister(canister).await;
 }
 
+// Query the list of all canisters under the account
 #[query(name = "getCanisterByPrinciple")]
 async fn get_canister_by_principle(principle: Principal) -> Vec<CommitCanister> {
     return operation::get_canister_by_principle(principle).await;
