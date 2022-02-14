@@ -74,7 +74,7 @@ export default {
 .outview {
   border-top: lightgrey solid 1px;
   padding-top: 50px;
-  /* padding-left: 10%; */
+  padding-left: 2%;
 }
 
 .footlogo {

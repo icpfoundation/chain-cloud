@@ -793,7 +793,7 @@ export default {
 }
 
 .qd-title {
-  margin-left: 260px;
+  margin-left: 2%;
   padding-top: 40px;
   width: 382px;
   height: 62px;
@@ -833,7 +833,7 @@ export default {
 
 <style scoped>
 .actionview {
-  width: 100%;
+  width: 95%;
   margin: 35px auto;
 }
 
