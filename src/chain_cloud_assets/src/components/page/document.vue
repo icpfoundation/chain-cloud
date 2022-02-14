@@ -2,7 +2,9 @@
   <div>
     <headerview></headerview>
 
-    <h3>Coming soon</h3>
+    <div class="docview">
+      <p><a href="https://storageapi.fleek.co/lyswifter-team-bucket/chain-cloud/Chain-cloud production design doc.pdf">Chain-Cloud production design documnet</a></p>
+    </div>
 
     <footerview></footerview>
   </div>
@@ -28,9 +30,10 @@ export default {
 </script>
 
 <style scoped>
-h3 {
-    /* margin: 50px auto; */
-    padding-left: 10%;
-    width: 500px;
+.docview {
+  margin: 50px auto;
+  width: 85%;
+  font-family: "Work Sans", "Roboto", "Nunito Sans", Helvetica, Arial, sans-serif;
+  font-weight: normal;
 }
 </style>
