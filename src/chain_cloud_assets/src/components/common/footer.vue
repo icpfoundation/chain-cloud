@@ -7,7 +7,7 @@
         </div>
       </el-col>
 
-      <el-col :span="19">
+      <el-col :span="17">
         <div class="footmidview"></div>
       </el-col>
 
@@ -74,7 +74,7 @@ export default {
 .outview {
   border-top: lightgrey solid 1px;
   padding-top: 50px;
-  padding-left: 10%;
+  /* padding-left: 10%; */
 }
 
 .footlogo {
