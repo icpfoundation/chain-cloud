@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%">
     <el-row class="nav-row-view">
-      <el-col :span="3">
+      <el-col :span="4">
         <div class="logoview" @click.self="gohome">
           <img src="../../../assets/img/nav_logo.png" @click.self="gohome" alt="" />
         </div>

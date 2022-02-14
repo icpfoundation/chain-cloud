@@ -13,23 +13,23 @@ type Result = variant {
       Err : text;
 };
 
-
 type CanisterStatus = variant{
     running:null;
     stopping:null;
     stopped:null;
 };
+
 type CallType = variant {
     Local:null;
     Remote:null;
 };
+
 type CanisterSettings = record {
    controller: opt  principal;
     compute_allocation: opt nat;
     memory_allocation: opt nat;
     freezing_threshold: opt nat;
 };
-
 
 type  CanisterStatusFormat = record {
     status: CanisterStatus;
@@ -40,12 +40,10 @@ type  CanisterStatusFormat = record {
     cycles: nat;
 };
 
-
 type StatusResult =  variant{
     Ok:CanisterStatusFormat;
     Err:text;
 };
-
 
 type createCanisterResult = variant {
     Ok:principal;
@@ -56,7 +54,6 @@ type updateResult = variant {
     Ok: null;
     Err:text;
 };
-
 
 type CanisterType = variant {
     wallet:null;
@@ -81,7 +78,6 @@ type GetCanisterByIdResult = variant {
     Ok:CommitCanister;
     Err:text;
 };
-
 
 service :{
     "createEvent": (Metadata) -> (Result);

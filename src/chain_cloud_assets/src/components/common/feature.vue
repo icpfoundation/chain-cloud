@@ -2,7 +2,7 @@
   <div class="featureview">
     <div class="titleview">Why Chain Cloud ?</div>
     <el-row :gutter="40" class="feature-row">
-      <el-col :span="6" :offset="3">
+      <el-col :span="7" :offset="2">
         <div id="lefttop" class="b-left below">
           <img src="../../../assets/img/why_pic01_hover@2x.png" alt="" />
           <div class="desctitle">
@@ -18,7 +18,7 @@
         </div>
       </el-col>
 
-      <el-col :span="6">
+      <el-col :span="7">
         <div class="b-mid below notfirst">
           <img src="../../../assets/img/why_pic02_nor@2x.png" alt="" />
           <div class="desctitle">
@@ -36,7 +36,7 @@
         </div>
       </el-col>
 
-      <el-col :span="6">
+      <el-col :span="7">
         <div class="b-right below notfirst">
           <img src="../../../assets/img/why_pic03_nor@2x.png" alt="" />
           <div class="desctitle">
@@ -55,7 +55,7 @@
     <div class="footstartview">
       <el-row>
         <el-col :span="2" :offset="3">
-          <div class="qs-title">Quick Start Now！</div>
+          <div class="qs-title">Quick Start Now</div>
         </el-col>
 
         <el-col :span="6">
@@ -95,7 +95,7 @@ export default {
 }
 
 .titleview {
-  padding-left: 290px;
+  padding-left: 10%;
   padding-top: 30px;
   width: 305px;
   height: 45px;
@@ -123,7 +123,7 @@ export default {
 }
 
 #lefttop .desctitle {
-  font-size: 18px;
+  font-size: 16px;
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #ffffff;

@@ -805,7 +805,7 @@ export default {
 }
 
 .qd-outer {
-  width: 1440px;
+  width: 100%;
   height: 110px;
   margin: 0px auto;
   background: #ffffff;
@@ -833,7 +833,7 @@ export default {
 
 <style scoped>
 .actionview {
-  width: 1440px;
+  width: 100%;
   margin: 35px auto;
 }
 
@@ -866,12 +866,12 @@ export default {
 
 <style scoped>
 .git-outer {
-  width: 1440px;
+  width: 100%;
   margin: 10px auto;
 }
 
 .git-title {
-  width: 1440px;
+  width: 100%;
   height: 112px;
   background: linear-gradient(153deg, #3e4554 0%, #252b3a 100%);
   border-radius: 8px 8px 0px 0px;
@@ -909,7 +909,7 @@ export default {
 }
 
 .git-repo {
-  width: 1440px;
+  width: 100%;
 }
 
 .git-repo .each-repo {
@@ -937,7 +937,7 @@ export default {
 }
 
 .git-more {
-  width: 1440px;
+  width: 100%;
   height: 68px;
   line-height: 250%;
   background: #f8f8f8;
