@@ -6,9 +6,11 @@
           <img src="../../../assets/img/nav_logo@2x.png" alt="" />
         </div>
       </el-col>
+
       <el-col :span="19">
         <div class="footmidview"></div>
       </el-col>
+
       <el-col :span="2">
         <div class="aboutview">
           <div class="about">About us</div>
@@ -72,7 +74,7 @@ export default {
 .outview {
   border-top: lightgrey solid 1px;
   padding-top: 50px;
-  padding-left: 240px;
+  padding-left: 10%;
 }
 
 .footlogo {

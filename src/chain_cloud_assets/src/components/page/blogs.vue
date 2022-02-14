@@ -29,7 +29,8 @@ export default {
 
 <style scoped>
 h3 {
-    margin: 50px auto;
+    /* margin: 50px auto; */
+    padding-left: 10%;
     width: 500px;
 }
 </style>

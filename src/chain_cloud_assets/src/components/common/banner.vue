@@ -64,12 +64,12 @@ export default {
   width: 243px;
   height: 32px;
   padding-top: 225px;
-  padding-left: 280px;
+  padding-left: 10%;
   margin: unset;
 }
 
 .titleview {
-  padding-left: 280px;
+  padding-left: 10%;
   text-align: left;
   margin-top: 28px;
   width: 983px;
@@ -82,7 +82,7 @@ export default {
 }
 
 .subtitleview {
-  padding-left: 280px;
+  padding-left: 10%;
   text-align: left;
   margin-top: 24px;
   width: 751px;
@@ -95,7 +95,7 @@ export default {
 }
 
 .startbtn {
-  margin-left: 280px;
+  margin-left: 10%;
   margin-top: 63px;
   width: 161px;
   height: 54px;
