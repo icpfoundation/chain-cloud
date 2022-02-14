@@ -711,7 +711,6 @@ export default {
             that.step4.sameResultObj = response.data;
           }
 
-          //string.includes(substring)
           if (response.data.includes("Encounter error while deploy")) {
             clearInterval(that.step4.logPoll);
           }
@@ -719,6 +718,10 @@ export default {
           let lines = response.data.split("\n");
           for (let i = 0; i < lines.length - 1; i++) {
             const element = lines[i];
+
+            if (element == "Encounter error while deploy") {
+              continue
+            }
 
             let isin = false;
             for (let j = 0; j < that.step4.alreadyArr.length; j++) {
@@ -793,7 +796,7 @@ export default {
 }
 
 .qd-title {
-  margin-left: 260px;
+  margin-left: 2%;
   padding-top: 40px;
   width: 382px;
   height: 62px;
@@ -833,7 +836,7 @@ export default {
 
 <style scoped>
 .actionview {
-  width: 100%;
+  width: 95%;
   margin: 35px auto;
 }
 

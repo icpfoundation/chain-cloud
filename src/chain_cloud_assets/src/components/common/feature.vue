@@ -54,7 +54,7 @@
 
     <div class="footstartview">
       <el-row>
-        <el-col :span="2" :offset="3">
+        <el-col :span="2">
           <div class="qs-title">Quick Start Now</div>
         </el-col>
 
