@@ -22,8 +22,7 @@
         <div class="b-mid below notfirst">
           <img src="../../../assets/img/why_pic02_nor@2x.png" alt="" />
           <div class="desctitle">
-            Monitor running status of canisters, like CPU load, memory usage and
-            network bandwidth
+            Monitor status of canisters: CPU load,memory usage,network bandwidth
           </div>
         </div>
 

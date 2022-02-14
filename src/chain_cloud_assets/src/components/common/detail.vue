@@ -6,15 +6,15 @@
     <div class="detail_content">
       <div class="detail_content_left">
         <label class="detail_content_left_title">Basic Infomation</label>
-        <p><label>host Name: </label> not found</p>
-        <p><label>host Location: </label> not found</p>
+        <p><label>host Name: </label> chaincloud </p>
+        <p><label>host Location: </label> -- </p>
         <p><label>Subnet Name: </label> {{ canister.subnet }}</p>
         <p><label>Subnet Type: </label>{{ canister.subnet }}</p>
         <p><label>Canistr ID: </label>{{ canister.canisterId }}</p>
         <p><label>Canister Name: </label> {{ canister.name }}</p>
         <p><label>Cycle Wallet ID: </label>{{ canister.controller }}</p>
         <p><label>Owner: </label> {{ canister.owner }}</p>
-        <p><label>Versions: </label> not found</p>
+        <p><label>Versions: </label> 1.0.0 </p>
       </div>
       <div class="detail_content_right">
         <div class="detail_content_right_title">
@@ -198,7 +198,7 @@ export default {
       let identity = localStorage.getItem("identity");
       let balance = await getWalletCycle(identity, this.canister.controller);
       if (balance.constructor == TypeError || balance.constructor == Error) {
-        return
+        return;
       }
       this.canister.balance = balance;
     } catch (err) {
