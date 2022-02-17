@@ -1,7 +1,8 @@
-type Metadata = record {
+type Log = record {
    canister: principal;
    caller: principal;
    cycle: nat;
+   cycle_accept:nat;
    method_name: text;
    memo:text;
    transaction_time: nat;
@@ -80,16 +81,17 @@ type GetCanisterByIdResult = variant {
 };
 
 service :{
-    "createEvent": (Metadata) -> (Result);
-    "getCanisterEvent":(principal,nat,nat) ->(vec Metadata) query;
-    "getCallerEvent":(principal,nat,nat) ->(vec Metadata) query;
-    "getLastEvent":(nat) -> (vec Metadata) query;
-    "getCanisterLastEvent":(principal,nat) -> (vec Metadata) query;
+    "createEvent": (Log) -> (Result);
+    "getCanisterEvent":(principal,nat,nat) ->(vec Log) query;
+    "getCallerEvent":(principal,nat,nat) ->(vec Log) query;
+    "getLastEvent":(nat) -> (vec Log) query;
+    "getCanisterLastEvent":(principal,nat) -> (vec Log) query;
     "getCanisterList":() -> (vec principal) query;
     "getCanisterStatus":(principal,CallType) -> (StatusResult);
     "getLocalCanisterList":() -> (vec CanisterStatusFormat) query;
     "commitCanister":(CommitCanister) -> ();
     "getCanisterByPrinciple":(principal) -> (vec CommitCanister) query;
     "getCanisterById":(principal,principal) -> (GetCanisterByIdResult) query;
-    "getCanisterEventByTime":(principal,nat) -> (vec Metadata)query;
+    "getCanisterEventByTime":(principal,nat) -> (vec Log)query;
+    "is_canister":(principal)->() query;
 }

@@ -1,4 +1,4 @@
-use chain_cloud_util::metadata;
+use chain_cloud_util::types::Log;
 use ic_cdk::export::candid::CandidType;
 use ic_cdk::export::candid::{Deserialize, Nat};
 use ic_cdk::export::Principal;
@@ -114,7 +114,7 @@ pub struct Snapshot<T> {
 pub struct Db {
     pub canisterEvent: Vec<Snapshot<Vec<usize>>>,
     pub callerEvent: Vec<Snapshot<Vec<usize>>>,
-    pub event: Vec<metadata::Metadata>,
+    pub event: Vec<Log>,
     pub commitCanister:Vec<Vec<CommitCanister>>,
 }
 
@@ -141,4 +141,9 @@ pub struct CommitCanister{
     pub create_time:Nat,
     pub subnet:String,
     pub canister_type:CanisterType,
+}
+#[derive(CandidType, Deserialize,Clone)]
+pub struct ChainCloudCanister{
+    pub id:Principal,
+    pub data_size:u64,
 }

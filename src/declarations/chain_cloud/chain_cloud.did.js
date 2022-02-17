@@ -21,13 +21,14 @@ export const idlFactory = ({ IDL }) => {
     'module_hash' : IDL.Text,
     'canister_type' : CanisterType,
   });
-  const Metadata = IDL.Record({
+  const Log = IDL.Record({
     'transaction_time' : IDL.Nat,
     'memo' : IDL.Text,
     'cycle' : IDL.Nat,
     'method_name' : IDL.Text,
     'canister' : IDL.Principal,
     'caller' : IDL.Principal,
+    'cycle_accept' : IDL.Nat,
     'stable_size' : IDL.Nat,
   });
   const Result = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text });
@@ -56,10 +57,10 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'commitCanister' : IDL.Func([CommitCanister], [], []),
-    'createEvent' : IDL.Func([Metadata], [Result], []),
+    'createEvent' : IDL.Func([Log], [Result], []),
     'getCallerEvent' : IDL.Func(
         [IDL.Principal, IDL.Nat, IDL.Nat],
-        [IDL.Vec(Metadata)],
+        [IDL.Vec(Log)],
         ['query'],
       ),
     'getCanisterById' : IDL.Func(
@@ -74,17 +75,17 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getCanisterEvent' : IDL.Func(
         [IDL.Principal, IDL.Nat, IDL.Nat],
-        [IDL.Vec(Metadata)],
+        [IDL.Vec(Log)],
         ['query'],
       ),
     'getCanisterEventByTime' : IDL.Func(
         [IDL.Principal, IDL.Nat],
-        [IDL.Vec(Metadata)],
+        [IDL.Vec(Log)],
         ['query'],
       ),
     'getCanisterLastEvent' : IDL.Func(
         [IDL.Principal, IDL.Nat],
-        [IDL.Vec(Metadata)],
+        [IDL.Vec(Log)],
         ['query'],
       ),
     'getCanisterList' : IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),
@@ -93,12 +94,13 @@ export const idlFactory = ({ IDL }) => {
         [StatusResult],
         [],
       ),
-    'getLastEvent' : IDL.Func([IDL.Nat], [IDL.Vec(Metadata)], ['query']),
+    'getLastEvent' : IDL.Func([IDL.Nat], [IDL.Vec(Log)], ['query']),
     'getLocalCanisterList' : IDL.Func(
         [],
         [IDL.Vec(CanisterStatusFormat)],
         ['query'],
       ),
+    'is_canister' : IDL.Func([IDL.Principal], [], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };

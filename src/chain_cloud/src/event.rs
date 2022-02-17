@@ -1,85 +1,341 @@
-use crate::types::{CommitCanister, Db, Snapshot};
-use chain_cloud_util::{metadata, util};
+use crate::install;
+use crate::types::{ChainCloudCanister, CommitCanister, Db, Snapshot};
+use chain_cloud_util::{types::Log, util};
+use ic_cdk::api::call::{CallResult, RejectionCode};
 use ic_cdk::export::candid::Nat;
 use ic_cdk::export::Principal;
-use ic_cdk::print;
-use ic_cdk::storage;
+use ic_cdk::{api, print, storage};
 use std::collections::HashMap;
-use ic_cdk::api::call::{RejectionCode};
-static mut Event: Vec<metadata::Metadata> = vec![];
+pub static CREATETRANSACTION: &str = "createEvent";
+static mut Event: Vec<Log> = vec![];
 type CanisterEvent = HashMap<Principal, Vec<usize>>;
 type CallerEvent = HashMap<Principal, Vec<usize>>;
+static mut CanisterList: Vec<ChainCloudCanister> = vec![];
+
 use crate::operation;
-pub async fn create_event(metadata: metadata::Metadata) -> Result<(), String> {
-    if metadata.memo.len() > 150 {
-        return Err("memo too long".to_string());
+
+#[derive(Default, Clone)]
+pub struct EventLog {
+    log: Vec<Log>,
+    canister_list: Vec<ChainCloudCanister>,
+    canister_event: HashMap<Principal, Vec<usize>>,
+}
+impl EventLog {
+    pub fn new() -> Self {
+        Self {
+            log: vec![],
+            canister_list: vec![],
+            canister_event: HashMap::new(),
+        }
     }
-    let position: usize;
-    unsafe {
-        Event.push(metadata.clone());
-        position = Event.len() - 1;
-    }
-    let canister_event = storage::get_mut::<CanisterEvent>();
-    if !canister_event.contains_key(&metadata.canister) {
-        canister_event.insert(metadata.canister.clone(), vec![position]);
-    }
-    let caller_event = storage::get_mut::<CallerEvent>();
-    if !caller_event.contains_key(&metadata.caller) {
-        caller_event.insert(metadata.caller.clone(), vec![position]);
-        return Ok(());
+    pub async fn create_event(&mut self, new_log: Log) -> Result<(), String> {
+        if new_log.memo.len() > 150 {
+            return Err("memo too long".to_string());
+        }
+        let position: usize;
+        unsafe {
+            let log_size = self.log.len();
+            if log_size > 1 {
+                if self.canister_list.len() == 0
+                    || self.canister_list[self.canister_list.len() - 1].data_size >= 100000
+                {
+                    let cycle: Nat = "4000000000000".parse().unwrap();
+                    let new_chain_cloud =
+                        install::create_canister(api::id(), 0.into(), cycle).await;
+                    format!("{:?}", new_chain_cloud);
+                    match new_chain_cloud {
+                        Ok(value) => {
+                            ic_cdk::print(value.to_string());
+                            self.canister_list.push(ChainCloudCanister {
+                                id: value,
+                                data_size: 0,
+                            });
+                            let res: CallResult<()> =
+                                api::call::call(value, CREATETRANSACTION, (&new_log,)).await;
+                            print(format!("res {:?}", res));
+                            return Ok(());
+                        }
+                        Err(err) => {
+                            ic_cdk::print(err.to_string());
+                            return Err(err.to_string());
+                        }
+                    }
+                } else {
+                    let size = self.canister_list.len();
+                    let chain_cloud_canister = &self.canister_list[size].id;
+                    let res: CallResult<()> = api::call::call(
+                        chain_cloud_canister.clone(),
+                        CREATETRANSACTION,
+                        (&new_log,),
+                    )
+                    .await;
+                    print(format!("res {:?}", res));
+                    self.canister_list[size].data_size += 1;
+                    return Ok(());
+                }
+            }
+            self.log.push(new_log.clone());
+            position = self.log.len() - 1;
+        }
+
+        if !self.canister_event.contains_key(&new_log.canister) {
+            self.canister_event
+                .insert(new_log.canister.clone(), vec![position]);
+        }
+        // let caller_event = storage::get_mut::<CallerEvent>();
+        // if !self.caller_event.contains_key(&new_log.caller) {
+        //     caller_event.insert(new_log.caller.clone(), vec![position]);
+        //     return Ok(());
+        // }
+
+        self.canister_event
+            .get_mut(&new_log.canister)
+            .unwrap()
+            .push(position);
+        Ok(())
     }
 
-    canister_event
-        .get_mut(&metadata.canister)
-        .unwrap()
-        .push(position);
-    caller_event
-        .get_mut(&metadata.caller)
-        .unwrap()
-        .push(position);
+    pub async fn get_last_event(&self, limit: Nat) -> Vec<Log> {
+        let limit = util::nat_to_u64(limit).unwrap() as usize;
+        unsafe {
+            let len = self.log.len();
+            if len == 0 {
+                return vec![];
+            }
+            if len <= limit {
+                return self.log.to_vec();
+            }
+            return self.log[len - limit - 1..len].to_vec();
+        }
+    }
+
+    pub async fn get_canister_last_event(&self, canister: Principal, limit: Nat) -> Vec<Log> {
+        let limit = util::nat_to_u64(limit).unwrap() as usize;
+        let mut result: Vec<Log> = vec![];
+        if !self.canister_event.contains_key(&canister) {
+            return result;
+        }
+        let event = self.canister_event.get(&canister).unwrap();
+        let len = event.len();
+        unsafe {
+            if len <= limit {
+                for i in event.iter() {
+                    result.push(self.log[*i].clone())
+                }
+                return result;
+            }
+            for i in event[len - limit - 1..len].iter() {
+                result.push(self.log[*i].clone())
+            }
+            return result;
+        }
+    }
+
+    pub async fn get_canister_list(&self) -> Vec<Principal> {
+        let mut res: Vec<Principal> = vec![];
+        for keys in self.canister_event.keys() {
+            res.push(keys.clone());
+        }
+        return res;
+    }
+
+    pub async fn get_canister_event_by_time(&self,canister: Principal, start_time: Nat) -> Vec<Log> {
+        let mut res: Vec<Log> = vec![];
+       // let canister_event = storage::get::<CanisterEvent>();
+        if !self.canister_event.contains_key(&canister) {
+            return res;
+        }
+        let bucket = self.canister_event.get(&canister).unwrap();
+        unsafe {
+            let mut i = bucket.len() - 1;
+            loop {
+                if self.log[bucket[i]].transaction_time >= start_time {
+                    res.push(self.log[bucket[i]].clone())
+                } else {
+                    return res;
+                }
+                if i == 0 {
+                    return res;
+                }
+                i = i - 1;
+            }
+        }
+    }
+
+
+    pub async fn get_canister_event(&self,canister: Principal, offset: Nat, limit: Nat) -> Vec<Log> {
+        let offset = util::nat_to_u64(offset).unwrap() as usize;
+        let mut limit = util::nat_to_u64(limit).unwrap() as usize;
+        if limit > 50 {
+            limit = 50;
+        }
+      //  let canister_event = storage::get::<CanisterEvent>();
+        if !self.canister_event.contains_key(&canister) {
+            return vec![];
+        }
+        let blucket = self.canister_event.get(&canister).unwrap();
+        if offset > blucket.len() {
+            return vec![];
+        }
+        let mut container: Vec<Log> = vec![];
+        unsafe {
+            if offset + limit >= blucket.len() {
+                for i in blucket[offset..blucket.len()].iter() {
+                    container.push(self.log[*i].clone());
+                }
+                return container;
+            }
+    
+            for i in blucket[offset..offset + limit].iter() {
+                container.push(self.log[*i].clone());
+            }
+            return container;
+        }
+    }
+
+
+    pub fn pre_upgrade(&self) {
+        let mut canister_event_snapshot: Vec<Snapshot<Vec<usize>>> = vec![];
+        let mut caller_event_snapshot: Vec<Snapshot<Vec<usize>>> = vec![];
+       // let canister_event = storage::get::<CanisterEvent>();
+        for (k, v) in self.canister_event.iter() {
+            let snapshot = Snapshot::<Vec<usize>> {
+                key: k.clone(),
+                value: v.to_vec(),
+            };
+            canister_event_snapshot.push(snapshot);
+        }
+        // let caller_event = storage::get::<CallerEvent>();
+    
+        // for (k, v) in caller_event.iter() {
+        //     let snapshot = Snapshot::<Vec<usize>> {
+        //         key: k.clone(),
+        //         value: v.to_vec(),
+        //     };
+        //     caller_event_snapshot.push(snapshot);
+        // }
+    
+        let mut commit_canister_bucket: Vec<Vec<CommitCanister>> = vec![];
+        let bucket = storage::get::<operation::CanisterBucket>();
+        for i in bucket.values() {
+            commit_canister_bucket.push(i.to_vec());
+        }
+        unsafe {
+            let db = Db {
+                canisterEvent: canister_event_snapshot,
+                callerEvent: caller_event_snapshot,
+                event: Event.to_vec(),
+                commitCanister: commit_canister_bucket,
+            };
+            storage::stable_save((db,)).expect("stable_save failed");
+        }
+        let size = ic_cdk::api::stable::stable_size();
+        let size = format!("Current used memory page size: {}", size);
+        print(size);
+    }
+
+}
+pub async fn create_event(new_log: Log) -> Result<(), String> {
+    if new_log.memo.len() > 150 {
+        return Err("memo too long".to_string());
+    }
+    unsafe {
+        crate::event_log.write().unwrap().create_event(new_log).await;
+    }
+    // let position: usize;
+    // unsafe {
+    //     let log_size = Event.len();
+    //     if log_size > 1 {
+    //         if CanisterList.len() == 0 || CanisterList[CanisterList.len() - 1].data_size >= 100000 {
+    //             let cycle: Nat = "4000000000000".parse().unwrap();
+    //             let new_chain_cloud = install::create_canister(api::id(), 0.into(), cycle).await;
+    //             format!("{:?}", new_chain_cloud);
+    //             match new_chain_cloud {
+    //                 Ok(value) => {
+    //                     ic_cdk::print(value.to_string());
+    //                     CanisterList.push(ChainCloudCanister {
+    //                         id: value,
+    //                         data_size: 0,
+    //                     });
+    //                     let res: CallResult<()> =
+    //                         api::call::call(value, CREATETRANSACTION, (&new_log,)).await;
+    //                     print(format!("res {:?}", res));
+    //                     return Ok(());
+    //                 }
+    //                 Err(err) => {
+    //                     ic_cdk::print(err.to_string());
+    //                     return Err(err.to_string());
+    //                 }
+    //             }
+    //         } else {
+    //             let chain_cloud_canister = CanisterList[CanisterList.len() - 1].id;
+    //             let res: CallResult<()> =
+    //                 api::call::call(chain_cloud_canister, CREATETRANSACTION, (&new_log,)).await;
+    //             print(format!("res {:?}", res));
+    //             CanisterList[CanisterList.len() - 1].data_size += 1;
+    //             return Ok(());
+    //         }
+    //     }
+    //     Event.push(new_log.clone());
+    //     position = Event.len() - 1;
+    // }
+
+    // let canister_event = storage::get_mut::<CanisterEvent>();
+    // if !canister_event.contains_key(&new_log.canister) {
+    //     canister_event.insert(new_log.canister.clone(), vec![position]);
+    // }
+    // let caller_event = storage::get_mut::<CallerEvent>();
+    // if !caller_event.contains_key(&new_log.caller) {
+    //     caller_event.insert(new_log.caller.clone(), vec![position]);
+    //     return Ok(());
+    // }
+
+    // canister_event
+    //     .get_mut(&new_log.canister)
+    //     .unwrap()
+    //     .push(position);
+    // caller_event
+    //     .get_mut(&new_log.caller)
+    //     .unwrap()
+    //     .push(position);
 
     Ok(())
 }
 
-pub async fn get_canister_event(
-    canister: Principal,
-    offset: Nat,
-    limit: Nat,
-) -> Vec<metadata::Metadata> {
-    let offset = util::nat_to_u64(offset).unwrap() as usize;
-    let mut limit = util::nat_to_u64(limit).unwrap() as usize;
-    if limit > 50 {
-        limit = 50;
-    }
-    let canister_event = storage::get::<CanisterEvent>();
-    if !canister_event.contains_key(&canister) {
-        return vec![];
-    }
-    let blucket = canister_event.get(&canister).unwrap();
-    if offset > blucket.len() {
-        return vec![];
-    }
-    let mut container: Vec<metadata::Metadata> = vec![];
-    unsafe {
-        if offset + limit >= blucket.len() {
-            for i in blucket[offset..blucket.len()].iter() {
-                container.push(Event[*i].clone());
-            }
-            return container;
-        }
+pub async fn get_canister_event(canister: Principal, offset: Nat, limit: Nat) -> Vec<Log> {
+    // let offset = util::nat_to_u64(offset).unwrap() as usize;
+    // let mut limit = util::nat_to_u64(limit).unwrap() as usize;
+    // if limit > 50 {
+    //     limit = 50;
+    // }
+    // let canister_event = storage::get::<CanisterEvent>();
+    // if !canister_event.contains_key(&canister) {
+    //     return vec![];
+    // }
+    // let blucket = canister_event.get(&canister).unwrap();
+    // if offset > blucket.len() {
+    //     return vec![];
+    // }
+    // let mut container: Vec<Log> = vec![];
+    // unsafe {
+    //     if offset + limit >= blucket.len() {
+    //         for i in blucket[offset..blucket.len()].iter() {
+    //             container.push(Event[*i].clone());
+    //         }
+    //         return container;
+    //     }
 
-        for i in blucket[offset..offset + limit].iter() {
-            container.push(Event[*i].clone());
-        }
-        return container;
+    //     for i in blucket[offset..offset + limit].iter() {
+    //         container.push(Event[*i].clone());
+    //     }
+    //     return container;
+    // }
+    unsafe{
+        crate::event_log.read().unwrap().get_canister_event(canister,offset,limit).await
     }
 }
 
-pub async fn get_caller_event(
-    caller: Principal,
-    offset: Nat,
-    limit: Nat,
-) -> Vec<metadata::Metadata> {
+pub async fn get_caller_event(caller: Principal, offset: Nat, limit: Nat) -> Vec<Log> {
     let offset = util::nat_to_u64(offset).unwrap() as usize;
     let mut limit = util::nat_to_u64(limit).unwrap() as usize;
     if limit > 50 {
@@ -93,7 +349,7 @@ pub async fn get_caller_event(
     if offset > blucket.len() {
         return vec![];
     }
-    let mut container: Vec<metadata::Metadata> = vec![];
+    let mut container: Vec<Log> = vec![];
     unsafe {
         if offset + limit >= blucket.len() {
             for i in blucket[offset..blucket.len()].iter() {
@@ -109,75 +365,87 @@ pub async fn get_caller_event(
     }
 }
 
-pub async fn get_last_event(limit: Nat) -> Vec<metadata::Metadata> {
-    let limit = util::nat_to_u64(limit).unwrap() as usize;
-    unsafe {
-        let len = Event.len();
-        if len == 0 {
-            return vec![];
-        }
-        if len <= limit {
-            return Event.to_vec();
-        }
-        return Event[len - limit - 1..len].to_vec();
-    }
+pub async fn get_last_event(limit: Nat) -> Vec<Log> {
+    // let limit = util::nat_to_u64(limit).unwrap() as usize;
+    // unsafe {
+    //     let len = Event.len();
+    //     if len == 0 {
+    //         return vec![];
+    //     }
+    //     if len <= limit {
+    //         return Event.to_vec();
+    //     }
+    //     return Event[len - limit - 1..len].to_vec();
+    // }
+
+    unsafe { crate::event_log.read().unwrap().get_last_event(limit).await }
 }
 
-pub async fn get_canister_last_event(canister: Principal, limit: Nat) -> Vec<metadata::Metadata> {
-    let limit = util::nat_to_u64(limit).unwrap() as usize;
-    let canister_event = storage::get::<CanisterEvent>();
-    let mut result: Vec<metadata::Metadata> = vec![];
-    if !canister_event.contains_key(&canister) {
-        return result;
-    }
-    let event = canister_event.get(&canister).unwrap();
-    let len = event.len();
+pub async fn get_canister_last_event(canister: Principal, limit: Nat) -> Vec<Log> {
+    // let limit = util::nat_to_u64(limit).unwrap() as usize;
+    // let canister_event = storage::get::<CanisterEvent>();
+    // let mut result: Vec<Log> = vec![];
+    // if !canister_event.contains_key(&canister) {
+    //     return result;
+    // }
+    // let event = canister_event.get(&canister).unwrap();
+    // let len = event.len();
+    // unsafe {
+    //     if len <= limit {
+    //         for i in event.iter() {
+    //             result.push(Event[*i].clone())
+    //         }
+    //         return result;
+    //     }
+    //     for i in event[len - limit - 1..len].iter() {
+    //         result.push(Event[*i].clone())
+    //     }
+    //     return result;
+    // }
     unsafe {
-        if len <= limit {
-            for i in event.iter() {
-                result.push(Event[*i].clone())
-            }
-            return result;
-        }
-        for i in event[len - limit - 1..len].iter() {
-            result.push(Event[*i].clone())
-        }
-        return result;
+        crate::event_log
+            .read()
+            .unwrap()
+            .get_canister_last_event(canister, limit)
+            .await
     }
 }
 
 pub async fn get_canister_list() -> Vec<Principal> {
-    let mut res: Vec<Principal> = vec![];
-    let canister_event = storage::get::<CanisterEvent>();
-    for keys in canister_event.keys() {
-        res.push(keys.clone());
+    // let mut res: Vec<Principal> = vec![];
+    // let canister_event = storage::get::<CanisterEvent>();
+    // for keys in canister_event.keys() {
+    //     res.push(keys.clone());
+    // }
+    // return res;
+    unsafe{
+        crate::event_log.read().unwrap().get_canister_list().await
     }
-    return res;
 }
 
-pub async fn get_canister_event_by_time(
-    canister: Principal,
-    start_time: Nat,
-) -> Vec<metadata::Metadata> {
-    let mut res: Vec<metadata::Metadata> = vec![];
-    let canister_event = storage::get::<CanisterEvent>();
-    if !canister_event.contains_key(&canister) {
-        return res;
-    }
-    let bucket = canister_event.get(&canister).unwrap();
+pub async fn get_canister_event_by_time(canister: Principal, start_time: Nat) -> Vec<Log> {
+    // let mut res: Vec<Log> = vec![];
+    // let canister_event = storage::get::<CanisterEvent>();
+    // if !canister_event.contains_key(&canister) {
+    //     return res;
+    // }
+    // let bucket = canister_event.get(&canister).unwrap();
+    // unsafe {
+    //     let mut i = bucket.len() - 1;
+    //     loop {
+    //         if Event[bucket[i]].transaction_time >= start_time {
+    //             res.push(Event[bucket[i]].clone())
+    //         } else {
+    //             return res;
+    //         }
+    //         if i == 0 {
+    //             return res;
+    //         }
+    //         i = i - 1;
+    //     }
+    // }
     unsafe {
-        let mut i = bucket.len() - 1;
-        loop {
-            if Event[bucket[i]].transaction_time >= start_time {
-                res.push(Event[bucket[i]].clone())
-            } else {
-                return res;
-            }
-            if i == 0 {
-                return res;
-            }
-            i = i - 1;
-        }
+        crate::event_log.read().unwrap().get_canister_event_by_time(canister,start_time).await
     }
 }
 pub fn pre_upgrade() {

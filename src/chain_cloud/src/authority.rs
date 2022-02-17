@@ -13,7 +13,6 @@ pub async fn registration_authority(canister_id: Principal) -> Result<(), String
         authority_table.insert(canister_id, true);
         return Ok(());
     }
-
     Err("Not a member of the white list".to_string())
 }
 

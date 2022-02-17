@@ -10,6 +10,7 @@ type CanisterInfo = HashMap<Principal, CanisterStatusFormat>;
 pub type CanisterBucket = HashMap<Principal, Vec<CommitCanister>>;
 
 
+
 pub async fn get_canister_status(
     canister: Principal,
     calltype: CallType,

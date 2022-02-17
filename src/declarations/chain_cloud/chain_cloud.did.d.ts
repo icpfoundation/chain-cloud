@@ -35,13 +35,14 @@ export interface CommitCanister {
 }
 export type GetCanisterByIdResult = { 'Ok' : CommitCanister } |
   { 'Err' : string };
-export interface Metadata {
+export interface Log {
   'transaction_time' : bigint,
   'memo' : string,
   'cycle' : bigint,
   'method_name' : string,
   'canister' : Principal,
   'caller' : Principal,
+  'cycle_accept' : bigint,
   'stable_size' : bigint,
 }
 export type Result = { 'Ok' : null } |
@@ -54,12 +55,12 @@ export type updateResult = { 'Ok' : null } |
   { 'Err' : string };
 export interface _SERVICE {
   'commitCanister' : (arg_0: CommitCanister) => Promise<undefined>,
-  'createEvent' : (arg_0: Metadata) => Promise<Result>,
+  'createEvent' : (arg_0: Log) => Promise<Result>,
   'getCallerEvent' : (
       arg_0: Principal,
       arg_1: bigint,
       arg_2: bigint,
-    ) => Promise<Array<Metadata>>,
+    ) => Promise<Array<Log>>,
   'getCanisterById' : (arg_0: Principal, arg_1: Principal) => Promise<
       GetCanisterByIdResult
     >,
@@ -70,17 +71,18 @@ export interface _SERVICE {
       arg_0: Principal,
       arg_1: bigint,
       arg_2: bigint,
-    ) => Promise<Array<Metadata>>,
+    ) => Promise<Array<Log>>,
   'getCanisterEventByTime' : (arg_0: Principal, arg_1: bigint) => Promise<
-      Array<Metadata>
+      Array<Log>
     >,
   'getCanisterLastEvent' : (arg_0: Principal, arg_1: bigint) => Promise<
-      Array<Metadata>
+      Array<Log>
     >,
   'getCanisterList' : () => Promise<Array<Principal>>,
   'getCanisterStatus' : (arg_0: Principal, arg_1: CallType) => Promise<
       StatusResult
     >,
-  'getLastEvent' : (arg_0: bigint) => Promise<Array<Metadata>>,
+  'getLastEvent' : (arg_0: bigint) => Promise<Array<Log>>,
   'getLocalCanisterList' : () => Promise<Array<CanisterStatusFormat>>,
+  'is_canister' : (arg_0: Principal) => Promise<undefined>,
 }
