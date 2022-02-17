@@ -37,7 +37,7 @@ impl EventLog {
         }
     }
 
-    pub async fn create_event(&mut self, new_log: Log) -> Result<bool, String> {
+    pub async fn new_log(&mut self, new_log: Log) -> Result<bool, String> {
         if new_log.memo.len() > self.memo_size {
             return Err("memo too long".to_string());
         }
@@ -99,7 +99,7 @@ impl EventLog {
         Ok(true)
     }
 
-    pub async fn get_last_event(&self, limit: Nat) -> Vec<Log> {
+    pub async fn latest_log(&self, limit: Nat) -> Vec<Log> {
         let limit = util::nat_to_u64(limit).unwrap() as usize;
         let len = self.log.len();
         if len == 0 {
@@ -108,10 +108,10 @@ impl EventLog {
         if len <= limit {
             return self.log.to_vec();
         }
-        return self.log[len - limit - 1..len].to_vec();
+        return self.log[len - limit..len].to_vec();
     }
 
-    pub async fn get_canister_last_event(&self, canister: Principal, limit: Nat) -> Vec<Log> {
+    pub async fn latest_log_filter_canister(&self, canister: Principal, limit: Nat) -> Vec<Log> {
         let limit = util::nat_to_u64(limit).unwrap() as usize;
         let mut canister_log: Vec<Log> = vec![];
         if !self.canister_event.contains_key(&canister) {
@@ -132,7 +132,7 @@ impl EventLog {
         return canister_log;
     }
 
-    pub async fn get_canister_list(&self) -> Vec<Principal> {
+    pub async fn all_canister(&self) -> Vec<Principal> {
         let mut canister_list: Vec<Principal> = vec![];
         for keys in self.canister_event.keys() {
             canister_list.push(keys.clone());
@@ -140,11 +140,7 @@ impl EventLog {
         return canister_list;
     }
 
-    pub async fn get_canister_event_by_time(
-        &self,
-        canister: Principal,
-        start_time: Nat,
-    ) -> Vec<Log> {
+    pub async fn log_filter_canister_time(&self, canister: Principal, start_time: Nat) -> Vec<Log> {
         let mut res: Vec<Log> = vec![];
         if !self.canister_event.contains_key(&canister) {
             return res;
@@ -165,7 +161,7 @@ impl EventLog {
         }
     }
 
-    pub async fn get_canister_event(
+    pub async fn log_filter_canister(
         &self,
         canister: Principal,
         offset: Nat,
@@ -197,7 +193,7 @@ impl EventLog {
         return result;
     }
 
-    pub async fn get_caller_event(&self, caller: Principal, offset: Nat, limit: Nat) -> Vec<Log> {
+    pub async fn log_caller(&self, caller: Principal, offset: Nat, limit: Nat) -> Vec<Log> {
         let offset = util::nat_to_u64(offset).unwrap() as usize;
         let mut limit = util::nat_to_u64(limit).unwrap() as usize;
         if limit > 50 {
@@ -265,16 +261,8 @@ impl EventLog {
 }
 
 pub async fn create_event(new_log: Log) -> Result<(), String> {
-    if new_log.memo.len() > 150 {
-        return Err("memo too long".to_string());
-    }
-    unsafe {
-        crate::event_log
-            .write()
-            .unwrap()
-            .create_event(new_log)
-            .await;
-    }
+    crate::event_log.write().unwrap().new_log(new_log).await;
+
     // let position: usize;
     // unsafe {
     //     let log_size = Event.len();
@@ -363,13 +351,12 @@ pub async fn get_canister_event(canister: Principal, offset: Nat, limit: Nat) ->
     //     }
     //     return container;
     // }
-    unsafe {
-        crate::event_log
-            .read()
-            .unwrap()
-            .get_canister_event(canister, offset, limit)
-            .await
-    }
+
+    crate::event_log
+        .read()
+        .unwrap()
+        .log_filter_canister(canister, offset, limit)
+        .await
 }
 
 pub async fn get_caller_event(account: Principal, offset: Nat, limit: Nat) -> Vec<Log> {
@@ -400,13 +387,12 @@ pub async fn get_caller_event(account: Principal, offset: Nat, limit: Nat) -> Ve
     //     }
     //     return container;
     // }
-    unsafe {
-        crate::event_log
-            .read()
-            .unwrap()
-            .get_caller_event(account, offset, limit)
-            .await
-    }
+
+    crate::event_log
+        .read()
+        .unwrap()
+        .log_caller(account, offset, limit)
+        .await
 }
 
 pub async fn get_last_event(limit: Nat) -> Vec<Log> {
@@ -422,7 +408,7 @@ pub async fn get_last_event(limit: Nat) -> Vec<Log> {
     //     return Event[len - limit - 1..len].to_vec();
     // }
 
-    unsafe { crate::event_log.read().unwrap().get_last_event(limit).await }
+    crate::event_log.read().unwrap().latest_log(limit).await
 }
 
 pub async fn get_canister_last_event(canister: Principal, limit: Nat) -> Vec<Log> {
@@ -446,13 +432,12 @@ pub async fn get_canister_last_event(canister: Principal, limit: Nat) -> Vec<Log
     //     }
     //     return result;
     // }
-    unsafe {
-        crate::event_log
-            .read()
-            .unwrap()
-            .get_canister_last_event(canister, limit)
-            .await
-    }
+
+    crate::event_log
+        .read()
+        .unwrap()
+        .latest_log_filter_canister(canister, limit)
+        .await
 }
 
 pub async fn get_canister_list() -> Vec<Principal> {
@@ -462,7 +447,7 @@ pub async fn get_canister_list() -> Vec<Principal> {
     //     res.push(keys.clone());
     // }
     // return res;
-    unsafe { crate::event_log.read().unwrap().get_canister_list().await }
+    crate::event_log.read().unwrap().all_canister().await
 }
 
 pub async fn get_canister_event_by_time(canister: Principal, start_time: Nat) -> Vec<Log> {
@@ -486,13 +471,12 @@ pub async fn get_canister_event_by_time(canister: Principal, start_time: Nat) ->
     //         i = i - 1;
     //     }
     // }
-    unsafe {
-        crate::event_log
-            .read()
-            .unwrap()
-            .get_canister_event_by_time(canister, start_time)
-            .await
-    }
+
+    crate::event_log
+        .read()
+        .unwrap()
+        .log_filter_canister_time(canister, start_time)
+        .await
 }
 pub fn pre_upgrade() {
     let mut canister_event_snapshot: Vec<Snapshot<Vec<usize>>> = vec![];
