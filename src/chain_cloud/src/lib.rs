@@ -15,7 +15,7 @@ extern crate lazy_static;
 use std::sync::RwLock;
 use event::EventLog;
 lazy_static!{
-    pub static ref event_log: RwLock<EventLog> = RwLock::new(EventLog::new());
+    pub static ref event_log: RwLock<EventLog> = RwLock::new(EventLog::new(150,100000, "4000000000000".parse().unwrap()));
 }
 
 #[init]
