@@ -42,49 +42,45 @@ impl EventLog {
             return Err("memo too long".to_string());
         }
         let position: usize;
-        unsafe {
-            let log_size = self.log.len();
-            if log_size > self.data_size {
-                if self.canister_list.len() == 0
-                    || self.canister_list[self.canister_list.len() - 1].data_size
-                        >= self.data_size as u64
-                {
-                    let new_canister = install::create_canister(
-                        api::id(),
-                        0.into(),
-                        self.expected_cost_cycle.clone(),
-                    )
-                    .await;
 
-                    match new_canister {
-                        Ok(principal) => {
-                            ic_cdk::print(principal.to_string());
-                            self.canister_list.push(ChainCloudCanister {
-                                id: principal,
-                                data_size: 0,
-                            });
-                            let res: CallResult<()> =
-                                api::call::call(principal, CREATETRANSACTION, (&new_log,)).await;
-                            return Ok(true);
-                        }
-                        Err(err) => {
-                            ic_cdk::print(err.to_string());
-                            return Err(err.to_string());
-                        }
+        let log_size = self.log.len();
+        if log_size > self.data_size {
+            if self.canister_list.len() == 0
+                || self.canister_list[self.canister_list.len() - 1].data_size
+                    >= self.data_size as u64
+            {
+                let new_canister =
+                    install::create_canister(api::id(), 0.into(), self.expected_cost_cycle.clone())
+                        .await;
+
+                match new_canister {
+                    Ok(principal) => {
+                        ic_cdk::print(principal.to_string());
+                        self.canister_list.push(ChainCloudCanister {
+                            id: principal,
+                            data_size: 0,
+                        });
+                        let res: CallResult<()> =
+                            api::call::call(principal, CREATETRANSACTION, (&new_log,)).await;
+                        return Ok(true);
                     }
-                } else {
-                    let data_size = self.canister_list.len();
-                    let canister = &self.canister_list[data_size].id;
-                    let res: CallResult<()> =
-                        api::call::call(canister.clone(), CREATETRANSACTION, (&new_log,)).await;
-                    print(format!("res {:?}", res));
-                    self.canister_list[data_size].data_size += 1;
-                    return Ok(true);
+                    Err(err) => {
+                        ic_cdk::print(err.to_string());
+                        return Err(err.to_string());
+                    }
                 }
+            } else {
+                let data_size = self.canister_list.len();
+                let canister = &self.canister_list[data_size].id;
+                let res: CallResult<()> =
+                    api::call::call(canister.clone(), CREATETRANSACTION, (&new_log,)).await;
+                print(format!("res {:?}", res));
+                self.canister_list[data_size].data_size += 1;
+                return Ok(true);
             }
-            self.log.push(new_log.clone());
-            position = self.log.len() - 1;
         }
+        self.log.push(new_log.clone());
+        position = self.log.len() - 1;
 
         if !self.canister_event.contains_key(&new_log.canister) {
             self.canister_event
@@ -218,13 +214,13 @@ impl EventLog {
         let mut account_log: Vec<Log> = vec![];
         if offset + limit >= result.len() {
             for i in result[offset..result.len()].iter() {
-                account_log.push(Event[*i].clone());
+                account_log.push(self.log[*i].clone());
             }
             return account_log;
         }
 
         for i in result[offset..offset + limit].iter() {
-            account_log.push(Event[*i].clone());
+            account_log.push(self.log[*i].clone());
         }
         return account_log;
     }
