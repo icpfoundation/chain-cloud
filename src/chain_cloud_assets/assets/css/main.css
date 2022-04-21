@@ -3,12 +3,7 @@ body {
     font-size: 1.5rem;
 }
 
-img {
-    max-width: 50vw;
-    max-height: 25vw;
-    display: block;
-    margin: auto;
-}
+
 section {
     display: flex;
     flex-flow: row wrap;
@@ -28,6 +23,8 @@ section {
     padding: 10px 60px;
     border: 1px solid #222;
 }
+
+.tst {}
 
 #greeting:empty {
     display: none;

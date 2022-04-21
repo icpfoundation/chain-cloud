@@ -1,0 +1,153 @@
+<style scoped>
+.aboutusApp {
+  width: 100%;
+}
+.content {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  height: 500px;
+  background: #f8fbff;
+}
+.contentRight {
+  font-size: 32px;
+  font-family: PingFangSC-Semibold, PingFang SC;
+  font-weight: 600;
+  color: #252b3a;
+}
+.contentRightHead {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #1776ff;
+}
+.contentRightHead img {
+  margin-right: 10px;
+  width: 24px;
+  height: 24px;
+}
+.contentRightContent {
+  margin-top: 28px;
+  width: 387px;
+  font-family: PingFangSC-Semibold, PingFang SC;
+}
+.wordSp {
+  font-size: 32px;
+  font-weight: 400;
+  color: #1776ff;
+}
+.contentRightInfo {
+  margin-top: 40px;
+  font-size: 18px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #818181;
+}
+.aboutusImg {
+  width: 436px;
+  height: 330px;
+  margin-top: 34px;
+  margin-right: 40px;
+}
+.foot {
+  width: 100%;
+  position: relative;
+  height: 168px;
+}
+.footImg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.footContent {
+  width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  height: 100%;
+}
+.footLeft {
+  display: flex;
+  align-items: center;
+  font-size: 32px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #ffffff;
+}
+.footLeft img {
+  width: 44px;
+  height: 44px;
+  margin-left: 30px;
+}
+.footRgiht {
+  display: flex;
+  align-items: center;
+  width: 161px;
+  height: 54px;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #1776ff;
+  justify-content: center;
+}
+.footRgiht img {
+  width: 16px;
+  height: 16px;
+  margin-left: 15px;
+}
+</style>
+<template>
+  <div class="aboutusApp">
+    <div class="content">
+      <img src="../../../assets/img/home/aboutus.png" alt="" class="aboutusImg">
+      <div class="contentRight">
+        <div class="contentRightHead">
+          <img src="../../../assets/img/home/icon_tab_blue_r@2x.png" alt="">
+          <span>About us</span>
+        </div>
+        <div class="contentRightContent">
+          <span>Delivering the industry’s</span>
+          <span class="wordSp">Trustless Cloud</span>
+          <span> of Web3.</span>
+        </div>
+        <div class="contentRightInfo">Our goal is to create a research environment rich in opportunities for product impact, to build a product environment that actively benefits from research.</div>
+        <div class="contentRightInfo">Start working with JiaoziDB that bring rust and integrity into the data life cycle by providing end-to-end cryptographically verifiable tracking and provenance for all artifacts,
+          actions, and dependencies, at scale.</div>
+      </div>
+    </div>
+    <div class="foot">
+      <img src="../../../assets/img/home/foottop_bg@2x.png" alt="" class="footImg">
+      <div class="footContent">
+        <div class="footLeft">
+          <span>Contact us！</span>
+          <img src="../../../assets/img/home/icon_tab_w_r@2x.png" alt="">
+        </div>
+        <div class="footRgiht">
+          <span>Get Start</span>
+          <img src="../../../assets/img/home/arrowright@2x.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+
+
+export default {
+  data() {
+    return {
+
+    };
+  },
+
+};
+</script>

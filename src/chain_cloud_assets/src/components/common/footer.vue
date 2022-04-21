@@ -1,45 +1,16 @@
 <template>
   <div class="outview">
-    <el-row>
-      <el-col :span="3">
-        <div class="footlogo">
-          <img src="../../../assets/img/nav_logo@2x.png" alt="" />
-        </div>
-      </el-col>
-
-      <el-col :span="17">
-        <div class="footmidview"></div>
-      </el-col>
-
-      <el-col :span="2">
-        <div class="aboutview">
-          <div class="about">About us</div>
-          <div class="row">
-            <div class="col">
-              <img
-                class="iconsize"
-                src="../../../assets/img/wechat@2x.png"
-                alt=""
-              />
-            </div>
-            <div class="col">
-              <img
-                class="iconsize"
-                src="../../../assets/img/twitter@2x.png"
-                alt=""
-              />
-            </div>
-            <div class="col">
-              <img
-                class="iconsize"
-                src="../../../assets/img/facebook@2x.png"
-                alt=""
-              />
-            </div>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+    <div class="footlogo">
+      <img src="../../../assets/img/nav_logo@2x.png" alt="" />
+    </div>
+    <div class="aboutview">
+      <div class="about">© 2022 chaincloud.com</div>
+      <div class="row">
+        <img class="iconsize" src="../../../assets/img/wechat@2x.png" alt="" />
+        <img class="iconsize" src="../../../assets/img/twitter@2x.png" alt="" />
+        <img class="iconsize" src="../../../assets/img/facebook@2x.png" alt="" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -49,36 +20,29 @@ export default {
   data() {
     return {};
   },
-  components: {},
-  methods: {},
-  mounted() {},
-  destroyed() {},
+
 };
 </script>
 
 <style scoped>
-.footmidview {
-  height: 60px;
-}
-
 .about {
-  width: 60px;
-  height: 20px;
   font-size: 14px;
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #333333;
-  line-height: 20px;
 }
 
 .outview {
-  border-top: lightgrey solid 1px;
-  padding-top: 50px;
-  padding-left: 2%;
+  width: 1200px;
+  margin: 0 auto;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .footlogo {
-  width: 184px;
+  width: 185px;
   height: 24px;
 }
 
@@ -90,16 +54,12 @@ export default {
 .iconsize {
   width: 24px;
   height: 24px;
+  margin-left: 20px;
 }
 
 .row {
-  box-sizing: border-box;
-  width: 120px;
-}
-
-.row .col {
-  float: left;
-  width: 33%;
-  border-width: 10px;
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
