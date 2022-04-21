@@ -281,7 +281,6 @@ export default {
 
     init();
   },
-  destroyed() { },
 };
 </script>
 

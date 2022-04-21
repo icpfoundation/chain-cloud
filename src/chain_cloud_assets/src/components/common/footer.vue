@@ -20,10 +20,7 @@ export default {
   data() {
     return {};
   },
-  components: {},
-  methods: {},
-  mounted() { },
-  destroyed() { },
+
 };
 </script>
 

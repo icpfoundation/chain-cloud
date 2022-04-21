@@ -20,9 +20,6 @@ import featureview from "./feature.vue";
 import towork from "./towork.vue";
 import usecloud from "./usecloud.vue";
 import aboutus from "./aboutus.vue";
-
-import authedview from "../page/authorized.vue";
-
 export default {
   name: "Home",
   data() {

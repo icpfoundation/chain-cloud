@@ -24,6 +24,8 @@ section {
     border: 1px solid #222;
 }
 
+.tst {}
+
 #greeting:empty {
     display: none;
 }

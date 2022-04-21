@@ -73,8 +73,5 @@ export default {
     };
   },
 
-  methods: {},
-
-  destroyed() { },
 };
 </script>
