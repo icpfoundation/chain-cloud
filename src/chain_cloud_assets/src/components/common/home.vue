@@ -1,19 +1,14 @@
 <template>
   <div>
-    <el-container class="containView">
+    <div class="bgImg">
+      <img src="../../../assets/img/home/bg.png" alt="" class="bg">
       <headerview></headerview>
-
-      <el-main id="mainview" v-if="!isAuth">
-        <bannerview></bannerview>
-        <featureview></featureview>
-      </el-main>
-
-      <authedview v-else></authedview>
-
-      <el-footer id="footerview">
-        <footerview></footerview>
-      </el-footer>
-    </el-container>
+      <bannerview></bannerview>
+    </div>
+    <towork></towork>
+    <usecloud></usecloud>
+    <aboutus></aboutus>
+    <footerview></footerview>
   </div>
 </template>
 
@@ -22,8 +17,9 @@ import headerview from "./header.vue";
 import bannerview from "./banner.vue";
 import footerview from "./footer.vue";
 import featureview from "./feature.vue";
-import authedview from "../page/authorized.vue";
-
+import towork from "./towork.vue";
+import usecloud from "./usecloud.vue";
+import aboutus from "./aboutus.vue";
 export default {
   name: "Home",
   data() {
@@ -38,6 +34,9 @@ export default {
   components: {
     headerview,
     bannerview,
+    towork,
+    usecloud,
+    aboutus,
     footerview,
     featureview,
   },
@@ -77,52 +76,22 @@ export default {
       this.isAuth = false;
     }
   },
-  destroyed() {},
+  destroyed() { },
 };
 </script>
 
 <style>
-.el-header,
-.el-footer {
-  background-color: #b3c0d1;
-  color: #333;
-  text-align: center;
-  line-height: 60px;
-}
-
-.el-aside {
-  background-color: #d3dce6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-
-.el-main {
-  background-color: #e9eef3;
-  color: #333;
-  line-height: 160px;
-}
-
-#mainview {
-  padding: 0px;
+.bgImg {
   width: 100%;
+  height: 937px;
+  position: relative;
 }
-
-body > .el-container {
-  margin-bottom: 40px;
-}
-
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-  line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-  line-height: 320px;
-}
-
-.containView {
-  max-width: 100%;
+.bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #footerview {
