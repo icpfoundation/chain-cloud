@@ -109,7 +109,7 @@
       </div>
       <div class="bannerInfo">Enjoy the new generation of Internet technology, Get the dividends of innovation</div>
       <div class="startbtn" @click="doStart">
-        <span>Get Start</span>
+        <el-link href="http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/" target="_self">Get Start</el-link>
         <img src="../../../assets/img/home/startbtn.png" alt="">
       </div>
       <div class="tabarBox">
@@ -134,11 +134,6 @@
           <span class="tabarItemInfo">Familiar SQL operators, IPLD data model supports nested data structures</span>
         </div>
       </div>
-
-      <el-button class="startbtn" type="primary" v-on:click="doStart">
-        <el-link href="http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/" target="_self">Get Start</el-link>
-        <i class="el-icon-arrow-right el-icon-right"></i>
-        </el-button>
     </div>
   </div>
 </template>
