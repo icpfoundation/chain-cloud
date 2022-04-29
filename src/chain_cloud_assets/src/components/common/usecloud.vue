@@ -31,11 +31,18 @@
   width: 100%;
   height: 100%;
 }
+.dot {
+  font-size: 40px;
+  /* color: red; */
+}
 </style>
 <template>
   <div class="usecloudApp">
     <div class="title">WHO IS USING CHAIN-CLOUD？</div>
     <div class="tabarbox">
+      <div class="tabarItem" style="width:270px">
+        <img src="../../../assets/img/logo/logo5.png" alt="">
+      </div>
       <div class="tabarItem" style="width:240px">
         <img src="../../../assets/img/logo/logo1.jpg" alt="">
       </div>
@@ -48,9 +55,7 @@
       <div class="tabarItem" style="width:240px">
         <img src="../../../assets/img/logo/logo4.png" alt="">
       </div>
-      <div class="tabarItem" style="width:270px">
-        <img src="../../../assets/img/logo/logo5.png" alt="">
-      </div>
+      <div class="dot">...</div>
     </div>
   </div>
 </template>
