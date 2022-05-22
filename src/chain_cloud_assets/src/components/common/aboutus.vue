@@ -1,13 +1,14 @@
 <style scoped>
 .aboutusApp {
   width: 100%;
+  background: #f8fbff;
+  padding-top: 140px;
 }
 .content {
   width: 1200px;
   margin: 0 auto;
   display: flex;
   height: 500px;
-  background: #f8fbff;
 }
 .contentRight {
   font-size: 32px;
