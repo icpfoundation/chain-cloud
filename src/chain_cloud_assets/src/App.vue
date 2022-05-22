@@ -17,8 +17,38 @@
 export default {
   data() {
     return {
-      show: true
+      show: true,
+       tabList: [
+        {
+          name: "IDE",
+          href: "",
+        },
+        {
+          name: "TEAM",
+          href: "",
+        },
+        {
+          name: "DAPP - SCAN",
+          href: "",
+        },
+        {
+          name: "ABOUT US",
+          href: "",
+        },
+      ],
     }
+  },
+   methods: {
+    toHome() {
+      this.$router.push({
+        path: "/"
+      })
+    },
+    toUserFun() {
+      this.$router.push({
+        name: "user_index"
+      })
+    },
   },
   mounted() {
     let url = window.location.href;
