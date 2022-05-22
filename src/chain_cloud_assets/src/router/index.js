@@ -17,7 +17,7 @@ import ViewAll from '../components/common/viewAll.vue'
 import DocView from "../components/page/document.vue"
 import BlogView from "../components/page/blogs.vue"
 import ServiceView from "../components/page/service.vue"
-import group from '../components/group/group.vue'
+import group from '../components/group.vue'
 const group_index = r => require.ensure([], () => r(require('../components/page/group/index/group_index.vue'), 'group_index'))
 const group_add = r => require.ensure([], () => r(require('../components/page/group/index/group_add.vue'), 'group_add'))
 const overview = r => require.ensure([], () => r(require('../components/page/group/overview/overview.vue'), 'overview'))
