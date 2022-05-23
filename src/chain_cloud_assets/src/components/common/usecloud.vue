@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding-top: 90px;
   width: 1200px;
-  height: 400px;
+  height:200px;
 }
 .title {
   font-size: 32px;

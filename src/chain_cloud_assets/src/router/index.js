@@ -17,15 +17,16 @@ import ViewAll from '../components/common/viewAll.vue'
 import DocView from "../components/page/document.vue"
 import BlogView from "../components/page/blogs.vue"
 import ServiceView from "../components/page/service.vue"
-import group from '../components/group/group.vue'
-const group_index = r => require.ensure([], () => r(require('../components/group/index/group_index.vue'), 'group_index'))
-const group_add = r => require.ensure([], () => r(require('../components/group/index/group_add.vue'), 'group_add'))
-const overview = r => require.ensure([], () => r(require('../components/group/overview/overview.vue'), 'overview'))
-const detail = r => require.ensure([], () => r(require('../components/group/overview/detail.vue'), 'detail'))
-const activity = r => require.ensure([], () => r(require('../components/group/overview/activity.vue'), 'activity'))
-const members = r => require.ensure([], () => r(require('../components/group/members/members.vue'), 'members'))
-const setting = r => require.ensure([], () => r(require('../components/group/setting/setting.vue'), 'setting'))
-const user_index = r => require.ensure([], () => r(require('../components/user/user_index.vue'), 'user_index'))
+import group from '../components/common/group.vue'
+
+const group_index = r => require.ensure([], () => r(require('../components/page/group/index/group_index.vue'), 'group_index'))
+const group_add = r => require.ensure([], () => r(require('../components/page/group/index/group_add.vue'), 'group_add'))
+const overview = r => require.ensure([], () => r(require('../components/page/group/overview/overview.vue'), 'overview'))
+const detail = r => require.ensure([], () => r(require('../components/page/group/overview/detail.vue'), 'detail'))
+const activity = r => require.ensure([], () => r(require('../components/page/group/overview/activity.vue'), 'activity'))
+const members = r => require.ensure([], () => r(require('../components/page/group/members/members.vue'), 'members'))
+const setting = r => require.ensure([], () => r(require('../components/page/group/setting/setting.vue'), 'setting'))
+const user_index = r => require.ensure([], () => r(require('../components/page/user/user_index.vue'), 'user_index'))
 Vue.use(Router);
 
 export default new Router({

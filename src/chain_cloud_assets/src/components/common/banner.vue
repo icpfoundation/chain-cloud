@@ -160,6 +160,7 @@ export default {
       // if (this.$router.path != "/deploy") {
       //   this.$router.push("/deploy");
       // }
+      console.log("dfdffdd")
       this.$router.push({
         name:"group_index"
       })

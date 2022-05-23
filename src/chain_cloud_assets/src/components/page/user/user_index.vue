@@ -138,24 +138,6 @@ import UserPersonal from './user_personal'
 export default {
     data() {
         return {
-            tabList: [
-                {
-                    name: "IDE",
-                    href: "",
-                },
-                {
-                    name: "TEAM",
-                    href: "",
-                },
-                {
-                    name: "DAPP - SCAN",
-                    href: "",
-                },
-                {
-                    name: "ABOUT US",
-                    href: "",
-                },
-            ],
             conTabList: [
                 {
                     name: "Overview",
