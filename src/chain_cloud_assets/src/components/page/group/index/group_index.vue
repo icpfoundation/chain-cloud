@@ -23,7 +23,7 @@
 .addGroup {
   width: 108px;
   height: 32px;
-  background: #1776FF;
+  background: #1776ff;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -32,10 +32,10 @@
   font-size: 13px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
 }
-.addGroup img{
+.addGroup img {
   width: 16px;
   height: 16px;
 }
@@ -43,7 +43,7 @@
   width: 100%;
   height: 1px;
   background: #333333;
-  margin: 40px 0  20px 0;
+  margin: 40px 0 20px 0;
 }
 
 .table {
@@ -62,15 +62,15 @@
   display: flex;
   cursor: pointer;
 }
-.tableItem:hover{
-background: #F8F8F8;
+.tableItem:hover {
+  background: #f8f8f8;
 }
 .tableImg {
   width: 60px;
   height: 60px;
   background: #558678;
   border-radius: 8px;
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   margin-right: 20px;
   margin-top: 4px;
 }
@@ -114,7 +114,7 @@ background: #F8F8F8;
   display: flex;
   height: 20px;
   border-radius: 10px;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   margin-top: 4px;
   align-items: center;
   width: 130px;
@@ -124,9 +124,9 @@ background: #F8F8F8;
   display: flex;
   justify-content: center;
   margin-top: 0.2rem;
-background: #FAFAFA;
-height: 72px;
-align-items: center;
+  background: #fafafa;
+  height: 72px;
+  align-items: center;
 }
 </style>
 
@@ -136,95 +136,132 @@ align-items: center;
       <div class="head">
         <span>Groups</span>
         <div class="addGroup" @click="addFun">
-          <img src="../../../../../assets/chain_cloud/group/icon_add_white@2x (1).png" alt="" srcset="">
+          <img
+            src="../../../../../assets/chain_cloud/group/icon_add_white@2x (1).png"
+            alt=""
+            srcset=""
+          />
           <span>New Group</span>
         </div>
       </div>
       <div class="line"></div>
       <div class="table">
-        <div class="tableItem"  v-for="(item, index) in tableData.tableList" :key="index" @click="toGroupFun(item)">
+        <div
+          class="tableItem"
+          v-for="(item, index) in tableData.tableList"
+          :key="index"
+          @click="toGroupFun(item)"
+        >
           <div class="tableImg"></div>
           <div class="tableInfo">
             <span class="tableItemName">{{ item.name }}</span>
             <div class="tableItemBy">
-              <span>{{item.by}}</span>
-              <img src="../../../../../assets/chain_cloud/group/icon_check@2x.png" alt="">
+              <span>{{ item.by }}</span>
+              <img
+                src="../../../../../assets/chain_cloud/group/icon_check@2x.png"
+                alt=""
+              />
             </div>
             <div class="tableItemDec">{{ item.dec }}</div>
-            <div class="tableItemDiv">{{item.type}}</div>
+            <div class="tableItemDiv">{{ item.type }}</div>
           </div>
         </div>
       </div>
-       <div class="pageStyle">
-          <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-            :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
-        </div>
+      <div class="pageStyle">
+        <Page
+          v-if="tableData.total > 0"
+          :total="tableData.total"
+          :current="tableData.page"
+          show-total
+          :page-size="tableData.pageSize"
+          size="small"
+          @on-change="headPageFun"
+        />
+      </div>
     </div>
   </div>
 </template>
 <script>
+import { Principal } from "@dfinity/principal";
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { TEST_USER } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
-       tableData: {
+      tableData: {
         tableList: [
-          {
-            name: "yong1",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-           {
-            name: "yong2",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            name: "yong3",
-            by: "By imgbot",
-            dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-            type: "Recommended",
-          },
-         {
-            name: "yong4",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-         {
-            name: "yong5",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
+          // {
+          //   name: "yong1",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
+          // {
+          //   name: "yong2",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
+          // {
+          //   name: "yong3",
+          //   by: "By imgbot",
+          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
+          //   type: "Recommended",
+          // },
+          // {
+          //   name: "yong4",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
+          // {
+          //   name: "yong5",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
         ],
         total: 5,
         page: 1,
-        pageSize: 3
-      }
-    }
+        pageSize: 3,
+      },
+    };
   },
   methods: {
-     headPageFun(value) {
+    headPageFun(value) {
       this.$Notice.info({
         title: "暂无后台数据",
         background: true,
-        duration: 3
+        duration: 3,
       });
     },
-    addFun(){
+    addFun() {
       this.$router.push({
-        name:"group_add"
-      })
+        name: "group_add",
+      });
     },
-    toGroupFun(item){
+    toGroupFun(item) {
       this.$router.push({
-        name:"group"
-      })
+        name: "group",
+      });
+    },
+  },
+  async created() {
+    let groupRes = await manageCanister.visibleProject();
+    this.tableData.total = groupRes.length;
+    for (let i = 0; i < groupRes.length; i++) {
+      for (let j = 0; j < groupRes[i].length; j++) {
+        // let userIdentity = Principal.fromText(TEST_USER);
+        // let imageData = await manageCanister.getImage(userIdentity, 2);
+        // console.log("imageData", imageData);
+        this.tableData.tableList.push({
+          name: groupRes[i][j][2].name,
+          by: groupRes[i][j][0],
+          dec: groupRes[i][j][2].description,
+          type: "Recommended",
+        });
+      }
     }
   },
-  created() {
-  },
-}
+};
 </script>

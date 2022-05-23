@@ -71,6 +71,9 @@ module.exports = {
       stream: require.resolve("stream-browserify/"),
       util: require.resolve("util/"),
     },
+    alias: {
+      '@': path.join(__dirname, "src")
+    }
   },
   output: {
     filename: "index.js",
