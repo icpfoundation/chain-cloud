@@ -35,114 +35,90 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var principal_1 = require("@dfinity/principal");
-var CanisterStatus;
-(function (CanisterStatus) {
-    CanisterStatus[CanisterStatus["running"] = null] = "running";
-    CanisterStatus[CanisterStatus["stopping"] = null] = "stopping";
-    CanisterStatus[CanisterStatus["stopped"] = null] = "stopped";
-})(CanisterStatus || (CanisterStatus = {}));
-var CanisterType;
-(function (CanisterType) {
-    CanisterType[CanisterType["wallet"] = null] = "wallet";
-    CanisterType[CanisterType["ui"] = null] = "ui";
-    CanisterType[CanisterType["server"] = null] = "server";
-})(CanisterType || (CanisterType = {}));
-var ChainCloudCanister = /** @class */ (function () {
-    function ChainCloudCanister(actor) {
-        this.actor = actor;
+exports.__esModule = true;
+var ManageCanister = /** @class */ (function () {
+    function ManageCanister(manageActor, imageActor) {
+        this.manageActor = manageActor;
+        this.imageActor = imageActor;
     }
-    ChainCloudCanister.prototype.getCanisterByPrinciple = function (principal) {
+    ManageCanister.prototype.addUser = function (principal, profile) {
         return __awaiter(this, void 0, void 0, function () {
-            var parsePrincipal, result;
+            var addUserRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        parsePrincipal = principal_1.Principal.fromText(principal);
-                        return [4 /*yield*/, this.actor.getCanisterByPrinciple(parsePrincipal)];
+                    case 0: return [4 /*yield*/, this.manageActor.add_user(principal, profile)];
                     case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
+                        addUserRes = _a.sent();
+                        return [2 /*return*/, addUserRes];
                 }
             });
         });
     };
-    ChainCloudCanister.prototype.getCanisterLastEvent = function (principal, limit) {
+    ManageCanister.prototype.addGroup = function (group) {
         return __awaiter(this, void 0, void 0, function () {
-            var parsePrincipal, result;
+            var addGroupRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        parsePrincipal = principal_1.Principal.fromText(principal);
-                        return [4 /*yield*/, this.actor.getCanisterLastEvent(parsePrincipal, limit)];
+                    case 0: return [4 /*yield*/, this.manageActor.add_group(group)];
                     case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
+                        addGroupRes = _a.sent();
+                        return [2 /*return*/, addGroupRes];
                 }
             });
         });
     };
-    ChainCloudCanister.prototype.commitCanister = function (commitdata) {
+    ManageCanister.prototype.visibleProject = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result;
+            var visibleProjectRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.actor.commitCanister(commitdata)];
+                    case 0: return [4 /*yield*/, this.manageActor.visible_project()];
                     case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
+                        visibleProjectRes = _a.sent();
+                        return [2 /*return*/, visibleProjectRes];
                 }
             });
         });
     };
-    ChainCloudCanister.prototype.createEvent = function (meta) {
+    ManageCanister.prototype.getGroupInfo = function (user, group_id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result;
+            var getGroupInfoRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.actor.createEvent(meta)];
+                    case 0: return [4 /*yield*/, this.manageActor.get_group_info(user, group_id)];
                     case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
+                        getGroupInfoRes = _a.sent();
+                        return [2 /*return*/, getGroupInfoRes];
                 }
             });
         });
     };
-    ChainCloudCanister.prototype.getCanisterById = function (principle, canisterId) {
+    ManageCanister.prototype.imageStore = function (manageCanister, user, group_id, imageData) {
         return __awaiter(this, void 0, void 0, function () {
-            var parsePrinciple, parseCanisterId, result;
+            var imageStoreRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        parsePrinciple = principal_1.Principal.fromText(principle);
-                        parseCanisterId = principal_1.Principal.fromText(canisterId);
-                        return [4 /*yield*/, this.actor.getCanisterById(parsePrinciple, parseCanisterId)];
+                    case 0: return [4 /*yield*/, this.imageActor.image_store(manageCanister, user, group_id, imageData)];
                     case 1:
-                        result = _a.sent();
-                        if (Object.prototype.hasOwnProperty.call(result, 'Ok')) {
-                            return [2 /*return*/, result['Ok']];
-                        }
-                        return [2 /*return*/, null];
+                        imageStoreRes = _a.sent();
+                        return [2 /*return*/, imageStoreRes];
                 }
             });
         });
     };
-    ChainCloudCanister.prototype.getCanisterEventByTime = function (canister, startTime) {
+    ManageCanister.prototype.getImage = function (user, group_id) {
         return __awaiter(this, void 0, void 0, function () {
-            var parseCanister, result;
+            var getImageRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        parseCanister = principal_1.Principal.fromText(canister);
-                        return [4 /*yield*/, this.actor.getCanisterEventByTime(parseCanister, startTime)];
+                    case 0: return [4 /*yield*/, this.imageActor.get_image(user, group_id)];
                     case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
+                        getImageRes = _a.sent();
+                        return [2 /*return*/, getImageRes];
                 }
             });
         });
     };
-    return ChainCloudCanister;
+    return ManageCanister;
 }());
-exports.default = ChainCloudCanister;
+exports["default"] = ManageCanister;

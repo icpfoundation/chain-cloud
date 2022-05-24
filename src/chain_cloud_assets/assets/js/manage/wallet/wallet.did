@@ -1,0 +1,9 @@
+
+type Wallet = record{
+    identity:principal;
+    describe:text;
+};
+service:{
+    add_wallet:(Wallet)-> ();
+    get_wallet:() -> (opt vec Wallet) query;
+}
