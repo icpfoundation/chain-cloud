@@ -9,6 +9,7 @@ type Member = record {
     name:text;
     authority:Authority;
     identity:principal;
+    join_time:nat64;
 };
 
 type Project = record {

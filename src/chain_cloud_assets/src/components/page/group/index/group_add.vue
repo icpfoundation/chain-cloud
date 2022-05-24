@@ -317,6 +317,7 @@ import { Principal } from "@dfinity/principal";
 import {
   MANAGE_CANISTER_LOCALNET,
   TEST_USER,
+  TEST_GROUP_ID,
 } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
@@ -325,7 +326,7 @@ export default {
       fileName: "No file chosen…",
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
       group: {
-        id: 3,
+        id: TEST_GROUP_ID,
         name: "",
         description: "",
         visibility: null,
@@ -344,9 +345,10 @@ export default {
       //   throw addUserRes.Err;
       //   return;
       // }
-      this.group.create_time = new Date().getTime();
+      let currentTime = new Date().getTime();
+      this.group.create_time = currentTime;
       this.group.visibility =
-        this.type == "Public" ? { Public: null } : { Private: Null };
+        this.type == "Public" ? { Public: null } : { Private: null };
       this.group.members = [
         [
           userIdentity,
@@ -354,6 +356,26 @@ export default {
             name: "management",
             authority: { Operational: null },
             identity: userIdentity,
+            join_time: currentTime,
+          },
+        ],
+      ];
+      // add test project
+      this.group.projects = [
+        [
+          1,
+          {
+            id: 1,
+            members: [],
+            canister_cycle_floor: BigInt("1000000000000"),
+            name: "test_project",
+            create_by: userIdentity,
+            description: "test_project",
+            git_repo_url: "https://github.com/icpfoundation/chain-cloud",
+            create_time: currentTime,
+            canisters: [],
+            visibility: { Public: null },
+            in_group: this.group.id,
           },
         ],
       ];

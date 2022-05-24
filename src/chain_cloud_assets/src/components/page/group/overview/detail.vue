@@ -34,20 +34,20 @@
   flex: 1;
   background: white;
   height: 7.8rem;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 0.08rem;
   padding: 0.2rem;
 }
-.rightBoxContent{
+.rightBoxContent {
   height: 6.95rem;
   width: 100%;
-  background: #FAFAFA;
-  border: 0.01rem solid #E6E6E6;
+  background: #fafafa;
+  border: 0.01rem solid #e6e6e6;
 }
 .leftBoxtop {
   width: 100%;
   height: 4.23rem;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 0.08rem;
   padding: 0.2rem;
 }
@@ -76,7 +76,7 @@
   margin-top: 0.2rem;
   width: 100%;
   height: 0.01rem;
-  background: #EBEBEB;
+  background: #ebebeb;
 }
 
 .leftContent {
@@ -100,7 +100,7 @@
 .leftBoxBottom {
   margin-top: 0.2rem;
   height: 2.68rem;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 0.08rem;
   padding: 0.2rem;
 }
@@ -124,7 +124,7 @@
 }
 
 .leftBoxBottomItem:hover {
-  background: #FAFAFA;
+  background: #fafafa;
 }
 
 .table {
@@ -137,13 +137,13 @@
 .tableItem {
   width: 100%;
   height: 0.8rem;
-  border-bottom: 0.01rem solid #EBEBEB;
+  border-bottom: 0.01rem solid #ebebeb;
   display: flex;
   align-items: center;
   padding: 0 0.2rem;
 }
 .tableItem:hover {
-  background: #FAFAFA;
+  background: #fafafa;
 }
 .groupName {
   height: 0.36rem;
@@ -164,14 +164,14 @@
 }
 
 .member {
-  border: 1px solid #1776FF;
-  color: #1776FF;
+  border: 1px solid #1776ff;
+  color: #1776ff;
 }
 
 .biaozhi {
   height: 0.2rem;
   border-radius: 0.1rem;
-  border: 0.01rem solid #CCCCCC;
+  border: 0.01rem solid #cccccc;
   padding: 0.01rem;
   font-size: 0.12rem;
   color: #666666;
@@ -204,7 +204,10 @@
         <div class="leftBoxtop">
           <div class="leftBoxName">Group info</div>
           <div class="leftBoxInfo">
-            <img src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png" alt="">
+            <img
+              src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
+              alt=""
+            />
             <span>Production Group</span>
           </div>
           <div class="leftBoxLine"></div>
@@ -215,20 +218,22 @@
             </div>
             <div class="leftContentItem">
               <span>Description</span>
-              <span class="leftContentItemDec">This is a wonderful and beautiful team.</span>
+              <span class="leftContentItemDec">{{ description }}</span>
             </div>
             <div class="leftContentItem">
               <span>Visibility level</span>
-              <span class="leftContentItemDec">Private</span>
+              <span class="leftContentItemDec">{{ visibility }}</span>
             </div>
             <div class="leftContentItem">
               <span>Created on</span>
-              <span class="leftContentItemDec">Apr 16,2019 7:54am</span>
+              <span class="leftContentItemDec">{{ createdTime }}</span>
             </div>
-            <div class="leftContentItem" style="margin-bottom: 0;">
+            <div class="leftContentItem" style="margin-bottom: 0">
               <span>Storage</span>
-              <span class="leftContentItemDec">115.6 MB (115.6 MB repositories, 0 Bytes build artifacts, 0 Bytes
-                LFS)</span>
+              <span class="leftContentItemDec"
+                >115.6 MB (115.6 MB repositories, 0 Bytes build artifacts, 0
+                Bytes LFS)</span
+              >
             </div>
           </div>
         </div>
@@ -236,36 +241,56 @@
           <div class="leftBoxName">Project info</div>
           <div class="leftBoxBottomContent">
             <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName">Production group/project one</span>
+              <span class="leftBoxBottomItemName"
+                >Production group/project one</span
+              >
               <span>860 KB</span>
             </div>
             <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName">Production group/project two</span>
+              <span class="leftBoxBottomItemName"
+                >Production group/project two</span
+              >
               <span>860 KB</span>
             </div>
             <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName">Production group/project three</span>
+              <span class="leftBoxBottomItemName"
+                >Production group/project three</span
+              >
               <span>860 KB</span>
             </div>
             <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName">Production group/project four</span>
+              <span class="leftBoxBottomItemName"
+                >Production group/project four</span
+              >
               <span>860 KB</span>
             </div>
           </div>
         </div>
       </div>
       <div class="rightBox">
-        <div class="leftBoxName" style="margin-bottom:0.2rem">Group members</div>
+        <div class="leftBoxName" style="margin-bottom: 0.2rem">
+          Group members
+        </div>
         <div class="rightBoxContent">
           <div class="table">
-            <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
-              <img src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png" alt="">
+            <div
+              class="tableItem"
+              v-for="(item, index) in tableData.tableList"
+              :key="index"
+            >
+              <img
+                src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
+                alt=""
+              />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.name }}</span>
-                  <div class="biaozhi" v-if="item.isBizoZhi" :class="{ member: item.biaozhi === 'Member' }">{{
-                      item.biaozhi
-                  }}
+                  <div
+                    class="biaozhi"
+                    v-if="item.isBizoZhi"
+                    :class="{ member: item.biaozhi === 'Member' }"
+                  >
+                    {{ item.biaozhi }}
                   </div>
                 </div>
                 <div class="groupNameInfo">{{ item.groupInfo }}</div>
@@ -273,8 +298,15 @@
             </div>
           </div>
           <div class="pageStyle">
-            <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-              :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+            <Page
+              v-if="tableData.total > 0"
+              :total="tableData.total"
+              :current="tableData.page"
+              show-total
+              :page-size="tableData.pageSize"
+              size="small"
+              @on-change="headPageFun"
+            />
           </div>
         </div>
       </div>
@@ -282,58 +314,113 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
+      description: "This is a wonderful and beautiful team.",
+      createdTime: "Apr 16,2019 7:54am",
+      visibility: "Public",
       tableData: {
         tableList: [
           {
             name: "XXXXXX",
             groupInfo: "Given access 3 years ago",
             isBizoZhi: true,
-            biaozhi: "Member"
+            biaozhi: "Member",
           },
           {
             name: "XXXXXX",
             groupInfo: "Given access 3 years ago",
             isBizoZhi: true,
-            biaozhi: "Owner"
+            biaozhi: "Owner",
           },
           {
             name: "XXXXXX",
             groupInfo: "Given access 3 years ago",
             isBizoZhi: true,
-            biaozhi: "Member"
+            biaozhi: "Member",
           },
           {
             name: "XXXXXX",
             groupInfo: "Given access 3 years ago",
             isBizoZhi: true,
-            biaozhi: "Member"
+            biaozhi: "Member",
           },
           {
             name: "XXXXXX",
             groupInfo: "Given access 3 years ago",
             isBizoZhi: true,
-            biaozhi: "Member"
+            biaozhi: "Member",
           },
         ],
         total: 5,
         page: 1,
-        pageSize: 3
-      }
-    }
+        pageSize: 3,
+      },
+    };
   },
   methods: {
-     headPageFun(value) {
+    headPageFun(value) {
       this.$Notice.info({
         title: "暂无后台数据",
         background: true,
-        duration: 3
+        duration: 3,
       });
+    },
+  },
+  async created() {
+    let test_user = Principal.fromText(TEST_USER);
+    let getGroupInfoRes = await manageCanister.getGroupInfo(
+      test_user,
+      TEST_GROUP_ID
+    );
+    if (getGroupInfoRes.Err) {
+      throw getGroupInfoRes.Err;
+      return;
+    }
+    this.description = getGroupInfoRes.Ok[0].description;
+    this.createdTime = dateFormat(getGroupInfoRes.Ok[0].create_time);
+    if ("Public" in getGroupInfoRes.Ok[0].visibility) {
+      this.visibility = "Public";
+    } else {
+      this.visibility = "Private";
+    }
+    let currentTime = BigInt(new Date().getTime());
+    for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
+      for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {}
+      for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
+        let duration = parseInt(
+          Number(
+            currentTime - BigInt(getGroupInfoRes.Ok[0].members[k][1].join_time)
+          ) / 1000
+        );
+        let create_time = "";
+        if (duration >= 86400) {
+          create_time = `Given access ${parseInt(duration / 86400)} day ago`;
+        } else if (duration >= 3600) {
+          create_time = `Given access ${parseInt(duration / 3600)} hour ago`;
+        } else if (duration >= 60) {
+          create_time = `Given access ${parseInt(duration / 60)} min ago`;
+        } else {
+          create_time = `Given access ${duration} s ago`;
+        }
+
+        this.tableData.tableList.push({
+          name: getGroupInfoRes.Ok[0].members[k][1].name,
+          groupInfo: create_time,
+          isBizoZhi: true,
+          biaozhi: "Member",
+        });
+      }
     }
   },
-  created() {
-  },
-}
+};
 </script>

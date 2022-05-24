@@ -37,6 +37,7 @@ export type InstallCodeMode = { 'reinstall' : null } |
   { 'upgrade' : null } |
   { 'install' : null };
 export interface Member {
+  'join_time' : bigint,
   'name' : string,
   'authority' : Authority,
   'identity' : Principal,

@@ -184,42 +184,50 @@
 <script>
 import { Principal } from "@dfinity/principal";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
-import { TEST_USER } from "@/chain_cloud_assets/assets/js/config";
+import {
+  TEST_USER,
+  TEST_GROUP_ID,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
       tableData: {
         tableList: [
-          // {
-          //   name: "yong1",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-          // {
-          //   name: "yong2",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-          // {
-          //   name: "yong3",
-          //   by: "By imgbot",
-          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-          //   type: "Recommended",
-          // },
-          // {
-          //   name: "yong4",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-          // {
-          //   name: "yong5",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
+          {
+            name: "yong1",
+            by: "By imgbot",
+            dec: "A GitHub app that optimizes your images",
+            type: "Recommended",
+            groupId: 0,
+          },
+          {
+            name: "yong2",
+            by: "By imgbot",
+            dec: "A GitHub app that optimizes your images",
+            type: "Recommended",
+            groupId: 0,
+          },
+          {
+            name: "yong3",
+            by: "By imgbot",
+            dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
+            type: "Recommended",
+            groupId: 0,
+          },
+          {
+            name: "yong4",
+            by: "By imgbot",
+            dec: "A GitHub app that optimizes your images",
+            type: "Recommended",
+            groupId: 0,
+          },
+          {
+            name: "yong5",
+            by: "By imgbot",
+            dec: "A GitHub app that optimizes your images",
+            type: "Recommended",
+            groupId: 0,
+          },
         ],
         total: 5,
         page: 1,
@@ -243,6 +251,7 @@ export default {
     toGroupFun(item) {
       this.$router.push({
         name: "group",
+        params: item,
       });
     },
   },
@@ -251,14 +260,17 @@ export default {
     this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
-        // let userIdentity = Principal.fromText(TEST_USER);
-        // let imageData = await manageCanister.getImage(userIdentity, 2);
-        // console.log("imageData", imageData);
+        let imageData = await manageCanister.getImage(
+          groupRes[i][j][0],
+          TEST_GROUP_ID
+        );
+
         this.tableData.tableList.push({
           name: groupRes[i][j][2].name,
           by: groupRes[i][j][0],
           dec: groupRes[i][j][2].description,
           type: "Recommended",
+          groupId: groupRes[i][j][2].id,
         });
       }
     }

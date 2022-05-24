@@ -29,17 +29,40 @@ const past = (time) => {
     return `${Math.floor(process)} s ago`
   }
   if (process > 60 && process < 3600) {
-    return `${Math.floor(process / 60 ) } min ago`
+    return `${Math.floor(process / 60)} min ago`
   }
   if (process > 3600 && process < 86400) {
-    return `${Math.floor(process / 3600 )} h ago`
+    return `${Math.floor(process / 3600)} h ago`
   }
 
   if (process > 86400) {
-    return `${Math.floor(process / 86400 )} day ago`
+    return `${Math.floor(process / 86400)} day ago`
   }
 }
 
 
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-export { formatDate, past }
+function dateFormat(t) {
+  t = new Date(Number(t))
+  let day = days[t.getDay()];
+  let hr = t.getHours();
+  let min = t.getMinutes();
+  if (min < 10) {
+    min = "0" + min;
+  }
+  let ampm = "am";
+  if (hr > 12) {
+    hr -= 12;
+    ampm = "pm";
+  }
+  let date = t.getDate();
+  let month = months[t.getMonth()];
+  let year = t.getFullYear();
+  return month + " " + date + "," + year + " " + hr + ":" + min + ampm + " "
+
+}
+
+
+export { formatDate, past, dateFormat }

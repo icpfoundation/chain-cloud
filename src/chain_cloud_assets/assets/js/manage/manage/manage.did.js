@@ -5,6 +5,7 @@ export const idlFactory = ({ IDL }) => {
     'Operational' : IDL.Null,
   });
   const Member = IDL.Record({
+    'join_time' : IDL.Nat64,
     'name' : IDL.Text,
     'authority' : Authority,
     'identity' : IDL.Principal,

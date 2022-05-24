@@ -1,5 +1,5 @@
 
-import { Profile, OptGroupRes, Group } from "./manage/manage/manage.did"
+import { Profile, OptGroupRes, Group, GroupInfoRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
 import { Principal } from "@dfinity/principal";
 import { Actor, HttpAgent } from "@dfinity/agent";
@@ -9,11 +9,13 @@ interface ManageInterface {
     add_user(principal: string, profile: Profile): OptGroupRes
     add_group(Group): OptGroupRes
     visible_project(): Array<Array<[Principal, bigint, Group]>>
+    get_group_info(user: Principal, group_id: bigint): GroupInfoRes,
 }
 
 interface ImageStoreInterface {
     image_store(manageCanister: Principal, user: Principal, group_id: bigint, imageData: Array<number>): imageStoreRes
     get_image(user: Principal, group_id: bigint): Array<number>
+
 }
 
 class ManageCanister {
@@ -39,6 +41,11 @@ class ManageCanister {
         return visibleProjectRes
     }
 
+    async getGroupInfo(user: Principal, group_id: bigint): Promise<GroupInfoRes> {
+        let getGroupInfoRes = await this.manageActor.get_group_info(user, group_id)
+        return getGroupInfoRes
+    }
+
     async imageStore(manageCanister: Principal, user: Principal, group_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
         let imageStoreRes = await this.imageActor.image_store(manageCanister, user, group_id, imageData)
         return imageStoreRes
@@ -48,6 +55,8 @@ class ManageCanister {
         let getImageRes = await this.imageActor.get_image(user, group_id)
         return getImageRes
     }
+
+
 
 }
 
