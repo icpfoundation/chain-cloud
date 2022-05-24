@@ -2,7 +2,7 @@
   <div>
     <div class="bgImg">
       <img src="../../../assets/img/home/bg.png" alt="" class="bg">
-      <!-- <headerview></headerview> -->
+      <headerview></headerview>
       <bannerview></bannerview>
     </div>
     <towork></towork>

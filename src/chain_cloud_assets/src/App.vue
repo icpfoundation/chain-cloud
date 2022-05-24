@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="layoutHead" v-show="show">
+    <!-- <div class="layoutHead" v-show="show">
       <div class="layoutLogo" @click="toHome">
         <img src="../assets/chain_cloud/head/nav_logo@2x.png" alt="" class="layoutLogoImg">
       </div>
@@ -16,7 +16,7 @@
       </div>
       <span  @click="toUserFun">Alfred Cobb</span>
       </div>
-    </div>
+    </div> -->
     <router-view></router-view>
   </div>
 </template>
@@ -138,7 +138,7 @@ body {
   background: #F8F8F8;
 }
 
-.layoutHead {
+/* .layoutHead {
   width: 100%;
   height: 0.74rem;
   padding: 0 0.2rem;
@@ -146,17 +146,17 @@ body {
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
+} */
 
-.layoutTab {
+/* .layoutTab {
   width: 12rem;
   display: flex;
   align-items: center;
   font-size: 14px;
   color: #333333;
-}
+} */
 
-.layoutUser {
+/* .layoutUser {
   font-size: 12px;
   color: #252B3A;
   flex: 1;
@@ -164,9 +164,9 @@ body {
   justify-content: flex-end;
   cursor: pointer;
   align-items: center;
-}
+} */
 
-.layoutLogo {
+/* .layoutLogo {
   display: flex;
   flex: 1;
   justify-content: flex-start;
@@ -176,14 +176,14 @@ body {
 .layoutLogoImg {
   width: 169px;
   height: 22px;
-}
-.layoutTabItem {
+} */
+/* .layoutTabItem {
     padding: 0 0.15rem;
     display: flex;
     align-items: center;
     cursor: pointer;
-}
-.loginview {
+} */
+/* .loginview {
   width: 122px;
   height: 30px;
   box-shadow: 0px 10px 26px 0px rgba(0, 35, 84, 0.5);
@@ -197,9 +197,9 @@ body {
   align-items: center;
   overflow: hidden;
   transition: height 0.5s;
-}
+} */
 
-.loginview span {
+/* .loginview span {
   color: #ffffff;
     line-height: 17px;
 }
@@ -207,7 +207,7 @@ body {
   width: 26px;
   height: 13px;
   margin-left: 10px;
-}
+} */
 .loginviewCol {
   width: 122px;
   margin-right: 0.2rem;
@@ -217,7 +217,7 @@ body {
   overflow: hidden;
   background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
 }
-.loginviewCol p {
+/* .loginviewCol p {
   margin: 0;
   padding: 0;
   display: block;
@@ -229,8 +229,8 @@ body {
   font-size: 13px;
   background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
   line-height: 30px;
-}
-
+} */
+/* 
 .hide p {
   height: 0px;
 }
@@ -239,7 +239,7 @@ body {
 }
 .exhibit p:hover {
   background: rgb(8, 101, 189);
-}
+} */
 
 @import "../assets/css/main.css";
 @import "../assets/css/color-dark.css";
