@@ -397,7 +397,7 @@ export default {
         return;
       }
       this.$Notice.info({
-        title: "暂无上传接口",
+        title: "添加组成功",
         background: true,
         duration: 3,
       });

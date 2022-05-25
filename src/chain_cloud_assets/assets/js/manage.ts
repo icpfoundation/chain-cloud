@@ -24,7 +24,7 @@ interface ImageStoreInterface {
     get_image(user: Principal, group_id: bigint): Array<number>
 }
 interface CanisterLogInterface {
-    get_log(user: Principal, group_id: bigint, page: bigint): [] | Array<Array<string>>
+    get_log(user: Principal, group_id: bigint, page: bigint): [] | [Array<[Principal, bigint, Array<string>]>]
 }
 
 class ManageCanister {
@@ -67,7 +67,7 @@ class ManageCanister {
         return getImageRes
     }
 
-    async getLog(account: Principal, group_id: bigint, page: bigint): Promise<[] | Array<Array<string>>> {
+    async getLog(account: Principal, group_id: bigint, page: bigint): Promise<[] | [Array<[Principal, bigint, Array<string>]>]> {
         let getLogRes = await this.canisterLogActor.get_log(account, group_id, page)
         return getLogRes
     }

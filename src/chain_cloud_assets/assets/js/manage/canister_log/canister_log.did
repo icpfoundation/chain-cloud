@@ -1,4 +1,4 @@
 service: {
     create_log:(principal,nat64,principal, blob) ->();
-    get_log:(principal,nat64,nat64) -> (opt vec vec text) query;
+    get_log:(principal,nat64,nat64) -> (opt vec record{principal;nat64;  vec  text}) query;
 }

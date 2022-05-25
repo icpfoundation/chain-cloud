@@ -308,7 +308,6 @@ export default {
   },
   methods: {
     async saveFun() {
-      console.log("TEST_USER", this.group);
       if (
         (this.group.id == "0") |
         (this.group.name == "") |
@@ -327,10 +326,11 @@ export default {
           this.group.description,
           visibility
         );
-
-      console.log("updateGroupRes", updateGroupRes);
+      if (updateGroupRes.Err) {
+        throw updateGroupRes.Err;
+      }
       this.$Notice.info({
-        title: "暂无上传接口",
+        title: "修改成功",
         background: true,
         duration: 3,
       });

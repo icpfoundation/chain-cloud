@@ -262,7 +262,7 @@ export default {
       for (let j = 0; j < groupRes[i].length; j++) {
         let imageData = await manageCanister.getImage(
           groupRes[i][j][0],
-          TEST_GROUP_ID
+          groupRes[i][j][1]
         );
 
         this.tableData.tableList.push({

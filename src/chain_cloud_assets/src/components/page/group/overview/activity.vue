@@ -183,10 +183,10 @@
                     src="../../../../../assets/chain_cloud/group/icon_connect@2x.png"
                     alt=""
                   />
-                  <span>Pushed to branch</span>
-                  <span class="groupNameInfoColor">osp-base-rust-lastest</span>
+                  <span>{{ item.operation }}</span>
+                  <span class="groupNameInfoColor">{{ item.branch }}</span>
                   <span>at</span>
-                  <span class="groupNameInfoColor">Group/lotus</span>
+                  <span class="groupNameInfoColor">{{ item.project }}</span>
                 </div>
                 <div class="groupTime">{{ item.size }} update</div>
               </div>
@@ -255,6 +255,9 @@ export default {
             time: "18 days ago",
             toName: "@shanshan",
             size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong1",
@@ -262,6 +265,9 @@ export default {
             time: "17 days ago",
             toName: "@shanshan",
             size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong2",
@@ -269,6 +275,9 @@ export default {
             time: "17 days ago",
             toName: "@shanshan",
             size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong3",
@@ -276,6 +285,9 @@ export default {
             time: "17 days ago",
             toName: "@shanshan",
             size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong4",
@@ -283,6 +295,9 @@ export default {
             time: "17 days ago",
             toName: "@shanshan",
             size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
         ],
         total: 5,
@@ -307,11 +322,39 @@ export default {
     },
   },
   async created() {
+    let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
+
     let user = Principal.fromText(TEST_USER);
     let getLogRes = await manageCanister.getLog(user, TEST_GROUP_ID, 1);
     for (let i = 0; i < getLogRes.length; i++) {
       for (let j = 0; j < getLogRes[i].length; j++) {
-        console.log("log", getLogRes[i][j][2]);
+        let duration = parseInt(
+          Number(currentTime - getLogRes[i][j][1] / BigInt(1000000000))
+        );
+
+        let create_time = "0 s ago";
+        if (duration >= 86400) {
+          create_time = `${parseInt(duration / 86400)} day ago`;
+        } else if (duration >= 3600) {
+          create_time = `${parseInt(duration / 3600)} hour ago`;
+        } else if (duration >= 60) {
+          create_time = `${parseInt(duration / 60)} min ago`;
+        } else {
+          create_time = `${duration} s ago`;
+        }
+        let logData =
+          getLogRes[i][j][2][2].length > 30
+            ? getLogRes[i][j][2][2].slice(0, 30) + "..."
+            : getLogRes[i][j][2][2];
+        this.tableData.tableList.push({
+          name: getLogRes[i][j][0].toString(),
+          //groupInfo: getLogRes[i][j][2],
+          time: create_time,
+          // toName: "@shanshan",
+          // size: 556565,
+          project: logData,
+          operation: getLogRes[i][j][2][0],
+        });
       }
     }
   },
