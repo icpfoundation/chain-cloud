@@ -146,6 +146,19 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
+    ManageCanister.prototype.getCanisterStatus = function (account, group_id, project_id, canister) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getCanisterStatusRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.get_canister_status(account, group_id, project_id, canister)];
+                    case 1:
+                        getCanisterStatusRes = _a.sent();
+                        return [2 /*return*/, getCanisterStatusRes];
+                }
+            });
+        });
+    };
     return ManageCanister;
 }());
 exports["default"] = ManageCanister;

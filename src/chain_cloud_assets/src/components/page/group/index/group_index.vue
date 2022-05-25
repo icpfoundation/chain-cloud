@@ -267,20 +267,29 @@ export default {
     this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
-        let imageData = await manageCanister.getImage(
-          groupRes[i][j][0],
-          groupRes[i][j][1]
-        );
-        imageData = new TextDecoder().decode(Uint8Array.from(imageData));
-
-        this.tableData.tableList.push({
-          name: groupRes[i][j][2].name,
-          by: groupRes[i][j][0],
-          dec: groupRes[i][j][2].description,
-          type: "Recommended",
-          groupId: groupRes[i][j][2].id,
-          imageData: imageData,
-        });
+        try {
+          let imageData = await manageCanister.getImage(
+            groupRes[i][j][0],
+            groupRes[i][j][1]
+          );
+          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          this.tableData.tableList.push({
+            name: groupRes[i][j][2].name,
+            by: groupRes[i][j][0],
+            dec: groupRes[i][j][2].description,
+            type: "Recommended",
+            groupId: groupRes[i][j][2].id,
+            imageData: imageData,
+          });
+        } catch (err) {
+          this.tableData.tableList.push({
+            name: groupRes[i][j][2].name,
+            by: groupRes[i][j][0],
+            dec: groupRes[i][j][2].description,
+            type: "Recommended",
+            groupId: groupRes[i][j][2].id,
+          });
+        }
       }
     }
   },

@@ -230,10 +230,7 @@
             </div>
             <div class="leftContentItem" style="margin-bottom: 0">
               <span>Storage</span>
-              <span class="leftContentItemDec"
-                >115.6 MB (115.6 MB repositories, 0 Bytes build artifacts, 0
-                Bytes LFS)</span
-              >
+              <span class="leftContentItemDec">{{ storageSize }}</span>
             </div>
           </div>
         </div>
@@ -312,6 +309,8 @@ export default {
       description: "This is a wonderful and beautiful team.",
       createdTime: "Apr 16,2019 7:54am",
       visibility: "Public",
+      storageSize:
+        "115.6 MB (115.6 MB repositories, 0 Bytes build artifacts, 0 Bytes LFS)",
       group: {
         projects: [
           {
@@ -386,10 +385,29 @@ export default {
       this.visibility = "Private";
     }
     let currentTime = BigInt(new Date().getTime());
+    let totalMemory_size = BigInt(0);
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
+        let memory_size = BigInt(0);
+        for (
+          let k = 0;
+          k < getGroupInfoRes.Ok[0].projects[j][1].canisters.length;
+          k++
+        ) {
+          let getCanisterStatusRes = await manageCanister.getCanisterStatus(
+            test_user,
+            TEST_GROUP_ID,
+            1,
+            getGroupInfoRes.Ok[0].projects[j][1].canisters[k]
+          );
+
+          if (getCanisterStatusRes.Ok) {
+            memory_size = memory_size + getCanisterStatusRes.Ok[0].memory_size;
+          }
+        }
+        totalMemory_size = totalMemory_size + memory_size;
         this.group.projects.push({
-          size: "0 KB",
+          size: `${memory_size / BigInt(1024)} KB`,
           name: getGroupInfoRes.Ok[0].projects[j][1].name,
         });
       }
@@ -418,6 +436,7 @@ export default {
         });
       }
     }
+    this.storageSize = `${totalMemory_size / BigInt(1024)} KB`;
   },
 };
 </script>

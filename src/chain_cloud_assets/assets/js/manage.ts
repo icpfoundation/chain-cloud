@@ -1,5 +1,5 @@
 
-import { Profile, OptGroupRes, Group, GroupInfoRes } from "./manage/manage/manage.did"
+import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
 import { Principal } from "@dfinity/principal";
 import { Actor, HttpAgent } from "@dfinity/agent";
@@ -17,6 +17,13 @@ interface ManageInterface {
         description: string,
         visibility: Profile,
     ): OptGroupRes,
+
+    get_canister_status(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+        canister: Principal,
+    ): CanisterStatusRes,
 }
 
 interface ImageStoreInterface {
@@ -79,6 +86,16 @@ class ManageCanister {
         visibility: Profile): Promise<OptGroupRes> {
         let updateGroupInfoRes = await this.manageActor.update_group_name_and_description_and_visibility(accout, group_id, name, description, visibility)
         return updateGroupInfoRes
+    }
+
+    async getCanisterStatus(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+        canister: Principal,
+    ): Promise<CanisterStatusRes> {
+        let getCanisterStatusRes = await this.manageActor.get_canister_status(account, group_id, project_id, canister)
+        return getCanisterStatusRes
     }
 
 }
