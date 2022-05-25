@@ -152,7 +152,9 @@
           :key="index"
           @click="toGroupFun(item)"
         >
-          <div class="tableImg"></div>
+          <div class="tableImg" style="overflow: hidden">
+            <img alt="" :src="item.imageData" />
+          </div>
           <div class="tableInfo">
             <span class="tableItemName">{{ item.name }}</span>
             <div class="tableItemBy">
@@ -199,6 +201,7 @@ export default {
             dec: "A GitHub app that optimizes your images",
             type: "Recommended",
             groupId: 0,
+            imageData: "",
           },
           {
             name: "yong2",
@@ -206,6 +209,7 @@ export default {
             dec: "A GitHub app that optimizes your images",
             type: "Recommended",
             groupId: 0,
+            imageData: "",
           },
           {
             name: "yong3",
@@ -213,6 +217,7 @@ export default {
             dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
             type: "Recommended",
             groupId: 0,
+            imageData: "",
           },
           {
             name: "yong4",
@@ -220,6 +225,7 @@ export default {
             dec: "A GitHub app that optimizes your images",
             type: "Recommended",
             groupId: 0,
+            imageData: "",
           },
           {
             name: "yong5",
@@ -227,6 +233,7 @@ export default {
             dec: "A GitHub app that optimizes your images",
             type: "Recommended",
             groupId: 0,
+            imageData: "",
           },
         ],
         total: 5,
@@ -264,6 +271,7 @@ export default {
           groupRes[i][j][0],
           groupRes[i][j][1]
         );
+        imageData = new TextDecoder().decode(Uint8Array.from(imageData));
 
         this.tableData.tableList.push({
           name: groupRes[i][j][2].name,
@@ -271,6 +279,7 @@ export default {
           dec: groupRes[i][j][2].description,
           type: "Recommended",
           groupId: groupRes[i][j][2].id,
+          imageData: imageData,
         });
       }
     }
