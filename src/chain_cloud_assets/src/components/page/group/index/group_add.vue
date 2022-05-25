@@ -379,7 +379,8 @@ export default {
           },
         ],
       ];
-      let addGroupRes = await manageCanister.addGroup(this.group);
+      let account = Principal.fromText(TEST_USER);
+      let addGroupRes = await manageCanister.addGroup(account, this.group);
       if (addGroupRes.Err) {
         throw addGroupRes.Err;
         return;

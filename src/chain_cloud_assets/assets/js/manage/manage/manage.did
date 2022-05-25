@@ -122,12 +122,12 @@ service :{
     get_canister_status:(principal,nat64,nat64,principal)->(CanisterStatusRes);
     get_user_info:(principal) -> (UserRes)query;
     add_user:(text,Profile) -> (OptGroupRes);
-    add_group:(Group) -> (OptGroupRes);
-    remove_group:(nat64) -> (OptGroupRes);
-    add_project:(nat64,Project) -> (OptGroupRes);
-    remove_project:(nat64,nat64) -> (OptGroupRes);
-    add_group_member:(nat64,Member) ->(OptGroupRes);
-    remove_group_member:(nat64,principal) ->(OptGroupRes);
+    add_group:(principal,Group) -> (OptGroupRes);
+    remove_group:(principal,nat64) -> (OptGroupRes);
+    add_project:(principal,nat64,Project) -> (OptGroupRes);
+    remove_project:(principal, nat64,nat64) -> (OptGroupRes);
+    add_group_member:(principal, nat64,Member) ->(OptGroupRes);
+    remove_group_member:(principal, nat64,principal) ->(OptGroupRes);
     add_project_canister:(principal,nat64,nat64,principal) -> (OptGroupRes);
     remove_project_canister:(principal,nat64,nat64,principal) -> (OptGroupRes);
     update_project_git_repo_url:(principal,nat64,nat64,text) -> (OptGroupRes);

@@ -240,29 +240,13 @@
         <div class="leftBoxBottom">
           <div class="leftBoxName">Project info</div>
           <div class="leftBoxBottomContent">
-            <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName"
-                >Production group/project one</span
-              >
-              <span>860 KB</span>
-            </div>
-            <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName"
-                >Production group/project two</span
-              >
-              <span>860 KB</span>
-            </div>
-            <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName"
-                >Production group/project three</span
-              >
-              <span>860 KB</span>
-            </div>
-            <div class="leftBoxBottomItem">
-              <span class="leftBoxBottomItemName"
-                >Production group/project four</span
-              >
-              <span>860 KB</span>
+            <div
+              class="leftBoxBottomItem"
+              v-for="(item, index) in group.projects"
+              :key="index"
+            >
+              <span class="leftBoxBottomItemName">{{ item.name }}</span>
+              <span>{{ item.size }}</span>
             </div>
           </div>
         </div>
@@ -328,6 +312,14 @@ export default {
       description: "This is a wonderful and beautiful team.",
       createdTime: "Apr 16,2019 7:54am",
       visibility: "Public",
+      group: {
+        projects: [
+          {
+            size: "860 KB",
+            name: "Production group/project one",
+          },
+        ],
+      },
       tableData: {
         tableList: [
           {
@@ -395,7 +387,12 @@ export default {
     }
     let currentTime = BigInt(new Date().getTime());
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
-      for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {}
+      for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
+        this.group.projects.push({
+          size: "0 KB",
+          name: getGroupInfoRes.Ok[0].projects[j][1].name,
+        });
+      }
       for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
         let duration = parseInt(
           Number(
