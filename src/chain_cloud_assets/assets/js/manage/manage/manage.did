@@ -1,0 +1,149 @@
+
+type Authority = variant {
+    Read:null;
+    Write:null;
+    Operational:null;
+};
+
+type Member = record {
+    name:text;
+    authority:Authority;
+    identity:principal;
+    join_time:nat64;
+};
+
+type Project = record {
+    id: nat64;
+    name: text;
+    description: text;
+    create_by: principal;
+    create_time: nat64;
+    git_repo_url: text;
+    visibility: Profile;
+    in_group: nat64;
+    canister_cycle_floor:nat;
+    members:vec record { principal; Member; };
+    canisters:vec principal;
+};
+
+type Group = record {
+    id: nat64;
+    name: text;
+    description: text;
+    visibility: Profile;
+    create_time: nat64;
+    projects:vec record { nat64; Project; };
+    members: vec record { principal; Member; };
+};
+
+type Result = variant{
+    Ok:null;
+    Err:text;
+};
+
+type CanisterStatus = variant{
+    running:null;
+    stopping:null;
+    stopped:null;
+};
+
+type CanisterSettings = record {
+    controllers: opt vec principal;
+    compute_allocation: opt nat;
+    memory_allocation: opt nat;
+    freezing_threshold:  opt nat;
+};
+
+
+type CanisterStatusResponse  = record{
+     status: CanisterStatus;
+     settings: CanisterSettings;
+     module_hash: opt vec nat8;
+     memory_size: nat;
+     cycles: nat;
+};
+
+type CanisterStatusRes = variant{
+    Ok:record {CanisterStatusResponse;nat} ;
+    Err:text;
+};
+
+type Profile = variant{
+    Public:null;
+    Private:null;
+};
+
+
+type RelationProject = record {
+    group_id: nat64;
+    project_id: nat64;
+};
+
+
+type User = record {
+     user_name: text;
+     profile: Profile;
+     identity: principal;
+     groups: vec record {nat64; Group; };
+     relation_project: vec record {principal; vec RelationProject;};
+};
+
+type UserRes = variant{
+    Ok:User;
+    Err:text;
+};
+
+type OptGroupRes = variant{
+    Ok:null;
+    Err:text;
+};
+
+type InstallCodeMode = variant{
+    install:null;
+    reinstall:null;
+    upgrade:null;  
+};
+
+type ProjectInfoRes = variant{
+    Ok:opt Project;
+    Err:text;
+};
+
+type GroupInfoRes = variant{
+    Ok:opt Group;
+    Err:text;
+};
+type GetGroupMemberInfoRes = variant{
+    Ok:Member;
+    Err:text;
+};
+
+service :{
+    get_canister_status:(principal,nat64,nat64,principal)->(CanisterStatusRes);
+    get_user_info:(principal) -> (UserRes)query;
+    add_user:(text,Profile) -> (OptGroupRes);
+    add_group:(Group) -> (OptGroupRes);
+    remove_group:(nat64) -> (OptGroupRes);
+    add_project:(nat64,Project) -> (OptGroupRes);
+    remove_project:(nat64,nat64) -> (OptGroupRes);
+    add_group_member:(nat64,Member) ->(OptGroupRes);
+    remove_group_member:(nat64,principal) ->(OptGroupRes);
+    add_project_canister:(principal,nat64,nat64,principal) -> (OptGroupRes);
+    remove_project_canister:(principal,nat64,nat64,principal) -> (OptGroupRes);
+    update_project_git_repo_url:(principal,nat64,nat64,text) -> (OptGroupRes);
+    update_project_visibility:(principal,nat64,nat64,Profile) -> (OptGroupRes);
+    update_project_description:(principal,nat64,nat64,text) -> (OptGroupRes);
+    add_project_member:(principal,nat64,nat64,Member)-> (OptGroupRes);
+    remove_project_member:(principal,nat64,nat64,principal)-> (OptGroupRes);
+    start_project_canister:(principal,nat64,nat64,principal)-> (OptGroupRes);
+    stop_project_canister:(principal,nat64,nat64,principal)-> (OptGroupRes);
+    delete_project_canister:(principal,nat64,nat64,principal)-> (OptGroupRes);
+    install_code:(principal,nat64,nat64,principal,InstallCodeMode,blob,blob) -> (OptGroupRes);
+    get_project_info:(principal,nat64,nat64) -> ( ProjectInfoRes) query;
+    get_group_info:(principal,nat64) -> (GroupInfoRes) query;
+    update_group_member_authority:(principal,nat64,principal,Authority) -> (OptGroupRes);
+    update_project_member_authority:(principal,nat64,nat64,principal,Authority) -> (OptGroupRes);
+    update_canister_cycle_floor:(principal,nat64,nat64,nat) -> (OptGroupRes);
+    visible_project:() -> (vec vec record{principal;nat64;Group}) query;
+    get_group_member_info:(principal,nat64,principal) -> (GetGroupMemberInfoRes) query;
+}

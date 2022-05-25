@@ -96,15 +96,14 @@
 
 <template>
   <div class="headerApp">
-    <div class="logoview" @click.self="gohome">
-      <img src="../../../assets/img/nav_logo.png" @click.self="gohome" alt="" />
+    <div class="logoview">
+      <img src="../../../assets/img/nav_logo@2x.png" @click="gohome" alt="" />
     </div>
     <div class="tabar">
       <el-menu :default-active="activeIndex" @select="handleSelect" class="menuBox">
         <el-menu-item index="1">IDE</el-menu-item>
-        <el-menu-item index="2">TEAM</el-menu-item>
-        <el-menu-item index="3">DAPP-SCAN</el-menu-item>
-        <el-menu-item index="4">ABOUT US</el-menu-item>
+        <el-menu-item index="2">TEAM-SCSAN</el-menu-item>
+        <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
     <div class="loginviewCol hide" @mouseenter.native="enter" @mouseleave.native="leave">
@@ -140,7 +139,7 @@ export default {
       value: "",
       IDENTITY_URL: "https://identity.ic0.app",
       principle: "",
-      principleShort: "LogIn with",
+      principleShort: "Login",
       maxTimeToLive: 120,
       authClient: null,
       activeIndex: null,
@@ -165,7 +164,10 @@ export default {
 
         case "2":
           if (this.$router.currentRoute.path != "/doc") {
-            this.$router.push("/doc");
+            this.$router.push({
+                name: "teamscan_index"
+            })
+            // this.$router.name("/teamscan_index");
           }
           break
 

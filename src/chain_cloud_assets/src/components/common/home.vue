@@ -42,12 +42,6 @@ export default {
   },
   methods: {},
   mounted() {
-    //installation_id
-    //setup_action
-    console.log(window.location.search.toString());
-    console.log("path: %s", this.$router.path);
-    console.log(this.$router.params);
-
     let urlParams = new URLSearchParams(window.location.search);
     let hascanister = urlParams.has("canisterId");
     let hasinstall_id = urlParams.has("installation_id");
