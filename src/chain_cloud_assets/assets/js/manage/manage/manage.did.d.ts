@@ -74,9 +74,15 @@ export interface User {
 export type UserRes = { 'Ok' : User } |
   { 'Err' : string };
 export interface _SERVICE {
-  'add_group' : (arg_0: Group) => Promise<OptGroupRes>,
-  'add_group_member' : (arg_0: bigint, arg_1: Member) => Promise<OptGroupRes>,
-  'add_project' : (arg_0: bigint, arg_1: Project) => Promise<OptGroupRes>,
+  'add_group' : (arg_0: Principal, arg_1: Group) => Promise<OptGroupRes>,
+  'add_group_member' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: Member,
+    ) => Promise<OptGroupRes>,
+  'add_project' : (arg_0: Principal, arg_1: bigint, arg_2: Project) => Promise<
+      OptGroupRes
+    >,
   'add_project_canister' : (
       arg_0: Principal,
       arg_1: bigint,
@@ -123,11 +129,17 @@ export interface _SERVICE {
       arg_5: Array<number>,
       arg_6: Array<number>,
     ) => Promise<OptGroupRes>,
-  'remove_group' : (arg_0: bigint) => Promise<OptGroupRes>,
-  'remove_group_member' : (arg_0: bigint, arg_1: Principal) => Promise<
-      OptGroupRes
-    >,
-  'remove_project' : (arg_0: bigint, arg_1: bigint) => Promise<OptGroupRes>,
+  'remove_group' : (arg_0: Principal, arg_1: bigint) => Promise<OptGroupRes>,
+  'remove_group_member' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: Principal,
+    ) => Promise<OptGroupRes>,
+  'remove_project' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: bigint,
+    ) => Promise<OptGroupRes>,
   'remove_project_canister' : (
       arg_0: Principal,
       arg_1: bigint,
@@ -163,6 +175,13 @@ export interface _SERVICE {
       arg_1: bigint,
       arg_2: Principal,
       arg_3: Authority,
+    ) => Promise<OptGroupRes>,
+  'update_group_name_and_description_and_visibility' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: string,
+      arg_3: string,
+      arg_4: Profile,
     ) => Promise<OptGroupRes>,
   'update_project_description' : (
       arg_0: Principal,

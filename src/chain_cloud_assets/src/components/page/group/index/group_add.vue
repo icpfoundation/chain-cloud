@@ -310,6 +310,7 @@ import {
   MANAGE_CANISTER_LOCALNET,
   TEST_USER,
   TEST_GROUP_ID,
+  TEST_CANISTER,
 } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
@@ -365,13 +366,14 @@ export default {
             description: "test_project",
             git_repo_url: "https://github.com/icpfoundation/chain-cloud",
             create_time: currentTime,
-            canisters: [],
+            canisters: [Principal.fromText(TEST_CANISTER)],
             visibility: { Public: null },
             in_group: this.group.id,
           },
         ],
       ];
-      let addGroupRes = await manageCanister.addGroup(this.group);
+      let account = Principal.fromText(TEST_USER);
+      let addGroupRes = await manageCanister.addGroup(account, this.group);
       if (addGroupRes.Err) {
         throw addGroupRes.Err;
         return;
@@ -388,7 +390,7 @@ export default {
         return;
       }
       this.$Notice.info({
-        title: "暂无上传接口",
+        title: "添加组成功",
         background: true,
         duration: 3,
       });

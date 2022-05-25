@@ -85,9 +85,17 @@ export const idlFactory = ({ IDL }) => {
     'install' : IDL.Null,
   });
   return IDL.Service({
-    'add_group' : IDL.Func([Group], [OptGroupRes], []),
-    'add_group_member' : IDL.Func([IDL.Nat64, Member], [OptGroupRes], []),
-    'add_project' : IDL.Func([IDL.Nat64, Project], [OptGroupRes], []),
+    'add_group' : IDL.Func([IDL.Principal, Group], [OptGroupRes], []),
+    'add_group_member' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, Member],
+        [OptGroupRes],
+        [],
+      ),
+    'add_project' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, Project],
+        [OptGroupRes],
+        [],
+      ),
     'add_project_canister' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Nat64, IDL.Principal],
         [OptGroupRes],
@@ -138,13 +146,17 @@ export const idlFactory = ({ IDL }) => {
         [OptGroupRes],
         [],
       ),
-    'remove_group' : IDL.Func([IDL.Nat64], [OptGroupRes], []),
+    'remove_group' : IDL.Func([IDL.Principal, IDL.Nat64], [OptGroupRes], []),
     'remove_group_member' : IDL.Func(
-        [IDL.Nat64, IDL.Principal],
+        [IDL.Principal, IDL.Nat64, IDL.Principal],
         [OptGroupRes],
         [],
       ),
-    'remove_project' : IDL.Func([IDL.Nat64, IDL.Nat64], [OptGroupRes], []),
+    'remove_project' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, IDL.Nat64],
+        [OptGroupRes],
+        [],
+      ),
     'remove_project_canister' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Nat64, IDL.Principal],
         [OptGroupRes],
@@ -172,6 +184,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_group_member_authority' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Principal, Authority],
+        [OptGroupRes],
+        [],
+      ),
+    'update_group_name_and_description_and_visibility' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, IDL.Text, IDL.Text, Profile],
         [OptGroupRes],
         [],
       ),

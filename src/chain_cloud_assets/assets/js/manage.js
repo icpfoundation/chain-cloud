@@ -37,16 +37,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var ManageCanister = /** @class */ (function () {
-    function ManageCanister(manageActor, imageActor) {
+    function ManageCanister(manageActor, imageActor, canisterLogActor) {
         this.manageActor = manageActor;
         this.imageActor = imageActor;
+        this.canisterLogActor = canisterLogActor;
     }
-    ManageCanister.prototype.addUser = function (principal, profile) {
+    ManageCanister.prototype.addUser = function (name, profile) {
         return __awaiter(this, void 0, void 0, function () {
             var addUserRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.manageActor.add_user(principal, profile)];
+                    case 0: return [4 /*yield*/, this.manageActor.add_user(name, profile)];
                     case 1:
                         addUserRes = _a.sent();
                         return [2 /*return*/, addUserRes];
@@ -54,12 +55,12 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.addGroup = function (group) {
+    ManageCanister.prototype.addGroup = function (account, group) {
         return __awaiter(this, void 0, void 0, function () {
             var addGroupRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.manageActor.add_group(group)];
+                    case 0: return [4 /*yield*/, this.manageActor.add_group(account, group)];
                     case 1:
                         addGroupRes = _a.sent();
                         return [2 /*return*/, addGroupRes];
@@ -80,12 +81,12 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.getGroupInfo = function (user, group_id) {
+    ManageCanister.prototype.getGroupInfo = function (account, group_id) {
         return __awaiter(this, void 0, void 0, function () {
             var getGroupInfoRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.manageActor.get_group_info(user, group_id)];
+                    case 0: return [4 /*yield*/, this.manageActor.get_group_info(account, group_id)];
                     case 1:
                         getGroupInfoRes = _a.sent();
                         return [2 /*return*/, getGroupInfoRes];
@@ -93,12 +94,12 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.imageStore = function (manageCanister, user, group_id, imageData) {
+    ManageCanister.prototype.imageStore = function (manageCanister, account, group_id, imageData) {
         return __awaiter(this, void 0, void 0, function () {
             var imageStoreRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.imageActor.image_store(manageCanister, user, group_id, imageData)];
+                    case 0: return [4 /*yield*/, this.imageActor.image_store(manageCanister, account, group_id, imageData)];
                     case 1:
                         imageStoreRes = _a.sent();
                         return [2 /*return*/, imageStoreRes];
@@ -106,15 +107,54 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.getImage = function (user, group_id) {
+    ManageCanister.prototype.getImage = function (account, group_id) {
         return __awaiter(this, void 0, void 0, function () {
             var getImageRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.imageActor.get_image(user, group_id)];
+                    case 0: return [4 /*yield*/, this.imageActor.get_image(account, group_id)];
                     case 1:
                         getImageRes = _a.sent();
                         return [2 /*return*/, getImageRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.getLog = function (account, group_id, page) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getLogRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.canisterLogActor.get_log(account, group_id, page)];
+                    case 1:
+                        getLogRes = _a.sent();
+                        return [2 /*return*/, getLogRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.updateGroupNameAndDescriptionAndVisibility = function (accout, group_id, name, description, visibility) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateGroupInfoRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.update_group_name_and_description_and_visibility(accout, group_id, name, description, visibility)];
+                    case 1:
+                        updateGroupInfoRes = _a.sent();
+                        return [2 /*return*/, updateGroupInfoRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.getCanisterStatus = function (account, group_id, project_id, canister) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getCanisterStatusRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.get_canister_status(account, group_id, project_id, canister)];
+                    case 1:
+                        getCanisterStatusRes = _a.sent();
+                        return [2 /*return*/, getCanisterStatusRes];
                 }
             });
         });

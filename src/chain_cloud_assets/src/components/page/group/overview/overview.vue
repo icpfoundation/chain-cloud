@@ -264,7 +264,7 @@
           alt=""
         />
         <div class="headLeftInfo">
-          <span>Project Group 1</span>
+          <span>{{ group.name }}</span>
           <div class="headLeftdec">
             <span>group</span>
             <span style="margin-left: 0.05rem; margin-right: 0.05rem">|</span>
@@ -401,6 +401,9 @@ import {
 export default {
   data() {
     return {
+      group: {
+        name: "Project Group 1",
+      },
       tabList: [
         {
           name: "All public projects",
@@ -519,6 +522,9 @@ export default {
       return;
     }
     this.tableData.total = getGroupInfoRes.Ok[0].projects.length;
+    if (getGroupInfoRes.Ok.length > 0) {
+      this.group.name = getGroupInfoRes.Ok[0].name;
+    }
     let currentTime = BigInt(new Date().getTime());
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {

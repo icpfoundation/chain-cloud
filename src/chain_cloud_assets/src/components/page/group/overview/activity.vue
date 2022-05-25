@@ -23,7 +23,7 @@
 .content {
   background: white;
   height: 7.8rem;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 0.08rem;
   padding: 0.2rem;
 }
@@ -47,14 +47,14 @@
 
 .chooseClass {
   background: rgba(23, 118, 255, 0.1);
-  color: #1776FF;
+  color: #1776ff;
 }
 
 .contentBox {
   height: 6.4rem;
   width: 100%;
-  background: #FAFAFA;
-  border: 0.01rem solid #E6E6E6;
+  background: #fafafa;
+  border: 0.01rem solid #e6e6e6;
   margin-top: 0.2rem;
 }
 
@@ -70,7 +70,7 @@
   height: 1rem;
   display: flex;
   align-items: center;
-    border-bottom: 0.01rem solid #EBEBEB;
+  border-bottom: 0.01rem solid #ebebeb;
 }
 
 .itemWidth1 {
@@ -96,7 +96,7 @@
   font-weight: 400;
   color: #666666;
   padding: 0 0.2rem;
-   padding-top: 0.18rem;
+  padding-top: 0.18rem;
 }
 
 .groupNameTop {
@@ -126,7 +126,7 @@
 }
 
 .groupNameInfoColor {
-  color: #1776FF;
+  color: #1776ff;
   margin: 0 0.1rem;
 }
 
@@ -150,25 +150,43 @@
     </div>
     <div class="content">
       <div class="actiontab">
-        <div class="actionitem" v-for="(item, index) in tabList" :key="index" :class="{ chooseClass: item.select }"
-          @click="chooseFun(item, index)">{{ item.name }}</div>
+        <div
+          class="actionitem"
+          v-for="(item, index) in tabList"
+          :key="index"
+          :class="{ chooseClass: item.select }"
+          @click="chooseFun(item, index)"
+        >
+          {{ item.name }}
+        </div>
       </div>
       <div class="contentBox">
         <div class="table">
-          <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in tableData.tableList"
+            :key="index"
+          >
             <div class="itemWidth1">
-              <img src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png" alt="" class="pepleImg">
+              <img
+                src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
+                alt=""
+                class="pepleImg"
+              />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.name }}</span>
                   <div class="toName">{{ item.toName }}</div>
                 </div>
                 <div class="groupNameInfo">
-                  <img src="../../../../../assets/chain_cloud/group/icon_connect@2x.png" alt="">
-                  <span>Pushed to branch</span>
-                  <span class="groupNameInfoColor">osp-base-rust-lastest</span>
+                  <img
+                    src="../../../../../assets/chain_cloud/group/icon_connect@2x.png"
+                    alt=""
+                  />
+                  <span>{{ item.operation }}</span>
+                  <span class="groupNameInfoColor">{{ item.branch }}</span>
                   <span>at</span>
-                  <span class="groupNameInfoColor">Group/lotus</span>
+                  <span class="groupNameInfoColor">{{ item.project }}</span>
                 </div>
                 <div class="groupTime">{{ item.size }} update</div>
               </div>
@@ -176,42 +194,57 @@
             <div class="itemWidth2">{{ item.time }}</div>
           </div>
         </div>
-         <div class="pageStyle">
-          <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-            :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+        <div class="pageStyle">
+          <Page
+            v-if="tableData.total > 0"
+            :total="tableData.total"
+            :current="tableData.page"
+            show-total
+            :page-size="tableData.pageSize"
+            size="small"
+            @on-change="headPageFun"
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
       tabList: [
         {
           name: "All",
-          select: true
+          select: true,
         },
         {
           name: "Push events",
-          select: false
+          select: false,
         },
         {
           name: "Merge events",
-          select: false
+          select: false,
         },
         {
           name: "Issue events",
-          select: false
+          select: false,
         },
         {
           name: "Comments",
-          select: false
+          select: false,
         },
         {
           name: "Team",
-          select: false
+          select: false,
         },
       ],
       tableData: {
@@ -221,59 +254,109 @@ export default {
             groupInfo: "go-statemachine",
             time: "18 days ago",
             toName: "@shanshan",
-            size: 556565
+            size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong1",
             groupInfo: "go-statemachine",
             time: "17 days ago",
             toName: "@shanshan",
-            size: 556565
+            size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong2",
             groupInfo: "go-statemachine",
             time: "17 days ago",
             toName: "@shanshan",
-            size: 556565
+            size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong3",
             groupInfo: "go-statemachine",
             time: "17 days ago",
             toName: "@shanshan",
-            size: 556565
+            size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
           {
             name: "yong4",
             groupInfo: "go-statemachine",
             time: "17 days ago",
             toName: "@shanshan",
-            size: 556565
+            size: 556565,
+            operation: "Pushed to branch",
+            branch: "osp-base-rust-lastest",
+            project: "Group/lotus",
           },
         ],
         total: 5,
         page: 1,
-        pageSize: 3
-      }
-    }
+        pageSize: 3,
+      },
+    };
   },
   methods: {
     chooseFun(item, index) {
-      this.tabList.forEach(element => {
-        element.select = false
-      })
+      this.tabList.forEach((element) => {
+        element.select = false;
+      });
       item.select = true;
     },
     headPageFun(value) {
       this.$Notice.info({
         title: "暂无后台数据",
         background: true,
-        duration: 3
+        duration: 3,
       });
+    },
+  },
+  async created() {
+    let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
+
+    let user = Principal.fromText(TEST_USER);
+    let getLogRes = await manageCanister.getLog(user, TEST_GROUP_ID, 1);
+    for (let i = 0; i < getLogRes.length; i++) {
+      for (let j = 0; j < getLogRes[i].length; j++) {
+        let duration = parseInt(
+          Number(currentTime - getLogRes[i][j][1] / BigInt(1000000000))
+        );
+
+        let create_time = "0 s ago";
+        if (duration >= 86400) {
+          create_time = `${parseInt(duration / 86400)} day ago`;
+        } else if (duration >= 3600) {
+          create_time = `${parseInt(duration / 3600)} hour ago`;
+        } else if (duration >= 60) {
+          create_time = `${parseInt(duration / 60)} min ago`;
+        } else {
+          create_time = `${duration} s ago`;
+        }
+        let logData =
+          getLogRes[i][j][2][2].length > 30
+            ? getLogRes[i][j][2][2].slice(0, 30) + "..."
+            : getLogRes[i][j][2][2];
+        this.tableData.tableList.push({
+          name: getLogRes[i][j][0].toString(),
+          //groupInfo: getLogRes[i][j][2],
+          time: create_time,
+          // toName: "@shanshan",
+          // size: 556565,
+          project: logData,
+          operation: getLogRes[i][j][2][0],
+        });
+      }
     }
   },
-  created() {
-  },
-}
+};
 </script>
