@@ -1,5 +1,5 @@
 <style scoped>
-.app {
+.app { margin-top:1rem;
   width: 100%;
   min-height: 500px;
 border: 1px solid #E6E6E6;

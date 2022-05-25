@@ -19,7 +19,7 @@ import BlogView from "../components/page/blogs.vue"
 import ServiceView from "../components/page/service.vue"
 import group from '../components/common/group.vue'
 import project from '../components/common/project.vue'
-const teamscan_index= r => require.ensure([], () => r(require('../components/page/teamscan/index.vue'), 'teamscan_index'))
+const teamscan_index = r => require.ensure([], () => r(require('../components/page/teamscan/index.vue'), 'teamscan_index'))
 
 const group_index = r => require.ensure([], () => r(require('../components/page/group/index/group_index.vue'), 'group_index'))
 const group_add = r => require.ensure([], () => r(require('../components/page/group/index/group_add.vue'), 'group_add'))
@@ -31,7 +31,7 @@ const setting = r => require.ensure([], () => r(require('../components/page/grou
 const user_index = r => require.ensure([], () => r(require('../components/page/user/user_index.vue'), 'user_index'))
 
 const project_index = r => require.ensure([], () => r(require('../components/page/project/index/project_index.vue'), 'project_index'))
-const project_add= r => require.ensure([], () => r(require('../components/page/project/index/project_add.vue'), 'project_add'))
+const project_add = r => require.ensure([], () => r(require('../components/page/project/index/project_add.vue'), 'project_add'))
 
 const projectoverview = r => require.ensure([], () => r(require('../components/page/project/overview/projectoverview.vue'), 'projectoverview'))
 const branches = r => require.ensure([], () => r(require('../components/page/project/overview/branches.vue'), 'branches'))
@@ -43,269 +43,304 @@ const activities = r => require.ensure([], () => r(require('../components/page/p
 const metric = r => require.ensure([], () => r(require('../components/page/project/canisters/metric.vue'), 'metric'))
 Vue.use(Router);
 
-export default new Router({
-    routes: [
-        {
-            path: '/',
-            redirect: '/home'
-        },
-        {
-            path: '/home',
-            component: Home,
-            meta: { title: 'Chain-Cloud' },
-            children: [
-                {
-                    path: '/i18n',
-                    component: I18n,
-                    meta: { title: '中英文切换' }
-                },
-                {
-                    path: '/404',
-                    component: P404,
-                    meta: { title: '404' }
-                },
-            ]
-        },
-        {
-          path: '/teamscan',
-          name: 'teamscan_index',
+
+let router = new Router({
+  routes: [{
+      path: '/',
+      redirect: '/home'
+    },
+    {
+      path: '/home',
+      component: Home,
+      meta: {
+        title: 'Chain-Cloud'
+      },
+      children: [{
+          path: '/i18n',
+          component: I18n,
           meta: {
-            title: 'chain-cloud teamscan',
+            title: '中英文切换'
+          }
+        },
+        {
+          path: '/404',
+          component: P404,
+          meta: {
+            title: '404'
+          }
+        },
+      ]
+    },
+    {
+      path: '/teamscan',
+      name: 'teamscan_index',
+      meta: {
+        title: 'chain-cloud teamscan',
+      },
+      component: teamscan_index
+    },
+    {
+      path: '/group',
+      name: 'group_index',
+      meta: {
+        title: 'chain-cloud groups',
+      },
+      component: group_index
+    },
+    {
+      path: '/group/add',
+      name: 'group_add',
+      meta: {
+        title: 'chain-cloud group_add',
+      },
+      component: group_add
+    },
+    {
+      path: '/group',
+      name: 'group',
+      component: group,
+      children: [{
+          path: 'overview',
+          name: 'overview',
+          component: overview,
+          meta: {
+            title: 'overview',
+            keepAlive: false
           },
-          component: teamscan_index
         },
         {
-            path: '/group',
-            name: 'group_index',
-            meta: {
-                title: 'chain-cloud groups',
-            },
-            component: group_index
-        },
-        {
-            path: '/group/add',
-            name: 'group_add',
-            meta: {
-                title: 'chain-cloud group_add',
-            },
-            component: group_add
-        },
-        {
-            path: '/group',
-            name: 'group',
-            component: group,
-            children: [
-                {
-                    path: 'overview',
-                    name: 'overview',
-                    component: overview,
-                    meta: {
-                        title: 'overview',
-                        keepAlive: false
-                    },
-                },
-                {
-                    path: 'overview/detail',
-                    name: 'detail',
-                    component: detail,
-                    meta: {
-                        title: 'overview-detail',
-                        keepAlive: false
-                    },
-                },
-                {
-                    path: 'overview/activity',
-                    name: 'activity',
-                    component: activity,
-                    meta: {
-                        title: 'overview-activity',
-                        keepAlive: false
-                    },
-                },
-                {
-                    path: 'members',
-                    name: 'members',
-                    component: members,
-                    meta: {
-                        title: 'members',
-                        keepAlive: false
-                    },
-                },
-                {
-                    path: 'setting',
-                    name: 'setting',
-                    component: setting,
-                    meta: {
-                        title: 'setting',
-                        keepAlive: false
-                    },
-                },
-            ]
-        },
-        {
-            path: '/user',
-            name: 'user_index',
-            meta: {
-                title: 'chain-cloud person',
-            },
-            component: user_index
-        },
-        {
-            path: '/project',
-            name: 'project_index',
-            meta: {
-              title: 'chain-cloud project',
-            },
-            component: project_index
+          path: 'overview/detail',
+          name: 'detail',
+          component: detail,
+          meta: {
+            title: 'overview-detail',
+            keepAlive: false
           },
-          {
-            path: '/project/add',
-            name: 'project_add',
-            meta: {
-              title: 'chain-cloud project',
-            },
-            component: project_add
+        },
+        {
+          path: 'overview/activity',
+          name: 'activity',
+          component: activity,
+          meta: {
+            title: 'overview-activity',
+            keepAlive: false
           },
+        },
         {
-            path: '/project',
-            name: 'project',
-            component: project,
-            children: [
-              {
-                path: 'projectoverview',
-                name: 'projectoverview',
-                component: projectoverview,
-                meta: {
-                  title: 'projectoverview',
-                  keepAlive: false
-                },
-              },
-              {
-                path: 'projectoverview/branches',
-                name: 'branches',
-                component: branches,
-                meta: {
-                  title: 'projectoverview-branches',
-                  keepAlive: false
-                },
-              },
-              {
-                path: 'projectoverview/commits',
-                name: 'commits',
-                component: commits,
-                meta: {
-                  title: 'overview-commits',
-                  keepAlive: false
-                },
-              },
-              {
-                path: 'projectcanisters',
-                name: 'projectcanisters',
-                component: projectcanisters,
-                meta: {
-                  title: 'projectcanisters',
-                  keepAlive: false
-                },
-              },
-              {
-                path: 'projectoverview/interface',
-                name: 'interface',
-                component: projectinterface,
-                meta: {
-                  title: 'projectoverview-interface',
-                  keepAlive: false
-                },
-              },
-              {
-                path: 'projectoverview/activities',
-                name: 'activities',
-                component: activities,
-                meta: {
-                  title: 'projectoverview-activities',
-                  keepAlive: false
-                },
-              },
-              {
-                path: 'projectoverview/metric',
-                name: 'metric',
-                component: metric,
-                meta: {
-                  title: 'projectoverview-metric',
-                  keepAlive: false
-                },
-              },
-            ]
+          path: 'members',
+          name: 'members',
+          component: members,
+          meta: {
+            title: 'members',
+            keepAlive: false
           },
-        {
-            path: '/doc',
-            name: "DocView",
-            component: DocView,
-            meta: { title: 'Document' }
         },
         {
-            path: '/blog',
-            name: "BlogView",
-            component: BlogView,
-            meta: { title: 'Blog' }
+          path: 'setting',
+          name: 'setting',
+          component: setting,
+          meta: {
+            title: 'setting',
+            keepAlive: false
+          },
+        },
+      ]
+    },
+    {
+      path: '/user',
+      name: 'user_index',
+      meta: {
+        title: 'chain-cloud person',
+      },
+      component: user_index
+    },
+    {
+      path: '/project',
+      name: 'project_index',
+      meta: {
+        title: 'chain-cloud project',
+      },
+      component: project_index
+    },
+    {
+      path: '/project/add',
+      name: 'project_add',
+      meta: {
+        title: 'chain-cloud project',
+      },
+      component: project_add
+    },
+    {
+      path: '/project',
+      name: 'project',
+      component: project,
+      children: [{
+          path: 'projectoverview',
+          name: 'projectoverview',
+          component: projectoverview,
+          meta: {
+            title: 'projectoverview',
+            keepAlive: false
+          },
         },
         {
-            path: '/service',
-            name: "ServiceView",
-            component: ServiceView,
-            meta: { title: 'Service' }
+          path: 'projectoverview/branches',
+          name: 'branches',
+          component: branches,
+          meta: {
+            title: 'projectoverview-branches',
+            keepAlive: false
+          },
         },
         {
-            path: '/deploy',
-            name: 'deployview',
-            component: Deploy,
-            meta: { title: 'Auto-deploy' }
+          path: 'projectoverview/commits',
+          name: 'commits',
+          component: commits,
+          meta: {
+            title: 'overview-commits',
+            keepAlive: false
+          },
         },
         {
-            path: '/authed',
-            name: 'authorizedview',
-            component: Authorized,
-            meta: { title: 'Authorized' }
+          path: 'projectcanisters',
+          name: 'projectcanisters',
+          component: projectcanisters,
+          meta: {
+            title: 'projectcanisters',
+            keepAlive: false
+          },
         },
         {
-            path: '*',
-            redirect: '/404'
+          path: 'projectoverview/interface',
+          name: 'interface',
+          component: projectinterface,
+          meta: {
+            title: 'projectoverview-interface',
+            keepAlive: false
+          },
         },
         {
-            path: '/sidebar',
-            component: Sidebar,
-            title: 'sidebar',
-            children: [
-                {
-                    path: '/',
-                    meta: { title: "OverView" },
-                    component: OverView,
-                }, {
-                    path: 'hosteslist',
-                    meta: { title: "HostesList" },
-                    component: HostesList,
-                }, {
-                    path: 'mertric',
-                    meta: { title: "Mertric" },
-                    component: Mertric,
+          path: 'projectoverview/activities',
+          name: 'activities',
+          component: activities,
+          meta: {
+            title: 'projectoverview-activities',
+            keepAlive: false
+          },
+        },
+        {
+          path: 'projectoverview/metric',
+          name: 'metric',
+          component: metric,
+          meta: {
+            title: 'projectoverview-metric',
+            keepAlive: false
+          },
+        },
+      ]
+    },
+    {
+      path: '/doc',
+      name: "DocView",
+      component: DocView,
+      meta: {
+        title: 'Document'
+      }
+    },
+    {
+      path: '/blog',
+      name: "BlogView",
+      component: BlogView,
+      meta: {
+        title: 'Blog'
+      }
+    },
+    {
+      path: '/service',
+      name: "ServiceView",
+      component: ServiceView,
+      meta: {
+        title: 'Service'
+      }
+    },
+    {
+      path: '/deploy',
+      name: 'deployview',
+      component: Deploy,
+      meta: {
+        title: 'Auto-deploy'
+      }
+    },
+    {
+      path: '/authed',
+      name: 'authorizedview',
+      component: Authorized,
+      meta: {
+        title: 'Authorized'
+      }
+    },
+    {
+      path: '*',
+      redirect: '/404'
+    },
+    {
+      path: '/sidebar',
+      component: Sidebar,
+      title: 'sidebar',
+      children: [{
+          path: '/',
+          meta: {
+            title: "OverView"
+          },
+          component: OverView,
+        }, {
+          path: 'hosteslist',
+          meta: {
+            title: "HostesList"
+          },
+          component: HostesList,
+        }, {
+          path: 'mertric',
+          meta: {
+            title: "Mertric"
+          },
+          component: Mertric,
 
-                }, {
-                    path: 'detail',
-                    name: 'detail',
-                    meta: { title: "Detail" },
-                    component: Detail,
-                }, {
-                    path: 'canisterLog',
-                    name: 'canisterLog',
-                    meta: { title: "CanisterLog" },
-                    component: CanisterLog,
-                }, {
-                    path: 'viewall',
-                    name: 'viewall',
-                    meta: { title: "ViewAll" },
-                    component: ViewAll,
-                },
+        }, {
+          path: 'detail',
+          name: 'detail',
+          meta: {
+            title: "Detail"
+          },
+          component: Detail,
+        }, {
+          path: 'canisterLog',
+          name: 'canisterLog',
+          meta: {
+            title: "CanisterLog"
+          },
+          component: CanisterLog,
+        }, {
+          path: 'viewall',
+          name: 'viewall',
+          meta: {
+            title: "ViewAll"
+          },
+          component: ViewAll,
+        },
 
-            ]
-        }
-    ]
+      ]
+    }
+  ]
+})
+router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title;
+  next();
+
 });
+router.afterEach((to, from, next) => {
+  window.scrollTo(0, 0)
+  document.body.scrollTop = 0
+  document.documentElement.scrollTop = 0
+})
+export default router;

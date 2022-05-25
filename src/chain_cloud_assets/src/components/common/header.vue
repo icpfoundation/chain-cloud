@@ -5,6 +5,9 @@
   display: flex;
   align-items: center;
   position: relative;
+  height: 74px;
+  display: flex;
+  align-items: center;
 }
 .tabar {
   margin-left: 272px;
