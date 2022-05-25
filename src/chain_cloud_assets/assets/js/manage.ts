@@ -10,6 +10,13 @@ interface ManageInterface {
     add_group(account: Principal, group: Group): OptGroupRes
     visible_project(): Array<Array<[Principal, bigint, Group]>>
     get_group_info(user: Principal, group_id: bigint): GroupInfoRes,
+    update_group_name_and_description_and_visibility(
+        accout: Principal,
+        group_id: bigint,
+        name: string,
+        description: string,
+        visibility: Profile,
+    ): OptGroupRes,
 }
 
 interface ImageStoreInterface {
@@ -65,6 +72,14 @@ class ManageCanister {
         return getLogRes
     }
 
+    async updateGroupNameAndDescriptionAndVisibility(accout: Principal,
+        group_id: bigint,
+        name: string,
+        description: string,
+        visibility: Profile): Promise<OptGroupRes> {
+        let updateGroupInfoRes = await this.manageActor.update_group_name_and_description_and_visibility(accout, group_id, name, description, visibility)
+        return updateGroupInfoRes
+    }
 
 }
 

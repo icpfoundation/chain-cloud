@@ -133,6 +133,19 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
+    ManageCanister.prototype.updateGroupNameAndDescriptionAndVisibility = function (accout, group_id, name, description, visibility) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateGroupInfoRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.update_group_name_and_description_and_visibility(accout, group_id, name, description, visibility)];
+                    case 1:
+                        updateGroupInfoRes = _a.sent();
+                        return [2 /*return*/, updateGroupInfoRes];
+                }
+            });
+        });
+    };
     return ManageCanister;
 }());
 exports["default"] = ManageCanister;

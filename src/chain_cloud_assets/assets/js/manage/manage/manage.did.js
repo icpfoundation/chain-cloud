@@ -187,6 +187,11 @@ export const idlFactory = ({ IDL }) => {
         [OptGroupRes],
         [],
       ),
+    'update_group_name_and_description_and_visibility' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, IDL.Text, IDL.Text, Profile],
+        [OptGroupRes],
+        [],
+      ),
     'update_project_description' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Nat64, IDL.Text],
         [OptGroupRes],
