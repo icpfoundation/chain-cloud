@@ -6,40 +6,30 @@
   align-items: center;
   position: relative;
   height: 74px;
-  display: flex;
-  align-items: center;
+  justify-content: space-between;
 }
-.tabar {
+/* .tabar {
   margin-left: 272px;
-}
-.logoview {
-  width: 169px;
+} */
+.logo {
+  width: 142px;
   height: 22px;
 }
+
 .menuBox {
   display: flex;
   align-items: center;
   background: none;
 }
-.chooselang {
-  font-size: 14px;
+.loginviewCol {
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
-
-.arrowdown {
-  width: 90px;
-  height: 30px;
-  border-radius: 1px;
-}
-
-.selectlang {
-  width: 70%;
-  margin-top: 12%;
-}
-
 .loginview {
   width: 122px;
   height: 30px;
-  box-shadow: 0px 10px 26px 0px rgba(0, 35, 84, 0.5);
   border-radius: 4px;
   padding-left: 10px;
   margin-top: 1%;
@@ -50,38 +40,41 @@
   align-items: center;
   overflow: hidden;
   transition: height 0.5s;
+  position: relative;
+  cursor: pointer;
+  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
 }
 
 .loginview span {
   color: #ffffff;
   line-height: 17px;
 }
-.loginviewCol {
-  width: 122px;
+.tab {
   position: absolute;
-  right: 0;
-  width: auto;
-  transition: height 1s;
-  cursor: pointer;
-  border-radius: 4px;
-  overflow: hidden;
-  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
+  left: 0;
+  width: 122px;
+  top: 35px;
 }
-.loginviewCol p {
+.tabItem {
   margin: 0;
   padding: 0;
   display: block;
   width: 100%;
-  height: 0px;
-  color: white;
+  height: 30px;
+  color: #0059ff;
   transition: height 0.5s;
   text-align: center;
   font-size: 13px;
-  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
   line-height: 30px;
+  background: white;
+}
+.tabItem:hover {
+  background: linear-gradient(270deg, #0059ff 0%, #1776ff 100%);
+  color: white;
+  cursor: pointer;
 }
 
-.hide p {
+/* .hide p {
   height: 0px;
 }
 .exhibit p {
@@ -89,35 +82,54 @@
 }
 .exhibit p:hover {
   background: rgb(8, 101, 189);
-}
+} */
 .dfxlogo {
   width: 26px;
   height: 13px;
   margin-left: 10px;
 }
+.name {
+  margin-left: 20px;
+  cursor: pointer;
+}
 </style>
 
 <template>
   <div class="headerApp">
-    <div class="logoview">
-      <img src="../../../assets/img/nav_logo@2x.png" @click="gohome" alt="" />
-    </div>
+    <img
+      src="../../../assets/img/nav_logo@2x.png"
+      @click="gohome"
+      alt=""
+      class="logo"
+    />
     <div class="tabar">
-      <el-menu :default-active="activeIndex" @select="handleSelect" class="menuBox">
+      <el-menu
+        :default-active="activeIndex"
+        @select="handleSelect"
+        class="menuBox"
+      >
         <el-menu-item index="1">IDE</el-menu-item>
         <el-menu-item index="2">TEAM-SCSAN</el-menu-item>
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
-    <div class="loginviewCol hide" @mouseenter.native="enter" @mouseleave.native="leave">
-      <div class="loginview" @click.self="doSomething">
+    <div
+      class="loginviewCol">
+      <div class="loginview"  @mouseenter="enter" @mouseleave="leave" @click.self="doSomething">
         <span @click.self="doSomething"> {{ principleShort }} </span>
-        <img class="dfxlogo" src="../../../assets/img/logo_difinity@2x.png" alt="dfinity logo" @click.self="doSomething" />
+        <img
+          class="dfxlogo"
+          src="../../../assets/img/logo_difinity@2x.png"
+          alt="dfinity logo"
+          @click.self="doSomething"
+        />
       </div>
-      <p @click.stop="doSomething">MORE</p>
-      <p @click.stop="logoutAction">SIGNOUT</p>
+      <div class="tab" v-if="tabShow&&principleShort!='Login'">
+        <div @click.stop="doSomething" class="tabItem">MORE</div>
+        <div @click.stop="logoutAction" class="tabItem">SIGNOUT</div>
+      </div>
+      <span class="name" @click="toPersonFun" v-if="principleShort!='Login'">{{ principleShort }}</span>
     </div>
-
   </div>
 </template>
 
@@ -146,6 +158,7 @@ export default {
       maxTimeToLive: 120,
       authClient: null,
       activeIndex: null,
+      tabShow: false,
     };
   },
   computed: {
@@ -163,28 +176,28 @@ export default {
           if (this.$router.currentRoute.path != "/home") {
             this.$router.push("/home");
           }
-          break
+          break;
 
         case "2":
           if (this.$router.currentRoute.path != "/doc") {
             this.$router.push({
-                name: "teamscan_index"
-            })
+              name: "teamscan_index",
+            });
             // this.$router.name("/teamscan_index");
           }
-          break
+          break;
 
         case "3":
           if (this.$router.currentRoute.path != "/blog") {
             this.$router.push("/blog");
           }
-          break
+          break;
 
         case "4":
           if (this.$router.currentRoute.path != "/service") {
             this.$router.push("/service");
           }
-          break
+          break;
 
         default:
           break;
@@ -192,19 +205,22 @@ export default {
     },
 
     enter() {
-      let principle = window.localStorage.getItem("principleString");
-      if (principle) {
-        let loginview = document.getElementsByClassName("loginviewCol");
-        loginview[0].setAttribute("class", "loginviewCol exhibit");
-      }
+      this.tabShow = true;
+      // let principle = window.localStorage.getItem("principleString");
+      // if (principle) {
+      //   let loginview = document.getElementsByClassName("loginviewCol");
+      //   loginview[0].setAttribute("class", "loginviewCol exhibit");
+      // }
     },
 
     leave() {
-      let loginview = document.getElementsByClassName("loginviewCol");
-      loginview[0].setAttribute("class", "loginviewCol hide");
+      // this.tabShow = false;
+      // let loginview = document.getElementsByClassName("loginviewCol");
+      // loginview[0].setAttribute("class", "loginviewCol hide");
     },
 
     doSomething: async function (event) {
+      this.tabShow=false
       if (event) {
         let principle = window.localStorage.getItem("principleString");
         if (principle == "" || principle == undefined || principle == null) {
@@ -245,29 +261,35 @@ export default {
         this.$router.push("/home");
       }
     },
-
+    toPersonFun() {
+      this.$router.push({
+        name: "user_index",
+      });
+    },
     logoutAction: async function () {
+      this.tabShow=false
       this.authClient.logout();
       this.removeICIdentity();
-      this.principal = "LOGIN";
-      this.principleShort = "LogIn with";
+      this.principal = "Login";
+      this.principleShort = "Login";
       this.leave();
     },
   },
 
   mounted() {
+    
     switch (this.$router.currentRoute.path) {
       case "/home":
-        this.activeIndex = "1"
+        this.activeIndex = "1";
         break;
       case "/doc":
-        this.activeIndex = "2"
+        this.activeIndex = "2";
         break;
       case "/blog":
-        this.activeIndex = "3"
+        this.activeIndex = "3";
         break;
       case "/service":
-        this.activeIndex = "4"
+        this.activeIndex = "4";
         break;
 
       default:
