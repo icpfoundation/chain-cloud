@@ -432,7 +432,6 @@ export default {
     methods: {
         chooseFun(item) {
             item.select = !item.select;
-            console.log("dsfdsf")
             let arr = []
             this.filtersList.forEach(element => {
                 if (element.select) {
