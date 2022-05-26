@@ -1,7 +1,7 @@
 <style scoped>
 .app {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 100px;
 }
 
 .head {
