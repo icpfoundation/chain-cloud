@@ -27,6 +27,7 @@ body {
 .martop{
   margin-top: 100px;
 }
+
 @import "../assets/css/main.css";
 @import "../assets/css/color-dark.css";
 </style>
@@ -35,7 +36,7 @@ body {
     <div class="headview">
       <headerview></headerview>
     </div>
-    <router-view></router-view>
+      <router-view></router-view>
     <bottom></bottom>
   </div>
 </template>

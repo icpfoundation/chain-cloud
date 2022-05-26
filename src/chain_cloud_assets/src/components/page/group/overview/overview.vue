@@ -1,6 +1,5 @@
 <style scoped>
 .app {
-  margin-top: 100px;
   width: 100%;
 }
 
@@ -277,7 +276,7 @@
           </div>
         </div>
       </div>
-      <div class="headRight">
+      <div class="headRight" @click="toaddProjectFun">
         <img
           src="../../../../../assets/chain_cloud/group/icon_add_white@2x.png"
           alt=""
@@ -484,6 +483,11 @@ export default {
     };
   },
   methods: {
+    toaddProjectFun(){
+      this.$router.push({
+        name:"project_add"
+      })
+    },
     chooseFun(item, index) {
       this.tabList.forEach((element) => {
         element.select = false;

@@ -1,4 +1,7 @@
 <style scoped>
+.layoutApp{
+  margin-top: 74px;
+}
 .logo {
   display: flex;
   flex: 1;
