@@ -1,7 +1,8 @@
 
-import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes } from "./manage/manage/manage.did"
+import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes, Project, ProjectInfoRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
 import { Principal } from "@dfinity/principal";
+import { Action } from "./manage/canister_log/canister_log.did"
 import { Actor, HttpAgent } from "@dfinity/agent";
 
 
@@ -24,6 +25,15 @@ interface ManageInterface {
         project_id: bigint,
         canister: Principal,
     ): CanisterStatusRes,
+
+    add_project(account: Principal, group_id: bigint, project: Project): OptGroupRes
+
+    get_project_info(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+    ): ProjectInfoRes,
+
 }
 
 interface ImageStoreInterface {
@@ -31,7 +41,7 @@ interface ImageStoreInterface {
     get_image(user: Principal, group_id: bigint): Array<number>
 }
 interface CanisterLogInterface {
-    get_log(user: Principal, group_id: bigint, page: bigint): [] | [Array<[Principal, bigint, Array<string>]>]
+    get_log(user: Principal, group_id: bigint, page: bigint): [] | [Array<[Principal, bigint, Action, Array<string>]>]
 }
 
 class ManageCanister {
@@ -74,7 +84,7 @@ class ManageCanister {
         return getImageRes
     }
 
-    async getLog(account: Principal, group_id: bigint, page: bigint): Promise<[] | [Array<[Principal, bigint, Array<string>]>]> {
+    async getLog(account: Principal, group_id: bigint, page: bigint): Promise<[] | [Array<[Principal, bigint, Action, Array<string>]>]> {
         let getLogRes = await this.canisterLogActor.get_log(account, group_id, page)
         return getLogRes
     }
@@ -98,6 +108,18 @@ class ManageCanister {
         return getCanisterStatusRes
     }
 
+
+    async addProject(account: Principal, group_id: bigint, project: Project) {
+        let addProjectRes = await this.manageActor.add_project(account, group_id, project)
+        return addProjectRes
+    }
+
+    async getProjectInfo(account: Principal,
+        group_id: bigint,
+        project_id: bigint,) {
+        let getProjectRes = await this.manageActor.get_project_info(account, group_id, project_id)
+        return getProjectRes
+    }
 }
 
 

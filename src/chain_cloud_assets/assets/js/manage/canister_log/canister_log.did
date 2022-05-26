@@ -1,4 +1,11 @@
+
+type Action = variant{
+    UpdateGroup:record{nat64;text};
+    UpdateProject:record{nat64;nat64;text};
+    UpdateProjectCanister:record{nat64;nat64;text};
+};
+
 service: {
     create_log:(principal,nat64,principal, blob) ->();
-    get_log:(principal,nat64,nat64) -> (opt vec record{principal;nat64;  vec  text}) query;
+    get_log:(principal,nat64,nat64) -> (opt vec record{principal;nat64;Action;  vec  text}) query;
 }

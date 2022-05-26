@@ -1,5 +1,6 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
+  margin-top: 1rem;
   width: 100%;
   padding-bottom: 100px;
 }
@@ -354,24 +355,7 @@ export default {
         ],
       ];
       // add test project
-      this.group.projects = [
-        [
-          1,
-          {
-            id: 1,
-            members: [],
-            canister_cycle_floor: BigInt("1000000000000"),
-            name: "test_project",
-            create_by: userIdentity,
-            description: "test_project",
-            git_repo_url: "https://github.com/icpfoundation/chain-cloud",
-            create_time: currentTime,
-            canisters: [Principal.fromText(TEST_CANISTER)],
-            visibility: { Public: null },
-            in_group: this.group.id,
-          },
-        ],
-      ];
+      // this.group.projects = [[1]];
       let account = Principal.fromText(TEST_USER);
       let addGroupRes = await manageCanister.addGroup(account, this.group);
       if (addGroupRes.Err) {
