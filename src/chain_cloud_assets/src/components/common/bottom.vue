@@ -144,6 +144,7 @@
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #666666;
+  justify-content: center;
 }
 </style>
 
