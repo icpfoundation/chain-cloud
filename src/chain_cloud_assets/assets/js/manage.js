@@ -159,6 +159,45 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
+    ManageCanister.prototype.addProject = function (account, group_id, project) {
+        return __awaiter(this, void 0, void 0, function () {
+            var addProjectRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.add_project(account, group_id, project)];
+                    case 1:
+                        addProjectRes = _a.sent();
+                        return [2 /*return*/, addProjectRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.getProjectInfo = function (account, group_id, project_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getProjectRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.get_project_info(account, group_id, project_id)];
+                    case 1:
+                        getProjectRes = _a.sent();
+                        return [2 /*return*/, getProjectRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.getUserInfo = function (account) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getUserInfoRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.get_user_info(account)];
+                    case 1:
+                        getUserInfoRes = _a.sent();
+                        return [2 /*return*/, getUserInfoRes];
+                }
+            });
+        });
+    };
     return ManageCanister;
 }());
 exports["default"] = ManageCanister;

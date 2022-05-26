@@ -12,12 +12,11 @@
   width: 100%;
 }
 
-
 .table {
   width: 100%;
   height: 800px;
   margin-top: 20px;
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -26,7 +25,7 @@
   width: 100%;
   height: 80px;
   padding: 20px;
-  border-bottom: 1px solid #EBEBEB;
+  border-bottom: 1px solid #ebebeb;
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -71,7 +70,7 @@
 
 .mergestyle {
   font-size: 12px;
-  color: #1776FF;
+  color: #1776ff;
   margin: 0 10px;
 }
 
@@ -91,13 +90,13 @@
 .grouptype {
   width: 36px;
   height: 36px;
-  background: #1776FF;
+  background: #1776ff;
   border-radius: 4px;
   text-align: center;
   line-height: 36px;
   font-size: 20px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-right: 10px;
 }
 
@@ -134,7 +133,7 @@
   justify-content: center;
   height: 20px;
   border-radius: 10px;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   font-size: 12px;
   color: #666666;
 }
@@ -174,7 +173,11 @@
     <div class="content">
       <div class="comItem">
         <div class="table">
-          <div class="tableItem" v-for="(item, index) in projectList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in projectList"
+            :key="index"
+          >
             <div class="grouptype">{{ item.groupType }}</div>
             <div class="groupContent" :class="{ groupContentInfo: item.info }">
               <span class="groupName">{{ item.name }}</span>
@@ -182,19 +185,38 @@
             </div>
             <div class="tableItemgroupTime">
               <div class="tableItemgroupTimeItem">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_shuqian@2x.png" alt="">
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_shuqian@2x.png"
+                  alt=""
+                />
                 <span>{{ item.shuqian }}</span>
               </div>
               <div class="tableItemgroupTimeItem">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_peoples@2x.png" alt="">
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_peoples@2x.png"
+                  alt=""
+                />
                 <span>{{ item.peoplese }}</span>
               </div>
               <div class="tableItemgroupTimeItem">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_private@2x.png" alt="" v-if="item.id === 1"
-                  class="typeImg">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_internal@2x.png" alt="" v-else-if="item.id === 2"
-                  class="typeImg">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_pubilc@2x.png" alt="" v-else class="typeImg">
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_private@2x.png"
+                  alt=""
+                  v-if="item.id === 1"
+                  class="typeImg"
+                />
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_internal@2x.png"
+                  alt=""
+                  v-else-if="item.id === 2"
+                  class="typeImg"
+                />
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_pubilc@2x.png"
+                  alt=""
+                  v-else
+                  class="typeImg"
+                />
               </div>
             </div>
           </div>
@@ -204,43 +226,66 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+  TEST_CANISTER,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
       projectList: [
-        {
-          groupType: "G",
-          name: "XXXXX",
-          id: 1,
-          info: "filecoin mining pool rust-fil-sector-builder",
-          shuqian: 1,
-          peoplese: 1,
-          xingNum: 0,
-        },
-        {
-          groupType: "F",
-          name: "XXXXX",
-          id: 2,
-          info: "filecoin mining pool rust-fil-sector-builder",
-          shuqian: 2,
-          peoplese: 2,
-          xingNum: 1,
-        },
-        {
+        // {
+        //   groupType: "G",
+        //   name: "XXXXX",
+        //   id: 1,
+        //   info: "filecoin mining pool rust-fil-sector-builder",
+        //   shuqian: 1,
+        //   peoplese: 1,
+        //   xingNum: 0,
+        // },
+        // {
+        //   groupType: "F",
+        //   name: "XXXXX",
+        //   id: 2,
+        //   info: "filecoin mining pool rust-fil-sector-builder",
+        //   shuqian: 2,
+        //   peoplese: 2,
+        //   xingNum: 1,
+        // },
+        // {
+        //   groupType: "Z",
+        //   name: "XXXXX",
+        //   id: 3,
+        //   info: "filecoin mining pool rust-fil-sector-builder",
+        //   shuqian: 3,
+        //   peoplese: 3,
+        //   xingNum: 2,
+        // },
+      ],
+    };
+  },
+  methods: {},
+  async created() {
+    let account = Principal.fromText(TEST_USER);
+    let getUserInfoRes = await manageCanister.getUserInfo(account);
+
+    if (getUserInfoRes.Ok) {
+      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+        this.projectList.push({
           groupType: "Z",
-          name: "XXXXX",
-          id: 3,
-          info: "filecoin mining pool rust-fil-sector-builder",
+          name: getUserInfoRes.Ok.groups[i][1].name,
+          id: getUserInfoRes.Ok.groups[i][1].id,
+          info: getUserInfoRes.Ok.groups[i][1].description,
           shuqian: 3,
-          peoplese: 3,
+          peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
           xingNum: 2,
-        },
-      ]
+        });
+      }
     }
   },
-  methods: {
-  },
-  created() {
-  },
-}
+};
 </script>

@@ -1,5 +1,6 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
+  margin-top: 1rem;
   width: 100%;
 }
 
@@ -60,7 +61,7 @@
 .line {
   width: 100%;
   height: 0.01rem;
-  background: #EBEBEB;
+  background: #ebebeb;
   margin: 0.2rem 0;
 }
 
@@ -80,12 +81,12 @@
   width: 100%;
   height: 1.8rem;
   border-radius: 0.04rem;
-  border: 0.01rem solid #E6E6E6;
+  border: 0.01rem solid #e6e6e6;
 }
 
 .headTableItem {
   height: 0.44rem;
-  background: #FAFAFA;
+  background: #fafafa;
   border-radius: 0.04rem;
   display: flex;
   align-items: center;
@@ -93,7 +94,7 @@
   padding: 0 0.2rem;
   font-size: 0.14rem;
   color: #333333;
-  border-bottom: 0.01rem solid #EBEBEB;
+  border-bottom: 0.01rem solid #ebebeb;
 }
 
 .headTableItem:last-child {
@@ -101,7 +102,7 @@
 }
 
 .tab {
-  background: #FAFAFA;
+  background: #fafafa;
   font-weight: 600;
 }
 
@@ -139,13 +140,13 @@
   display: flex;
   align-items: center;
   background: white;
-  border-bottom: 0.01rem solid #EBEBEB;
+  border-bottom: 0.01rem solid #ebebeb;
   justify-content: space-between;
   padding: 0 0.2rem;
 }
 
 .tableItem:hover {
-  background: #FAFAFA;
+  background: #fafafa;
 }
 
 .item1 {
@@ -157,11 +158,11 @@
   width: 1.12rem;
   height: 0.32rem;
   border-radius: 0.04rem;
-  border: 0.01rem solid #1776FF;
+  border: 0.01rem solid #1776ff;
   font-size: 0.14rem;
   font-family: UbuntuMono-Regular, UbuntuMono;
   font-weight: 400;
-  color: #1776FF;
+  color: #1776ff;
   padding-left: 0.1rem;
   position: relative;
   line-height: 0.32rem;
@@ -170,7 +171,7 @@
 .item3Sub {
   width: 0.31rem;
   height: 0.31rem;
-  background: #1776FF;
+  background: #1776ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -213,7 +214,6 @@
   margin-left: 0.02rem;
 }
 
-
 .groupNameTop {
   font-size: 0.16rem;
   font-family: PingFangSC-Medium, PingFang SC;
@@ -224,8 +224,8 @@
 .contentBox {
   height: 4.95rem;
   width: 100%;
-  background: #FAFAFA;
-  border: 0.01rem solid #E6E6E6;
+  background: #fafafa;
+  border: 0.01rem solid #e6e6e6;
   margin-top: 0.2rem;
 }
 
@@ -246,17 +246,20 @@
       <div class="headItem">
         <div class="headItemTitle">Project info</div>
         <div class="headItemLog">
-          <img src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png" alt="">
-          <span>Chain-Cloud</span>
+          <img
+            src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
+            alt=""
+          />
+          <span>{{ project.name }}</span>
         </div>
         <div class="line"></div>
         <div class="idInfo">
           <div class="idInfoTitle">Project ID</div>
-          <span>246</span>
+          <span>{{ project.id }}</span>
         </div>
         <div class="idInfo">
           <div class="idInfoTitle">Link</div>
-          <span>http://github.com/icpfoundation/chain-cloud.git</span>
+          <span>{{ project.gitURl }}</span>
         </div>
       </div>
       <div class="headItem">
@@ -285,9 +288,17 @@
       <div class="contentTitle">Commits</div>
       <div class="contentBox">
         <div class="table">
-          <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in tableData.tableList"
+            :key="index"
+          >
             <div class="item1">
-              <img class="leibie" src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png" alt="">
+              <img
+                class="leibie"
+                src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
+                alt=""
+              />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
@@ -301,43 +312,67 @@
             <div class="item3">
               <span>c24e6435</span>
               <div class="item3Sub">
-                <img src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png" alt="">
+                <img
+                  src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png"
+                  alt=""
+                />
               </div>
             </div>
           </div>
         </div>
         <div class="pageStyle">
-          <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-            :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+          <Page
+            v-if="tableData.total > 0"
+            :total="tableData.total"
+            :current="tableData.page"
+            show-total
+            :page-size="tableData.pageSize"
+            size="small"
+            @on-change="headPageFun"
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+  TEST_CANISTER,
+  TEST_PROJECT_ID,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
+      project: {
+        name: "Chain-Cloud",
+        id: 0,
+        gitURl: "http://github.com/icpfoundation/chain-cloud.git",
+      },
       tabList: [
         {
           name: "All public projects",
-          select: true
+          select: true,
         },
         {
           name: "My projects",
-          select: false
-        }
+          select: false,
+        },
       ],
-      groupValue: '1',
+      groupValue: "1",
       groupList: [
         {
-          value: '1',
-          label: 'Default'
+          value: "1",
+          label: "Default",
         },
         {
-          value: '2',
-          label: 'Create time'
-        }
+          value: "2",
+          label: "Create time",
+        },
       ],
       tableData: {
         tableList: [
@@ -346,22 +381,22 @@ export default {
             author: "yongyu",
             time: "18 days ago",
           },
-           {
+          {
             projectName: "tidy go.sum",
             author: "yongyu",
             time: "18 days ago",
           },
-           {
+          {
             projectName: "tidy go.sum",
             author: "yongyu",
             time: "18 days ago",
           },
-           {
+          {
             projectName: "tidy go.sum",
             author: "yongyu",
             time: "18 days ago",
           },
-           {
+          {
             projectName: "tidy go.sum",
             author: "yongyu",
             time: "18 days ago",
@@ -369,23 +404,40 @@ export default {
         ],
         total: 5,
         page: 1,
-        pageSize: 3
-      }
-    }
+        pageSize: 3,
+      },
+    };
   },
   methods: {
-
     headPageFun(value) {
       this.$Notice.info({
         title: "暂无后台数据",
         background: true,
-        duration: 3
+        duration: 3,
       });
     },
   },
-  created() {
-    let url = window.location.href
-    console.log(url)
+  async created() {
+    let url = window.location.href;
+    console.log(url);
+    console.log("this.$router", this.$router.params);
+    let account = Principal.fromText(TEST_USER);
+    let groupId = TEST_GROUP_ID;
+    let projectId = TEST_PROJECT_ID;
+    let getProjectRest = await manageCanister.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+    if (getProjectRest.Err) {
+      throw getProjectRest.Err;
+    }
+
+    if (getProjectRest.Ok.length > 0) {
+      this.project.name = getProjectRest.Ok[0].name;
+      this.project.id = getProjectRest.Ok[0].id;
+      this.project.gitURl = getProjectRest.Ok[0].git_repo_url;
+    }
   },
-}
+};
 </script>
