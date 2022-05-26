@@ -113,9 +113,13 @@
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
-    <div
-      class="loginviewCol">
-      <div class="loginview"  @mouseenter="enter" @mouseleave="leave" @click.self="doSomething">
+    <div class="loginviewCol">
+      <div
+        class="loginview"
+        @mouseenter="enter"
+        @mouseleave="leave"
+        @click.self="doSomething"
+      >
         <span @click.self="doSomething"> {{ principleShort }} </span>
         <img
           class="dfxlogo"
@@ -124,11 +128,16 @@
           @click.self="doSomething"
         />
       </div>
-      <div class="tab" v-if="tabShow&&principleShort!='Login'">
-        <div @click.stop="doSomething" class="tabItem">MORE</div>
-        <div @click.stop="logoutAction" class="tabItem">SIGNOUT</div>
+      <div class="tab" v-if="tabShow && principleShort != 'Login'">
+        <div @click.stop="doSomething" class="tabItem">Your profile</div>
+        <div @click.stop="logoutAction" class="tabItem">Sign out</div>
       </div>
-      <span class="name" @click="toPersonFun" v-if="principleShort!='Login'">{{ principleShort }}</span>
+      <span
+        class="name"
+        @click="toPersonFun"
+        v-if="principleShort != 'Login'"
+        >{{ principleShort }}</span
+      >
     </div>
   </div>
 </template>
@@ -220,7 +229,7 @@ export default {
     },
 
     doSomething: async function (event) {
-      this.tabShow=false
+      this.tabShow = false;
       if (event) {
         let principle = window.localStorage.getItem("principleString");
         if (principle == "" || principle == undefined || principle == null) {
@@ -267,7 +276,7 @@ export default {
       });
     },
     logoutAction: async function () {
-      this.tabShow=false
+      this.tabShow = false;
       this.authClient.logout();
       this.removeICIdentity();
       this.principal = "Login";
@@ -277,7 +286,6 @@ export default {
   },
 
   mounted() {
-    
     switch (this.$router.currentRoute.path) {
       case "/home":
         this.activeIndex = "1";
