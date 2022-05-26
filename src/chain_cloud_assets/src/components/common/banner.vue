@@ -147,19 +147,20 @@ export default {
   components: {},
   methods: {
     doStart() {
-      let principle = window.localStorage.getItem("principleString");
-      if (principle == undefined || principle == "" || principle == null) {
-        this.$message({
-          showClose: true,
-          message: "Warning, should login first",
-          type: "warning",
-        });
-        return;
-      }
+      window.open("http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/");
+      // let principle = window.localStorage.getItem("principleString");
+      // if (principle == undefined || principle == "" || principle == null) {
+      //   this.$message({
+      //     showClose: true,
+      //     message: "Warning, should login first",
+      //     type: "warning",
+      //   });
+      //   return;
+      // }
 
-      if (this.$router.path != "/deploy") {
-        this.$router.push("/deploy");
-      }
+      // if (this.$router.path != "/deploy") {
+      //   this.$router.push("/deploy");
+      // }
     },
   },
 

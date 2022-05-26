@@ -16,7 +16,7 @@
   padding: 40px 0;
   display: flex;
 }
-.footItemBox{
+.footItemBox {
   font-size: 14px;
   color: #666666;
 }
@@ -40,10 +40,10 @@
   cursor: pointer;
   margin-bottom: 5px;
 }
-.infoItem:hover{
+.infoItem:hover {
   color: #1776ff;
 }
-.infoItem:last-child{
+.infoItem:last-child {
   margin-bottom: 0;
 }
 .start {
@@ -56,14 +56,14 @@
   font-size: 16px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
-  color: #1776FF;
+  color: #1776ff;
   display: flex;
   align-items: center;
   width: 135px;
   height: 36px;
-  background: #E7F1FF;
+  background: #e7f1ff;
   border-radius: 4px;
-  border: 1px solid #D6E6FE;
+  border: 1px solid #d6e6fe;
   justify-content: center;
   cursor: pointer;
 }
@@ -116,28 +116,28 @@
   align-items: center;
   justify-content: flex-end;
 }
-.imgBox:last-child{
+.imgBox:last-child {
   margin-bottom: 0;
 }
-.imgboxImg{
+.imgboxImg {
   margin-right: 10px;
   width: 16px;
   height: 16px;
 }
-.imgBoxInfo{
+.imgBoxInfo {
   width: 0.5rem;
 }
 .line {
   width: 100%;
   height: 1px;
-  background: #E5E5E5;
+  background: #e5e5e5;
 }
 
 .netCom {
   margin: 0 auto;
   width: 1200px;
   height: 60px;
-  background: #FFFFFF;
+  background: #ffffff;
   display: flex;
   align-items: center;
   font-size: 14px;
@@ -166,18 +166,34 @@
       </div>
       <div class="footItem"></div>
       <div class="footItem footItemImgBox">
-        <img src="../../../assets/chain_cloud/teamscan/nav_logo@2x.png" alt="" class="footItemLogo">
+        <img
+          src="../../../assets/chain_cloud/teamscan/nav_logo@2x.png"
+          alt=""
+          class="footItemLogo"
+        />
         <div class="footItemImgBoxInfo">
           <div class="imgBox">
-            <img src="../../../assets/chain_cloud/teamscan/github@2x.png" alt="" class="imgboxImg">
+            <img
+              src="../../../assets/chain_cloud/teamscan/github@2x.png"
+              alt=""
+              class="imgboxImg"
+            />
             <div class="imgBoxInfo">GitHub</div>
           </div>
-           <div class="imgBox">
-            <img src="../../../assets/chain_cloud/teamscan/twitter@2x.png" alt="" class="imgboxImg">
+          <div class="imgBox">
+            <img
+              src="../../../assets/chain_cloud/teamscan/twitter@2x.png"
+              alt=""
+              class="imgboxImg"
+            />
             <div class="imgBoxInfo">Twitter</div>
           </div>
-           <div class="imgBox">
-            <img src="../../../assets/chain_cloud/teamscan/youtube@2x.png" alt="" class="imgboxImg">
+          <div class="imgBox">
+            <img
+              src="../../../assets/chain_cloud/teamscan/youtube@2x.png"
+              alt=""
+              class="imgboxImg"
+            />
             <div class="imgBoxInfo">YouTube</div>
           </div>
         </div>
@@ -190,37 +206,31 @@
 <script>
 export default {
   data() {
-    return {
-    }
+    return {};
   },
   methods: {
     topagesFun(type) {
       if (type === 1) {
         this.$router.push({
-          name: "group_index"
-        })
+          name: "group_index",
+        });
       } else if (type === 2) {
         this.$router.push({
-          name: "project_index"
-        })
+          name: "project_index",
+        });
       } else if (type === 3) {
         this.$router.push({
-          name: "group_add"
-        })
+          name: "group_add",
+        });
       } else if (type === 4) {
         this.$router.push({
-          name: "project_add"
-        })
-      } else if (type === 5) {
-        this.$Notice.info({
-          title: "敬请期待",
-          background: true,
-          duration: 3
+          name: "project_add",
         });
+      } else if (type === 5) {
+        window.open("http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/");
       }
-    }
+    },
   },
-  created() {
-  },
-}
+  created() {},
+};
 </script>

@@ -182,9 +182,7 @@ export default {
 
       switch (this.activeIndex) {
         case "1":
-          if (this.$router.currentRoute.path != "/home") {
-            this.$router.push("/home");
-          }
+          window.open("http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/");
           break;
 
         case "2":
