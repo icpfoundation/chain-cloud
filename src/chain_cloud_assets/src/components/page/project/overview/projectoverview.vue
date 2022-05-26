@@ -338,13 +338,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-  TEST_PROJECT_ID,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {
@@ -417,13 +411,16 @@ export default {
       });
     },
   },
+
   async created() {
     let url = window.location.href;
     console.log(url);
-    console.log("this.$router", this.$router.params);
-    let account = Principal.fromText(TEST_USER);
-    let groupId = TEST_GROUP_ID;
-    let projectId = TEST_PROJECT_ID;
+    if (!this.$route.params) {
+      throw "params  not found";
+    }
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
     let getProjectRest = await manageCanister.getProjectInfo(
       account,
       groupId,
