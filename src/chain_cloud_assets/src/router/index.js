@@ -18,9 +18,9 @@ import DocView from "../components/page/document.vue"
 import BlogView from "../components/page/blogs.vue"
 import ServiceView from "../components/page/service.vue"
 import group from '../components/common/group.vue'
-import project from '../components/common/project.vue'
+import project from '../components/common/project.vue' 
+const aboutus = r => require.ensure([], () => r(require('../components/page/aboutus/aboutus.vue'), 'aboutus'))
 const teamscan_index = r => require.ensure([], () => r(require('../components/page/teamscan/index.vue'), 'teamscan_index'))
-
 const group_index = r => require.ensure([], () => r(require('../components/page/group/index/group_index.vue'), 'group_index'))
 const group_add = r => require.ensure([], () => r(require('../components/page/group/index/group_add.vue'), 'group_add'))
 const overview = r => require.ensure([], () => r(require('../components/page/group/overview/overview.vue'), 'overview'))
@@ -70,6 +70,14 @@ let router = new Router({
           }
         },
       ]
+    },
+    {
+      path: '/aboutus',
+      name: 'aboutus',
+      meta: {
+        title: 'chain-cloud aboutus',
+      },
+      component: aboutus
     },
     {
       path: '/teamscan',

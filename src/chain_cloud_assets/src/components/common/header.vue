@@ -195,9 +195,12 @@ export default {
           break;
 
         case "3":
-          if (this.$router.currentRoute.path != "/blog") {
-            this.$router.push("/blog");
-          }
+          // if (this.$router.currentRoute.path != "/blog") {
+          //   this.$router.push("/blog");
+          // }
+           this.$router.push({
+              name: "aboutus",
+            });
           break;
 
         case "4":
