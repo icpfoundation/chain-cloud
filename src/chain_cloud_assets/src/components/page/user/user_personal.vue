@@ -23,7 +23,7 @@
   width: 100%;
   height: 800px;
   margin-top: 20px;
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -32,7 +32,7 @@
   width: 100%;
   height: 80px;
   padding: 20px;
-  border-bottom: 1px solid #EBEBEB;
+  border-bottom: 1px solid #ebebeb;
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -77,7 +77,7 @@
 
 .mergestyle {
   font-size: 12px;
-  color: #1776FF;
+  color: #1776ff;
   margin: 0 10px;
 }
 
@@ -97,13 +97,13 @@
 .grouptype {
   width: 36px;
   height: 36px;
-  background: #1776FF;
+  background: #1776ff;
   border-radius: 4px;
   text-align: center;
   line-height: 36px;
   font-size: 20px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-right: 10px;
 }
 
@@ -140,7 +140,7 @@
   justify-content: center;
   height: 20px;
   border-radius: 10px;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   font-size: 12px;
   color: #666666;
 }
@@ -164,14 +164,13 @@
   align-items: center;
   font-size: 12px;
   color: #666666;
-
 }
 
 .tableItemgroupTimeTop img {
   width: 16px;
   height: 16px;
 }
-.tableItemgroupTimeItem{
+.tableItemgroupTimeItem {
   display: flex;
   align-items: center;
   margin-left: 10px;
@@ -183,16 +182,33 @@
     <div class="content">
       <div class="comItem">
         <div class="table">
-          <div class="tableItem" v-for="(item, index) in projectList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in projectList"
+            :key="index"
+          >
             <div class="grouptype">{{ item.groupType }}</div>
             <div class="groupContent">
               <div class="groupContentTop">
                 <span class="groupName">{{ item.name }}</span>
-                <img src="../../../../assets/chain_cloud/teamscan/icon_private@2x.png" alt="" v-if="item.id === 1"
-                  class="typeImg">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_internal@2x.png" alt="" v-else-if="item.id === 2"
-                  class="typeImg">
-                <img src="../../../../assets/chain_cloud/teamscan/icon_pubilc@2x.png" alt="" v-else class="typeImg">
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_private@2x.png"
+                  alt=""
+                  v-if="item.id === 1"
+                  class="typeImg"
+                />
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_internal@2x.png"
+                  alt=""
+                  v-else-if="item.id === 2"
+                  class="typeImg"
+                />
+                <img
+                  src="../../../../assets/chain_cloud/teamscan/icon_pubilc@2x.png"
+                  alt=""
+                  v-else
+                  class="typeImg"
+                />
                 <div class="type">{{ item.type }}</div>
               </div>
               <span>{{ item.info }}</span>
@@ -200,15 +216,24 @@
             <div class="tableItemgroupTime">
               <div class="tableItemgroupTimeTop">
                 <div class="tableItemgroupTimeItem">
-                  <img src="../../../../assets/chain_cloud/teamscan/icon_xing_s@2x.png" alt="">
+                  <img
+                    src="../../../../assets/chain_cloud/teamscan/icon_xing_s@2x.png"
+                    alt=""
+                  />
                   <span>{{ item.xingNum }}</span>
                 </div>
-                 <div class="tableItemgroupTimeItem">
-                  <img src="../../../../assets/chain_cloud/teamscan/icon_branch@2x.png" alt="">
+                <div class="tableItemgroupTimeItem">
+                  <img
+                    src="../../../../assets/chain_cloud/teamscan/icon_branch@2x.png"
+                    alt=""
+                  />
                   <span>{{ item.branchNum }}</span>
                 </div>
-                 <div class="tableItemgroupTimeItem" v-if="item.isdelet">
-                  <img src="../../../../assets/chain_cloud/teamscan/icon_delete@2x.png" alt="">
+                <div class="tableItemgroupTimeItem" v-if="item.isdelet">
+                  <img
+                    src="../../../../assets/chain_cloud/teamscan/icon_delete@2x.png"
+                    alt=""
+                  />
                 </div>
               </div>
               <span>{{ item.time }}</span>
@@ -220,50 +245,98 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+  TEST_CANISTER,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
-
       projectList: [
-        {
-          groupType: "G",
-          name: "XXXXX",
-          id: 1,
-          type: "Maintainer",
-          info: "filecoin mining pool rust-fil-sector-builder",
-          xingNum: 0,
-          time: "Updata 8 days ago",
-          branchNum:0,
-          isdelet:false
-        },
-        {
-          groupType: "F",
-          name: "XXXXX",
-          id: 2,
-          type: "Maintainer",
-          info: "filecoin mining pool rust-fil-sector-builder",
-          xingNum: 1,
-          time: "Updata 8 days ago",
-           branchNum:1,
-          isdelet:true
-        },
-        {
-          groupType: "Z",
-          name: "XXXXX",
-          id: 3,
-          type: "Maintainer",
-          info: "filecoin mining pool rust-fil-sector-builder",
-          xingNum: 2,
-          time: "Updata 8 days ago",
-           branchNum:2,
-          isdelet:false
-        },
-      ]
+        // {
+        //   groupType: "G",
+        //   name: "XXXXX",
+        //   id: 1,
+        //   type: "Maintainer",
+        //   info: "filecoin mining pool rust-fil-sector-builder",
+        //   xingNum: 0,
+        //   time: "Updata 8 days ago",
+        //   branchNum: 0,
+        //   isdelet: false,
+        // },
+        // {
+        //   groupType: "F",
+        //   name: "XXXXX",
+        //   id: 2,
+        //   type: "Maintainer",
+        //   info: "filecoin mining pool rust-fil-sector-builder",
+        //   xingNum: 1,
+        //   time: "Updata 8 days ago",
+        //   branchNum: 1,
+        //   isdelet: true,
+        // },
+        // {
+        //   groupType: "Z",
+        //   name: "XXXXX",
+        //   id: 3,
+        //   type: "Maintainer",
+        //   info: "filecoin mining pool rust-fil-sector-builder",
+        //   xingNum: 2,
+        //   time: "Updata 8 days ago",
+        //   branchNum: 2,
+        //   isdelet: false,
+        // },
+      ],
+    };
+  },
+  methods: {},
+  async created() {
+    let account = Principal.fromText(TEST_USER);
+    let getUserInfoRes = await manageCanister.getUserInfo(account);
+
+    if (getUserInfoRes.Ok) {
+      let currentTime = BigInt(new Date().getTime());
+      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+        for (
+          let j = 0;
+          j < getUserInfoRes.Ok.groups[i][1].projects.length;
+          j++
+        ) {
+          let duration = parseInt(
+            Number(
+              currentTime -
+                BigInt(
+                  getUserInfoRes.Ok.groups[i][1].projects[j][1].create_time
+                )
+            ) / 1000
+          );
+
+          let create_time = "0 s ago";
+          if (duration >= 86400) {
+            create_time = `create ${parseInt(duration / 86400)} day ago`;
+          } else if (duration >= 3600) {
+            create_time = `create ${parseInt(duration / 3600)} hour ago`;
+          } else if (duration >= 60) {
+            create_time = `create ${parseInt(duration / 60)} min ago`;
+          } else {
+            create_time = `create ${duration} s ago`;
+          }
+          this.projectList.push({
+            groupType: "",
+            name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+            id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+            type: "Maintainer",
+            info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+            xingNum: 2,
+            time: create_time,
+          });
+        }
+      }
     }
   },
-  methods: {
-  },
-  created() {
-  },
-}
+};
 </script>

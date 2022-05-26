@@ -1,5 +1,5 @@
 
-import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes, Project, ProjectInfoRes } from "./manage/manage/manage.did"
+import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes, Project, ProjectInfoRes, UserRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
 import { Principal } from "@dfinity/principal";
 import { Action } from "./manage/canister_log/canister_log.did"
@@ -33,6 +33,8 @@ interface ManageInterface {
         group_id: bigint,
         project_id: bigint,
     ): ProjectInfoRes,
+
+    get_user_info(account: Principal): UserRes,
 
 }
 
@@ -119,6 +121,11 @@ class ManageCanister {
         project_id: bigint,) {
         let getProjectRes = await this.manageActor.get_project_info(account, group_id, project_id)
         return getProjectRes
+    }
+
+    async getUserInfo(account: Principal): Promise<UserRes> {
+        let getUserInfoRes = await this.manageActor.get_user_info(account)
+        return getUserInfoRes
     }
 }
 

@@ -22,7 +22,7 @@
 .table {
   width: 100%;
   height: 800px;
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -31,7 +31,7 @@
   width: 100%;
   height: 100px;
   padding: 20px;
-  border-bottom: 1px solid #EBEBEB;
+  border-bottom: 1px solid #ebebeb;
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -76,7 +76,7 @@
 
 .mergestyle {
   font-size: 12px;
-  color: #1776FF;
+  color: #1776ff;
   margin: 0 10px;
 }
 
@@ -99,8 +99,16 @@
     <div class="content">
       <div class="comItem">
         <div class="table">
-          <div class="tableItem" v-for="(item, index) in activeList" :key="index">
-            <img src="../../../../assets/chain_cloud/teamscan/icon_connect@2x (1).png" alt="" class="connect">
+          <div
+            class="tableItem"
+            v-for="(item, index) in activeList"
+            :key="index"
+          >
+            <img
+              src="../../../../assets/chain_cloud/teamscan/icon_connect@2x (1).png"
+              alt=""
+              class="connect"
+            />
             <div class="tableContent">
               <div class="tableContentTop">
                 <span class="toname">{{ item.name }}</span>
@@ -122,48 +130,110 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+  TEST_CANISTER,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
       activeList: [
-        {
-          name: "XXX",
-          toname: "@haoshanshan",
-          fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
-          toaddress: "Group/lotuss/",
-          commitNum: "372bb51",
-          time: "18 days ago"
-        },
-        {
-          name: "XXX",
-          toname: "@haoshanshan",
-          fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
-          toaddress: "Group/lotuss/",
-          commitNum: "372bb51",
-          time: "18 days ago"
-        },
-        {
-          name: "XXX",
-          toname: "@haoshanshan",
-          fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
-          toaddress: "Group/lotuss/",
-          commitNum: "372bb51",
-          time: "18 days ago"
-        },
-        {
-          name: "XXX",
-          toname: "@haoshanshan",
-          fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
-          toaddress: "Group/lotuss/",
-          commitNum: "372bb51",
-          time: "18 days ago"
-        }
+        // {
+        //   name: "XXX",
+        //   toname: "@haoshanshan",
+        //   fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
+        //   toaddress: "Group/lotuss/",
+        //   commitNum: "372bb51",
+        //   time: "18 days ago",
+        // },
+        // {
+        //   name: "XXX",
+        //   toname: "@haoshanshan",
+        //   fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
+        //   toaddress: "Group/lotuss/",
+        //   commitNum: "372bb51",
+        //   time: "18 days ago",
+        // },
+        // {
+        //   name: "XXX",
+        //   toname: "@haoshanshan",
+        //   fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
+        //   toaddress: "Group/lotuss/",
+        //   commitNum: "372bb51",
+        //   time: "18 days ago",
+        // },
+        // {
+        //   name: "XXX",
+        //   toname: "@haoshanshan",
+        //   fromaddress: "osp-base-rust-lastest-osp-base-rust-lastest-",
+        //   toaddress: "Group/lotuss/",
+        //   commitNum: "372bb51",
+        //   time: "18 days ago",
+        // },
       ],
+    };
+  },
+  methods: {},
+  async created() {
+    let account = Principal.fromText(TEST_USER);
+    let getUserInfoRes = await manageCanister.getUserInfo(account);
+
+    if (getUserInfoRes.Ok) {
+      let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
+
+      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+        let getLogRes = await manageCanister.getLog(
+          account,
+          getUserInfoRes.Ok.groups[i][1].id,
+          1
+        );
+
+        for (let j = 0; j < getLogRes.length; j++) {
+          for (let k = 0; k < getLogRes[j].length; k++) {
+            if (getLogRes[j][k][0].toString() == TEST_USER) {
+              let duration = parseInt(
+                Number(
+                  currentTime - BigInt(getLogRes[j][k][1]) / BigInt(1000000000)
+                )
+              );
+              let create_time = "";
+              if (duration >= 86400) {
+                create_time = ` ${parseInt(duration / 86400)} day ago`;
+              } else if (duration >= 3600) {
+                create_time = `${parseInt(duration / 3600)} hour ago`;
+              } else if (duration >= 60) {
+                create_time = `${parseInt(duration / 60)} min ago`;
+              } else {
+                create_time = `${duration} s ago`;
+              }
+
+              let fromaddress = "";
+              if ("UpdateGroup" in getLogRes[j][k][2]) {
+                fromaddress = getLogRes[j][k][2].UpdateGroup[1];
+              }
+              if ("UpdateProject" in getLogRes[j][k][2]) {
+                fromaddress = getLogRes[j][k][2].UpdateProject[2];
+              }
+              if ("UpdateProjectCanister" in getLogRes[j][k][2]) {
+                fromaddress = getLogRes[j][k][2].UpdateProjectCanister[2];
+              }
+              this.activeList.push({
+                name: getLogRes[j][k][0].toString(),
+                toname: "",
+                fromaddress: fromaddress,
+                toaddress: "",
+                commitNum: "",
+                time: create_time,
+              });
+            }
+          }
+        }
+      }
     }
   },
-  methods: {
-  },
-  created() {
-  },
-}
+};
 </script>

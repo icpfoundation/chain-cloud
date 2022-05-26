@@ -320,12 +320,14 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
   TEST_CANISTER,
+  TEST_PROJECT_ID,
+  TEST_PROJECT_CANISTER,
 } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
       project: {
-        id: 1,
+        id: 0,
         members: [],
         canister_cycle_floor: BigInt("1000000000000"),
         name: "",
@@ -345,10 +347,11 @@ export default {
   methods: {
     async saveFun() {
       let account = Principal.fromText(TEST_USER);
-      this.project.id = 1;
-      this.project.in_group = BigInt(this.project.in_group);
+      this.project.id = TEST_PROJECT_ID;
+      this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
       this.project.create_by = account;
+      this.project.canisters = [Principal.fromText(TEST_CANISTER)];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
 
@@ -366,6 +369,7 @@ export default {
         background: true,
         duration: 3,
       });
+      console.log("addProjectRes", addProjectRes);
     },
     previewImage(e) {
       var dt = e.target;

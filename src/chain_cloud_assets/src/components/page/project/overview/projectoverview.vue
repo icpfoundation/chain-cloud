@@ -343,6 +343,7 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
   TEST_CANISTER,
+  TEST_PROJECT_ID,
 } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
@@ -419,15 +420,15 @@ export default {
   async created() {
     let url = window.location.href;
     console.log(url);
+    console.log("this.$router", this.$router.params);
     let account = Principal.fromText(TEST_USER);
     let groupId = TEST_GROUP_ID;
-    let projectId = 1;
+    let projectId = TEST_PROJECT_ID;
     let getProjectRest = await manageCanister.getProjectInfo(
       account,
       groupId,
       projectId
     );
-    console.log("getProjectRest.Ok", getProjectRest);
     if (getProjectRest.Err) {
       throw getProjectRest.Err;
     }

@@ -205,36 +205,51 @@ export default {
     return {
       tableData: {
         tableList: [
-          {
-            name: "yong1",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            name: "yong2",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            name: "yong3",
-            by: "By imgbot",
-            dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-            type: "Recommended",
-          },
-          {
-            name: "yong4",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            name: "yong5",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
+          // {
+          //   name: "yong1",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          //   user: "",
+          //   groupId: 0,
+          //   projectId: 0,
+          // },
+          // {
+          //   name: "yong2",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          //   user: "",
+          //   groupId: 0,
+          //   projectId: 0,
+          // },
+          // {
+          //   name: "yong3",
+          //   by: "By imgbot",
+          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
+          //   type: "Recommended",
+          //   user: "",
+          //   groupId: 0,
+          //   projectId: 0,
+          // },
+          // {
+          //   name: "yong4",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          //   user: "",
+          //   groupId: 0,
+          //   projectId: 0,
+          // },
+          // {
+          //   name: "yong5",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          //   user: "",
+          //   groupId: 0,
+          //   projectId: 0,
+          // },
         ],
         total: 5,
         page: 1,
@@ -258,19 +273,29 @@ export default {
     toProjectFun(item) {
       this.$router.push({
         name: "project",
+        params: {
+          user: item.user,
+          groupId: item.groupId,
+          projectId: item.projectId,
+        },
       });
     },
   },
   async created() {
     let groupRes = await manageCanister.visibleProject();
+
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
+        this.tableData.total = groupRes[i][j][2].projects.length;
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
           this.tableData.tableList.push({
             name: groupRes[i][j][2].projects[k][1].name,
             by: groupRes[i][j][2].projects[k][1].create_by.toString(),
             dec: groupRes[i][j][2].projects[k][1].description,
             type: "Recommended",
+            user: groupRes[i][j][0].toString(),
+            groupId: groupRes[i][j][1],
+            projectId: groupRes[i][j][2].projects[k][1].id,
           });
         }
       }

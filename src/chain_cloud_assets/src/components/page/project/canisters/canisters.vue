@@ -293,7 +293,7 @@
             />
             <div class="headItemLogCloud">
               <div class="headItemLogCloudTop">
-                <span>Chain-Cloud</span>
+                <span>{{ project.name }}</span>
                 <div class="headItemLogCloudRunning">Running</div>
               </div>
               <span class="headItemLogCloudid">ID:{{ item.id }}</span>
@@ -361,14 +361,9 @@
             <div class="groupName">
               <span>10th June</span>
               <div class="groupNameItem">
-                <span class="groupNameItemtime">18:09</span>
-                <span class="groupNameItemTo">新增</span>
-                <span>canister 4jgqq-aqaaa-aaaah-qaaza-cai</span>
-              </div>
-              <div class="groupNameItem">
-                <span class="groupNameItemtime">18:09</span>
-                <span class="groupNameItemTo">更新</span>
-                <span>canister 4jgqq-aqaaa-aaaah-qaaza-cai</span>
+                <span class="groupNameItemtime">{{ item.time }}</span>
+                <span class="groupNameItemTo">{{ item.action }}</span>
+                <span>{{ item.data }}</span>
               </div>
             </div>
           </div>
@@ -385,12 +380,14 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
   TEST_CANISTER,
+  TEST_PROJECT_ID,
 } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
       project: {
         id: 0,
+        name: "",
         canisters: [],
       },
       tabList: [
@@ -416,31 +413,41 @@ export default {
       ],
       tableData: {
         tableList: [
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
+          //   {
+          //     projectName: "tidy go.sum",
+          //     author: "yongyu",
+          //     time: "18 days ago",
+          //     action: "",
+          //     data: "",
+          //   },
+          //   {
+          //     projectName: "tidy go.sum",
+          //     author: "yongyu",
+          //     time: "18 days ago",
+          //     action: "",
+          //     data: "",
+          //   },
+          //   {
+          //     projectName: "tidy go.sum",
+          //     author: "yongyu",
+          //     time: "18 days ago",
+          //     action: "",
+          //     data: "",
+          //   },
+          //   {
+          //     projectName: "tidy go.sum",
+          //     author: "yongyu",
+          //     time: "18 days ago",
+          //     action: "",
+          //     data: "",
+          //   },
+          //   {
+          //     projectName: "tidy go.sum",
+          //     author: "yongyu",
+          //     time: "18 days ago",
+          //     action: "",
+          //     data: "",
+          //   },
         ],
         total: 5,
         page: 1,
@@ -463,7 +470,7 @@ export default {
 
     let account = Principal.fromText(TEST_USER);
     let groupId = TEST_GROUP_ID;
-    let projectId = 1;
+    let projectId = TEST_PROJECT_ID;
     let getProjectRest = await manageCanister.getProjectInfo(
       account,
       groupId,
@@ -474,17 +481,16 @@ export default {
       throw getProjectRest.Err;
     }
 
+    this.project.name = getProjectRest.Ok[0].name;
     if (getProjectRest.Ok.length > 0) {
-      console.log(getProjectRest.Ok[0]);
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         let getCanisterStatusRes = await manageCanister.getCanisterStatus(
           account,
           TEST_GROUP_ID,
-          1,
+          TEST_PROJECT_ID,
           getProjectRest.Ok[0].canisters[i]
         );
         if (getCanisterStatusRes.Ok) {
-          console.log("getCanisterStatusRes.Ok", getCanisterStatusRes.Ok[0]);
           this.project.canisters.push({
             id: getProjectRest.Ok[0].canisters[i].toString(),
             cycles: getCanisterStatusRes.Ok[0].cycles,
@@ -505,7 +511,57 @@ export default {
             memory_allocation:
               getCanisterStatusRes.Ok[0].settings.memory_allocation[0],
           });
-          console.log("getCanisterStatusRes", getCanisterStatusRes.Ok[0]);
+        }
+      }
+
+      let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
+      let getLogRes = await manageCanister.getLog(account, TEST_GROUP_ID, 1);
+      for (let i = 0; i < getLogRes.length; i++) {
+        for (let j = 0; j < getLogRes[i].length; j++) {
+          if (
+            "UpdateProject" in getLogRes[i][j][2] ||
+            "UpdateProjectCanister" in getLogRes[i][j][2]
+          ) {
+            let duration = parseInt(
+              Number(
+                currentTime - BigInt(getLogRes[i][j][1]) / BigInt(1000000000)
+              )
+            );
+
+            let create_time = "0 s ago";
+            if (duration >= 86400) {
+              create_time = `${parseInt(duration / 86400)} day ago`;
+            } else if (duration >= 3600) {
+              create_time = `${parseInt(duration / 3600)} hour ago`;
+            } else if (duration >= 60) {
+              create_time = `${parseInt(duration / 60)} min ago`;
+            } else {
+              create_time = `${duration} s ago`;
+            }
+
+            if ("UpdateProject" in getLogRes[i][j][2]) {
+              if (getLogRes[i][j][2].UpdateProject[1] == projectId) {
+                this.tableData.tableList.push({
+                  projectName: this.project.name,
+                  author: "yongyu",
+                  time: create_time,
+                  action: getLogRes[i][j][2].UpdateProject[2],
+                  data: getLogRes[i][j][3],
+                });
+              }
+            }
+            if ("UpdateProjectCanister" in getLogRes[i][j][2]) {
+              if (getLogRes[i][j][2].UpdateProjectCanister[1] == projectId) {
+                this.tableData.tableList.push({
+                  projectName: this.project.name,
+                  author: "yongyu",
+                  time: create_time,
+                  action: getLogRes[i][j][2].UpdateProjectCanister[2],
+                  data: getLogRes[i][j][3],
+                });
+              }
+            }
+          }
         }
       }
     }
