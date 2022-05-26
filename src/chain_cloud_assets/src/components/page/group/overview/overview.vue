@@ -512,12 +512,12 @@ export default {
   async created() {
     let url = window.location.href;
     console.log(url);
-    console.log("this.$router.params", this.$router.params);
-    let test_user = Principal.fromText(TEST_USER);
-    let getGroupInfoRes = await manageCanister.getGroupInfo(
-      test_user,
-      TEST_GROUP_ID
-    );
+    if (!this.$route.params) {
+      throw "params not found";
+    }
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
     if (getGroupInfoRes.Err) {
       throw getGroupInfoRes.Err;
       return;

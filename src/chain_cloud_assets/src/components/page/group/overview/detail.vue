@@ -1,5 +1,6 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
+  margin-top: 1rem;
   width: 100%;
 }
 
@@ -368,11 +369,10 @@ export default {
     },
   },
   async created() {
-    let test_user = Principal.fromText(TEST_USER);
-    let getGroupInfoRes = await manageCanister.getGroupInfo(
-      test_user,
-      TEST_GROUP_ID
-    );
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+
+    let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
     if (getGroupInfoRes.Err) {
       throw getGroupInfoRes.Err;
       return;
@@ -395,9 +395,9 @@ export default {
           k++
         ) {
           let getCanisterStatusRes = await manageCanister.getCanisterStatus(
-            test_user,
-            TEST_GROUP_ID,
-            1,
+            account,
+            groupId,
+            getGroupInfoRes.Ok[0].projects[j][1].id,
             getGroupInfoRes.Ok[0].projects[j][1].canisters[k]
           );
 

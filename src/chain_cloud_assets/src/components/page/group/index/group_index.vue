@@ -257,9 +257,13 @@ export default {
       });
     },
     toGroupFun(item) {
+      console.log("item....", item);
       this.$router.push({
         name: "group",
-        params: item,
+        params: {
+          user: item.by.toString(),
+          groupId: item.groupId,
+        },
       });
     },
   },

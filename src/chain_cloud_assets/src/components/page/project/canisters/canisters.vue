@@ -467,10 +467,12 @@ export default {
   async created() {
     let url = window.location.href;
     console.log(url);
-
-    let account = Principal.fromText(TEST_USER);
-    let groupId = TEST_GROUP_ID;
-    let projectId = TEST_PROJECT_ID;
+    if (!this.$route.params) {
+      throw "params  not found";
+    }
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
     let getProjectRest = await manageCanister.getProjectInfo(
       account,
       groupId,
@@ -486,8 +488,8 @@ export default {
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         let getCanisterStatusRes = await manageCanister.getCanisterStatus(
           account,
-          TEST_GROUP_ID,
-          TEST_PROJECT_ID,
+          groupId,
+          projectId,
           getProjectRest.Ok[0].canisters[i]
         );
         if (getCanisterStatusRes.Ok) {
@@ -515,7 +517,7 @@ export default {
       }
 
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-      let getLogRes = await manageCanister.getLog(account, TEST_GROUP_ID, 1);
+      let getLogRes = await manageCanister.getLog(account, groupId, 1);
       for (let i = 0; i < getLogRes.length; i++) {
         for (let j = 0; j < getLogRes[i].length; j++) {
           if (
