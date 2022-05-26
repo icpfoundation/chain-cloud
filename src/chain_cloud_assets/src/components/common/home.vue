@@ -7,7 +7,7 @@
     <towork></towork>
     <usecloud></usecloud>
     <aboutus></aboutus>
-    <footerview></footerview>
+    <!-- <footerview></footerview> -->
   </div>
 </template>
 

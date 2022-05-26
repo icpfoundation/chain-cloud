@@ -1,6 +1,7 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
     width: 100%;
+    margin-top:1rem;
 }
 
 .head {
@@ -138,6 +139,24 @@ import UserPersonal from './user_personal'
 export default {
     data() {
         return {
+            tabList: [
+                {
+                    name: "IDE",
+                    href: "",
+                },
+                {
+                    name: "TEAM",
+                    href: "",
+                },
+                {
+                    name: "DAPP - SCAN",
+                    href: "",
+                },
+                {
+                    name: "ABOUT US",
+                    href: "",
+                },
+            ],
             conTabList: [
                 {
                     name: "Overview",

@@ -36,10 +36,13 @@ body {
       <headerview></headerview>
     </div>
     <router-view></router-view>
+    <bottom></bottom>
   </div>
 </template>
 <script>
 import headerview from "./components/common/header.vue";
+import bottom from "./components/common/bottom.vue";
+
 export default {
   data() {
     return {
@@ -66,6 +69,7 @@ export default {
   },
 components: {
     headerview,
+    bottom
   },
   mounted() {
     let url = window.location.href;
