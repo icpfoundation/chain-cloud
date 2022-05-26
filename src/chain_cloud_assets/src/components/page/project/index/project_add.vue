@@ -252,6 +252,19 @@
             />
           </div>
           <div class="description">
+            <span>Projects type</span>
+            <Select v-model="projectType" style="width: 100%;">
+              <Option
+                v-for="(item, index) in projectTypeList"
+                :value="item.value"
+                :key="index"
+                placeholder="please select"
+                >{{ item.label }}</Option
+              >
+            </Select>
+          </div>
+
+          <div class="description">
             <span>Projects avatar</span>
             <div class="fileBox">
               <img :src="imgurl" alt="" />
@@ -339,6 +352,61 @@ export default {
         visibility: null,
         in_group: 0,
       },
+      projectTypeList:[
+         {
+          value: "wallet",
+          label: "wallet",
+        },
+        {
+          value: "infrastructure",
+          label: "infrastructure",
+        },
+        {
+          value: "NFT",
+          label: "NFT",
+        },
+        {
+          value: "authentication",
+          label: "authentication",
+        },
+        {
+          value: "tools",
+          label: "tools",
+        },
+        {
+          value: "dapp",
+          label: "dapp",
+        },
+        {
+          value: "sns",
+          label: "sns",
+        },
+        {
+          value: "defi",
+          label: "defi",
+        },
+         {
+          value: "games",
+          label: "games",
+        },
+         {
+          value: "official",
+          label: "official",
+        },
+         {
+          value: "bridge",
+          label: "bridge",
+        },
+         {
+          value: "swap",
+          label: "swap",
+        },
+         {
+          value: "metaverse",
+          label: "metaverse",
+        },
+      ],
+      projectType:null,
       type: "Public",
       fileName: "No file chosen…",
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),

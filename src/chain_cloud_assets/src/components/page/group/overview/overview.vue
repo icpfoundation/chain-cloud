@@ -312,6 +312,7 @@
               v-for="(item, index) in groupList"
               :value="item.value"
               :key="index"
+              placeholder="please select"
               >{{ item.label }}</Option
             >
           </Select>

@@ -288,6 +288,7 @@
             v-for="(item, index) in roleList"
             :value="item.value"
             :key="index"
+            placeholder="please select"
             >{{ item.label }}</Option
           >
         </Select>
@@ -332,6 +333,7 @@
                 v-for="(item, index) in nameList"
                 :value="item.value"
                 :key="index"
+                placeholder="please select"
                 >{{ item.label }}</Option
               >
             </Select>
