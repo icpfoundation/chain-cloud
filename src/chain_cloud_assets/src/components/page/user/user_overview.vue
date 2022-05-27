@@ -346,6 +346,8 @@ export default {
           1
         );
 
+        console.log(getLogRes)
+
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
             if (getLogRes[j][k][0].toString() == TEST_USER) {
