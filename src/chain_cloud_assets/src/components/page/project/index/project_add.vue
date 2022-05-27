@@ -216,6 +216,15 @@
         </div>
         <div class="right">
           <div class="nameItem">
+            <span>Projects Id</span>
+            <Input
+              placeholder="Production project"
+              style="width: 320px; margin-top: 10px"
+              :clearable="true"
+              v-model="project['id']"
+            />
+          </div>
+          <div class="nameItem">
             <span>Projects name</span>
             <Input
               placeholder="Production project"
@@ -416,7 +425,7 @@ export default {
   methods: {
     async saveFun() {
       let account = Principal.fromText(TEST_USER);
-      this.project.id = TEST_PROJECT_ID;
+      this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
       this.project.create_by = account;

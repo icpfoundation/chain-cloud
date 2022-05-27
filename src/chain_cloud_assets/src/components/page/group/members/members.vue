@@ -253,7 +253,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Members</div>
-      <span class="titlePath">Group1 / Project group 001 / Members</span>
+      <span class="titlePath">{{ group.name }} / Members</span>
     </div>
     <div class="head">
       <div class="headLeft">
@@ -408,6 +408,9 @@ import {
 export default {
   data() {
     return {
+      group: {
+        name: "",
+      },
       roleValue: "1",
       roleList: [
         {
@@ -530,7 +533,7 @@ export default {
       throw getGroupInfoRes.Err;
       return;
     }
-
+    this.group.name = getGroupInfoRes.Ok[0].name;
     let currentTime = BigInt(new Date().getTime());
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {

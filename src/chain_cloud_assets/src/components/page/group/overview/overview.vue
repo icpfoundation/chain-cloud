@@ -255,7 +255,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Overview</div>
-      <span class="titlePath">Group1 / Project group 001 / Overview</span>
+      <span class="titlePath">Group1 / {{ group.name }} / Overview</span>
     </div>
     <div class="head">
       <div class="headLeft">
@@ -485,10 +485,10 @@ export default {
     };
   },
   methods: {
-    toaddProjectFun(){
+    toaddProjectFun() {
       this.$router.push({
-        name:"project_add"
-      })
+        name: "project_add",
+      });
     },
     chooseFun(item, index) {
       this.tabList.forEach((element) => {

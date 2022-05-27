@@ -1,5 +1,5 @@
 <style scoped>
-.layoutApp{
+.layoutApp {
   margin-top: 74px;
 }
 .logo {
@@ -147,7 +147,7 @@
             src="../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
             alt=""
           />
-          <span>Project Group 1</span>
+          <span>{{ group.name }}</span>
         </div>
         <div class="appWrappLeftBox">
           <div
@@ -197,9 +197,20 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+  TEST_CANISTER,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
+      group: {
+        name: "",
+      },
       tabList: [
         {
           name: "IDE",
@@ -312,6 +323,21 @@ export default {
       this.$router.push({
         name: "overview",
       });
+    }
+  },
+  async created() {
+    console.log("getGroupInfoRes");
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
+
+    if (getGroupInfoRes.Err) {
+      throw getGroupInfoRes.Err;
+      return;
+    }
+
+    if (getGroupInfoRes.Ok.length > 0) {
+      this.group.name = getGroupInfoRes.Ok[0].name;
     }
   },
 };
