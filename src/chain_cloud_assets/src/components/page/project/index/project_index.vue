@@ -192,6 +192,16 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import {
+  MANAGE_CANISTER_LOCALNET,
+  TEST_USER,
+  TEST_GROUP_ID,
+  TEST_CANISTER,
+  TEST_PROJECT_ID,
+  TEST_PROJECT_CANISTER,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
@@ -273,6 +283,24 @@ export default {
       });
     },
   },
-  
+  async created() {
+    let groupRes = await manageCanister.visibleProject();
+    for (let i = 0; i < groupRes.length; i++) {
+      for (let j = 0; j < groupRes[i].length; j++) {
+        this.tableData.total = groupRes[i][j][2].projects.length;
+        for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
+          this.tableData.tableList.push({
+            name: groupRes[i][j][2].projects[k][1].name,
+            by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+            dec: groupRes[i][j][2].projects[k][1].description,
+            type: "Recommended",
+            user: groupRes[i][j][0].toString(),
+            groupId: groupRes[i][j][1],
+            projectId: groupRes[i][j][2].projects[k][1].id,
+          });
+        }
+      }
+    }
+  },
 };
 </script>

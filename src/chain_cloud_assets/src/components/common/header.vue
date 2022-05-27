@@ -198,9 +198,9 @@ export default {
           // if (this.$router.currentRoute.path != "/blog") {
           //   this.$router.push("/blog");
           // }
-           this.$router.push({
-              name: "aboutus",
-            });
+          this.$router.push({
+            name: "aboutus",
+          });
           break;
 
         case "4":
@@ -259,8 +259,8 @@ export default {
           });
         } else {
           console.log(this.$router.path);
-          if (this.$router.path != "/sidebar") {
-            this.$router.push("/sidebar");
+          if (this.$router.path != "/user") {
+            this.$router.push("/user");
           }
         }
       }

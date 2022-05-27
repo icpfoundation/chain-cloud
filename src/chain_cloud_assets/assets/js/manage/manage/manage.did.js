@@ -10,9 +10,25 @@ export const idlFactory = ({ IDL }) => {
     'authority' : Authority,
     'identity' : IDL.Principal,
   });
+  const ProjectType = IDL.Variant({
+    'NFT' : IDL.Null,
+    'Sns' : IDL.Null,
+    'Games' : IDL.Null,
+    'Dapp' : IDL.Null,
+    'Defi' : IDL.Null,
+    'Infrastructure' : IDL.Null,
+    'Swap' : IDL.Null,
+    'Bridge' : IDL.Null,
+    'Tools' : IDL.Null,
+    'Authentication' : IDL.Null,
+    'Official' : IDL.Null,
+    'Metaverse' : IDL.Null,
+    'Wallet' : IDL.Null,
+  });
   const Profile = IDL.Variant({ 'Private' : IDL.Null, 'Public' : IDL.Null });
   const Project = IDL.Record({
     'id' : IDL.Nat64,
+    'function' : ProjectType,
     'members' : IDL.Vec(IDL.Tuple(IDL.Principal, Member)),
     'canister_cycle_floor' : IDL.Nat,
     'name' : IDL.Text,

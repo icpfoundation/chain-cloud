@@ -253,7 +253,7 @@
           </div>
           <div class="description">
             <span>Projects type</span>
-            <Select v-model="projectType" style="width: 100%;">
+            <Select v-model="projectType" style="width: 100%">
               <Option
                 v-for="(item, index) in projectTypeList"
                 :value="item.value"
@@ -351,9 +351,10 @@ export default {
         canisters: [],
         visibility: null,
         in_group: 0,
+        function: {},
       },
-      projectTypeList:[
-         {
+      projectTypeList: [
+        {
           value: "wallet",
           label: "wallet",
         },
@@ -385,28 +386,28 @@ export default {
           value: "defi",
           label: "defi",
         },
-         {
+        {
           value: "games",
           label: "games",
         },
-         {
+        {
           value: "official",
           label: "official",
         },
-         {
+        {
           value: "bridge",
           label: "bridge",
         },
-         {
+        {
           value: "swap",
           label: "swap",
         },
-         {
+        {
           value: "metaverse",
           label: "metaverse",
         },
       ],
-      projectType:null,
+      projectType: null,
       type: "Public",
       fileName: "No file chosen…",
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
@@ -422,7 +423,18 @@ export default {
       this.project.canisters = [Principal.fromText(TEST_CANISTER)];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
+      console.log("projectType");
+      let projectType = {};
+      if (this.projectType == "NFT") {
+        projectType[this.projectType] = null;
+      } else {
+        let types =
+          this.projectType.slice(0, 1).toUpperCase() +
+          this.projectType.slice(1);
 
+        projectType[types] = null;
+      }
+      this.project.function = projectType;
       let addProjectRes = await manageCanister.addProject(
         account,
         this.project.in_group,

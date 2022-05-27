@@ -12,6 +12,26 @@ type Member = record {
     join_time:nat64;
 };
 
+
+
+type  ProjectType = variant {
+    Wallet:null;
+    Infrastructure:null;
+    NFT:null;
+    Authentication:null;
+    Tools:null;
+    Dapp:null;
+    Sns:null;
+    Defi:null;
+    Games:null;
+    Official:null;
+    Bridge:null;
+    Swap:null;
+    Metaverse:null;
+};
+
+
+
 type Project = record {
     id: nat64;
     name: text;
@@ -24,6 +44,7 @@ type Project = record {
     canister_cycle_floor:nat;
     members:vec record { principal; Member; };
     canisters:vec principal;
+    function:ProjectType;
 };
 
 type Group = record {

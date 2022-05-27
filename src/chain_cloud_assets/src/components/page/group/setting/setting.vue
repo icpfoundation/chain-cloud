@@ -1,5 +1,6 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
+  margin-top: 1rem;
   width: 100%;
 }
 
@@ -328,6 +329,19 @@ export default {
         );
       if (updateGroupRes.Err) {
         throw updateGroupRes.Err;
+      }
+
+      let manage_canister = Principal.fromText(MANAGE_CANISTER_LOCALNET);
+      let enc = new TextEncoder();
+      let imageStoreRes = await manageCanister.imageStore(
+        manage_canister,
+        account,
+        BigInt(this.group.id),
+        Array.from(enc.encode(this.imgurl))
+      );
+      if (imageStoreRes.Err) {
+        throw imageStoreRes.Err;
+        return;
       }
       this.$Notice.info({
         title: "修改成功",

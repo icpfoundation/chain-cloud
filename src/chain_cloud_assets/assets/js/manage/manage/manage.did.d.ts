@@ -48,6 +48,7 @@ export type Profile = { 'Private' : null } |
   { 'Public' : null };
 export interface Project {
   'id' : bigint,
+  'function' : ProjectType,
   'members' : Array<[Principal, Member]>,
   'canister_cycle_floor' : bigint,
   'name' : string,
@@ -61,6 +62,19 @@ export interface Project {
 }
 export type ProjectInfoRes = { 'Ok' : [] | [Project] } |
   { 'Err' : string };
+export type ProjectType = { 'NFT' : null } |
+  { 'Sns' : null } |
+  { 'Games' : null } |
+  { 'Dapp' : null } |
+  { 'Defi' : null } |
+  { 'Infrastructure' : null } |
+  { 'Swap' : null } |
+  { 'Bridge' : null } |
+  { 'Tools' : null } |
+  { 'Authentication' : null } |
+  { 'Official' : null } |
+  { 'Metaverse' : null } |
+  { 'Wallet' : null };
 export interface RelationProject { 'group_id' : bigint, 'project_id' : bigint }
 export type Result = { 'Ok' : null } |
   { 'Err' : string };
