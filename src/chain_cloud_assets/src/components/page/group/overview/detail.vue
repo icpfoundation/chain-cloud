@@ -198,7 +198,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Detail</div>
-      <span class="titlePath">Group1 / Project group 001 / Detail</span>
+      <span class="titlePath">{{ group.name }}/ Detail</span>
     </div>
     <div class="content">
       <div class="leftBox">
@@ -209,7 +209,7 @@
               src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
               alt=""
             />
-            <span>Production Group</span>
+            <span>{{ group.name }}</span>
           </div>
           <div class="leftBoxLine"></div>
           <div class="leftContent">
@@ -319,39 +319,40 @@ export default {
             name: "Production group/project one",
           },
         ],
+        name: "aaa",
       },
       tableData: {
         tableList: [
-          {
-            name: "XXXXXX",
-            groupInfo: "Given access 3 years ago",
-            isBizoZhi: true,
-            biaozhi: "Member",
-          },
-          {
-            name: "XXXXXX",
-            groupInfo: "Given access 3 years ago",
-            isBizoZhi: true,
-            biaozhi: "Owner",
-          },
-          {
-            name: "XXXXXX",
-            groupInfo: "Given access 3 years ago",
-            isBizoZhi: true,
-            biaozhi: "Member",
-          },
-          {
-            name: "XXXXXX",
-            groupInfo: "Given access 3 years ago",
-            isBizoZhi: true,
-            biaozhi: "Member",
-          },
-          {
-            name: "XXXXXX",
-            groupInfo: "Given access 3 years ago",
-            isBizoZhi: true,
-            biaozhi: "Member",
-          },
+          // {
+          //   name: "XXXXXX",
+          //   groupInfo: "Given access 3 years ago",
+          //   isBizoZhi: true,
+          //   biaozhi: "Member",
+          // },
+          // {
+          //   name: "XXXXXX",
+          //   groupInfo: "Given access 3 years ago",
+          //   isBizoZhi: true,
+          //   biaozhi: "Owner",
+          // },
+          // {
+          //   name: "XXXXXX",
+          //   groupInfo: "Given access 3 years ago",
+          //   isBizoZhi: true,
+          //   biaozhi: "Member",
+          // },
+          // {
+          //   name: "XXXXXX",
+          //   groupInfo: "Given access 3 years ago",
+          //   isBizoZhi: true,
+          //   biaozhi: "Member",
+          // },
+          // {
+          //   name: "XXXXXX",
+          //   groupInfo: "Given access 3 years ago",
+          //   isBizoZhi: true,
+          //   biaozhi: "Member",
+          // },
         ],
         total: 5,
         page: 1,
@@ -386,6 +387,7 @@ export default {
     }
     let currentTime = BigInt(new Date().getTime());
     let totalMemory_size = BigInt(0);
+    this.group.name = getGroupInfoRes.Ok[0].name;
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
         let memory_size = BigInt(0);

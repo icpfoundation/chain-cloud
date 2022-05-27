@@ -239,7 +239,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Overview</div>
-      <span class="titlePath">Project info / Chain-Cloud / Overview</span>
+      <span class="titlePath">{{ project.name }}/ Overview</span>
     </div>
     <div class="head">
       <div class="headItem">
@@ -369,31 +369,31 @@ export default {
       ],
       tableData: {
         tableList: [
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
         ],
         total: 5,
         page: 1,

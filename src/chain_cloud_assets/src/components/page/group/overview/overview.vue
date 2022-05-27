@@ -255,7 +255,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Overview</div>
-      <span class="titlePath">Group1 / Project group 001 / Overview</span>
+      <span class="titlePath">Group1 / {{ group.name }} / Overview</span>
     </div>
     <div class="head">
       <div class="headLeft">
@@ -428,53 +428,53 @@ export default {
       ],
       tableData: {
         tableList: [
-          {
-            name: "go-statemachine",
-            group: "G",
-            groupInfo: "go-statemachine",
-            time: "18 days ago",
-            isLock: true,
-            isXing: true,
-            isBizoZhi: true,
-            biaozhi: "Maintainer",
-          },
-          {
-            name: "Zap",
-            group: "Z",
-            groupInfo: "go-statemachine",
-            time: "17 days ago",
-            isLock: true,
-            isXing: false,
-            isBizoZhi: true,
-            biaozhi: "Owner",
-          },
-          {
-            name: "go-statemachine",
-            group: "Z",
-            groupInfo: "go-statemachine",
-            time: "16days ago",
-            isLock: false,
-            isXing: false,
-            isBizoZhi: false,
-          },
-          {
-            name: "go-statemachine",
-            group: "G",
-            groupInfo: "go-statemachine",
-            time: "15 days ago",
-            isLock: false,
-            isXing: false,
-            isBizoZhi: false,
-          },
-          {
-            name: "go-statemachine",
-            group: "G",
-            groupInfo: "go-statemachine",
-            time: "14 days ago",
-            isLock: false,
-            isXing: false,
-            isBizoZhi: false,
-          },
+          // {
+          //   name: "go-statemachine",
+          //   group: "G",
+          //   groupInfo: "go-statemachine",
+          //   time: "18 days ago",
+          //   isLock: true,
+          //   isXing: true,
+          //   isBizoZhi: true,
+          //   biaozhi: "Maintainer",
+          // },
+          // {
+          //   name: "Zap",
+          //   group: "Z",
+          //   groupInfo: "go-statemachine",
+          //   time: "17 days ago",
+          //   isLock: true,
+          //   isXing: false,
+          //   isBizoZhi: true,
+          //   biaozhi: "Owner",
+          // },
+          // {
+          //   name: "go-statemachine",
+          //   group: "Z",
+          //   groupInfo: "go-statemachine",
+          //   time: "16days ago",
+          //   isLock: false,
+          //   isXing: false,
+          //   isBizoZhi: false,
+          // },
+          // {
+          //   name: "go-statemachine",
+          //   group: "G",
+          //   groupInfo: "go-statemachine",
+          //   time: "15 days ago",
+          //   isLock: false,
+          //   isXing: false,
+          //   isBizoZhi: false,
+          // },
+          // {
+          //   name: "go-statemachine",
+          //   group: "G",
+          //   groupInfo: "go-statemachine",
+          //   time: "14 days ago",
+          //   isLock: false,
+          //   isXing: false,
+          //   isBizoZhi: false,
+          // },
         ],
         total: 5,
         page: 1,
@@ -483,10 +483,10 @@ export default {
     };
   },
   methods: {
-    toaddProjectFun(){
+    toaddProjectFun() {
       this.$router.push({
-        name:"project_add"
-      })
+        name: "project_add",
+      });
     },
     chooseFun(item, index) {
       this.tabList.forEach((element) => {

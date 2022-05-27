@@ -330,6 +330,12 @@
   </div>
 </template>
 <script>
+import { Principal } from "@dfinity/principal";
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import {
+  TEST_USER,
+  TEST_GROUP_ID,
+} from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
@@ -442,69 +448,69 @@ export default {
       ],
       tableData: {
         tableList: [
-          {
-            value: "yong1",
-            label: "yong1",
-            typeId: 1,
-            name: "yong1",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            value: "yong2",
-            label: "yong2",
-            typeId: 1,
-            name: "yong2",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            value: "yong3",
-            label: "yong3",
-            typeId: 1,
-            name: "yong3",
-            by: "By imgbot",
-            dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-            type: "Recommended",
-          },
-          {
-            value: "feng1",
-            label: "feng1",
-            typeId: 1,
-            name: "feng1",
-            by: "By imgbot",
-            dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-            type: "Recommended",
-          },
-          {
-            value: "feng1",
-            label: "feng1",
-            typeId: 2,
-            name: "feng1",
-            by: "By imgbot",
-            dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-            type: "Recommended",
-          },
-          {
-            value: "yong4",
-            label: "yong4",
-            typeId: 2,
-            name: "yong4",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
-          {
-            value: "yong5",
-            label: "yong5",
-            typeId: 2,
-            name: "yong5",
-            by: "By imgbot",
-            dec: "A GitHub app that optimizes your images",
-            type: "Recommended",
-          },
+          // {
+          //   value: "yong1",
+          //   label: "yong1",
+          //   typeId: 1,
+          //   name: "yong1",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
+          // {
+          //   value: "yong2",
+          //   label: "yong2",
+          //   typeId: 1,
+          //   name: "yong2",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
+          // {
+          //   value: "yong3",
+          //   label: "yong3",
+          //   typeId: 1,
+          //   name: "yong3",
+          //   by: "By imgbot",
+          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
+          //   type: "Recommended",
+          // },
+          // {
+          //   value: "feng1",
+          //   label: "feng1",
+          //   typeId: 1,
+          //   name: "feng1",
+          //   by: "By imgbot",
+          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
+          //   type: "Recommended",
+          // },
+          // {
+          //   value: "feng1",
+          //   label: "feng1",
+          //   typeId: 2,
+          //   name: "feng1",
+          //   by: "By imgbot",
+          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
+          //   type: "Recommended",
+          // },
+          // {
+          //   value: "yong4",
+          //   label: "yong4",
+          //   typeId: 2,
+          //   name: "yong4",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
+          // {
+          //   value: "yong5",
+          //   label: "yong5",
+          //   typeId: 2,
+          //   name: "yong5",
+          //   by: "By imgbot",
+          //   dec: "A GitHub app that optimizes your images",
+          //   type: "Recommended",
+          // },
         ],
         total: 5,
         page: 1,
@@ -617,7 +623,55 @@ export default {
       });
     },
   },
-  created() {
+  async created() {
+    let groupRes = await manageCanister.visibleProject();
+    this.tableData.total = groupRes.length;
+    for (let i = 0; i < groupRes.length; i++) {
+      for (let j = 0; j < groupRes[i].length; j++) {
+        for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
+          this.tableData.tableList.push({
+            name: groupRes[i][j][2].projects[k][1].name,
+            by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+            dec: groupRes[i][j][2].projects[k][1].description,
+            type: "Recommended",
+            user: groupRes[i][j][0].toString(),
+            groupId: groupRes[i][j][1],
+            projectId: groupRes[i][j][2].projects[k][1].id,
+            typeId: 2,
+          });
+        }
+      }
+      for (let j = 0; j < groupRes[i].length; j++) {
+        try {
+          let imageData = await manageCanister.getImage(
+            groupRes[i][j][0],
+            groupRes[i][j][1]
+          );
+          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          this.tableData.tableList.push({
+            name: groupRes[i][j][2].name,
+            by: groupRes[i][j][0],
+            dec: groupRes[i][j][2].description,
+            type: "Recommended",
+            groupId: groupRes[i][j][2].id,
+            imageData: imageData,
+            typeId: 1,
+          });
+        } catch (err) {
+          this.tableData.tableList.push({
+            value: groupRes[i][j][2].name,
+            label: groupRes[i][j][2].name,
+            name: groupRes[i][j][2].name,
+            by: groupRes[i][j][0],
+            dec: groupRes[i][j][2].description,
+            type: "Recommended",
+            groupId: groupRes[i][j][2].id,
+            typeId: 1,
+          });
+          this.tableData.total = this.tableData.tableList.length;
+        }
+      }
+    }
     let groupList = [];
     let projectList = [];
     this.tableData.tableList.forEach((element) => {

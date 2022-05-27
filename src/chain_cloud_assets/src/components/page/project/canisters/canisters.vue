@@ -276,7 +276,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Canisters</div>
-      <span class="titlePath">Project info / Chain-Cloud / Canisters</span>
+      <span class="titlePath">{{ project.name }} / Canisters</span>
     </div>
     <div class="head">
       <div class="headItemTitle">All canister info</div>

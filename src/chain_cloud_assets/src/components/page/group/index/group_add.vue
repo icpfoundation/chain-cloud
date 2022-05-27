@@ -216,6 +216,15 @@
         </div>
         <div class="right">
           <div class="nameItem">
+            <span>Group Id</span>
+            <Input
+              placeholder="Production group"
+              style="width: 320px; margin-top: 10px"
+              :clearable="true"
+              v-model="group['id']"
+            />
+          </div>
+          <div class="nameItem">
             <span>Group name</span>
             <Input
               placeholder="Production group"
@@ -320,7 +329,7 @@ export default {
       fileName: "No file chosen…",
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
       group: {
-        id: TEST_GROUP_ID,
+        id: 0,
         name: "",
         description: "",
         visibility: null,
@@ -332,6 +341,7 @@ export default {
   },
   methods: {
     async saveFun() {
+      this.group.id = Number(this.group.id);
       let manage_canister = Principal.fromText(MANAGE_CANISTER_LOCALNET);
       let userIdentity = Principal.fromText(TEST_USER);
       let addUserRes = await manageCanister.addUser("test", { Public: null });
