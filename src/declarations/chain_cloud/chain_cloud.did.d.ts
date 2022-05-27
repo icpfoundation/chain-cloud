@@ -1,6 +1,4 @@
 import type { Principal } from '@dfinity/principal';
-import type { ActorMethod } from '@dfinity/agent';
-
 export type CallType = { 'Local' : null } |
   { 'Remote' : null };
 export interface CanisterSettings {
@@ -55,22 +53,34 @@ export type createCanisterResult = { 'Ok' : Principal } |
 export type updateResult = { 'Ok' : null } |
   { 'Err' : string };
 export interface _SERVICE {
-  'commitCanister' : ActorMethod<[CommitCanister], undefined>,
-  'createEvent' : ActorMethod<[Metadata], Result>,
-  'getCallerEvent' : ActorMethod<[Principal, bigint, bigint], Array<Metadata>>,
-  'getCanisterById' : ActorMethod<
-    [Principal, Principal],
-    GetCanisterByIdResult,
-  >,
-  'getCanisterByPrinciple' : ActorMethod<[Principal], Array<CommitCanister>>,
-  'getCanisterEvent' : ActorMethod<
-    [Principal, bigint, bigint],
-    Array<Metadata>,
-  >,
-  'getCanisterEventByTime' : ActorMethod<[Principal, bigint], Array<Metadata>>,
-  'getCanisterLastEvent' : ActorMethod<[Principal, bigint], Array<Metadata>>,
-  'getCanisterList' : ActorMethod<[], Array<Principal>>,
-  'getCanisterStatus' : ActorMethod<[Principal, CallType], StatusResult>,
-  'getLastEvent' : ActorMethod<[bigint], Array<Metadata>>,
-  'getLocalCanisterList' : ActorMethod<[], Array<CanisterStatusFormat>>,
+  'commitCanister' : (arg_0: CommitCanister) => Promise<undefined>,
+  'createEvent' : (arg_0: Metadata) => Promise<Result>,
+  'getCallerEvent' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: bigint,
+    ) => Promise<Array<Metadata>>,
+  'getCanisterById' : (arg_0: Principal, arg_1: Principal) => Promise<
+      GetCanisterByIdResult
+    >,
+  'getCanisterByPrinciple' : (arg_0: Principal) => Promise<
+      Array<CommitCanister>
+    >,
+  'getCanisterEvent' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: bigint,
+    ) => Promise<Array<Metadata>>,
+  'getCanisterEventByTime' : (arg_0: Principal, arg_1: bigint) => Promise<
+      Array<Metadata>
+    >,
+  'getCanisterLastEvent' : (arg_0: Principal, arg_1: bigint) => Promise<
+      Array<Metadata>
+    >,
+  'getCanisterList' : () => Promise<Array<Principal>>,
+  'getCanisterStatus' : (arg_0: Principal, arg_1: CallType) => Promise<
+      StatusResult
+    >,
+  'getLastEvent' : (arg_0: bigint) => Promise<Array<Metadata>>,
+  'getLocalCanisterList' : () => Promise<Array<CanisterStatusFormat>>,
 }
