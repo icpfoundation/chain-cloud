@@ -1,7 +1,7 @@
 <style scoped>
-.app {
+.userapp {
   width: 100%;
-  /* margin-top: 100px; */
+  margin-top: 100px;
 }
 
 .head {
@@ -101,7 +101,7 @@
 </style>
 
 <template>
-  <div class="app">
+  <div class="userapp">
     <div class="head">
       <img
         src="../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
