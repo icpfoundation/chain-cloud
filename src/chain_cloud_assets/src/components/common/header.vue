@@ -109,7 +109,7 @@
         class="menuBox"
       >
         <el-menu-item index="1">IDE</el-menu-item>
-        <el-menu-item index="2">TEAM-SCSAN</el-menu-item>
+        <el-menu-item index="2">TEAM-SCAN</el-menu-item>
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>

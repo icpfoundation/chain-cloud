@@ -428,6 +428,7 @@ export default {
       ],
       tableData: {
         tableList: [
+          /*
           {
             name: "go-statemachine",
             group: "G",
@@ -475,6 +476,7 @@ export default {
             isXing: false,
             isBizoZhi: false,
           },
+          */
         ],
         total: 5,
         page: 1,

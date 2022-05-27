@@ -160,8 +160,8 @@
           <div class="infoItem" @click="topagesFun(4)">New project</div>
         </div>
         <div class="footItemBox">
-          <div class="footertitle">Easy coding</div>
-          <div class="infoItem" @click="topagesFun(5)">code Editor</div>
+          <div class="footertitle">EASY CODING</div>
+          <div class="infoItem" @click="topagesFun(5)">Code editor</div>
         </div>
       </div>
       <div class="footItem"></div>
