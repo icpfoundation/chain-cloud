@@ -373,8 +373,8 @@ export default {
         return;
       }
       let enc = new TextEncoder();
-      let imageStoreRes = await manageCanister.imageStore(
-        manage_canister,
+
+      let imageStoreRes = await manageCanister.groupImageStore(
         userIdentity,
         this.group.id,
         Array.from(enc.encode(this.imgurl))

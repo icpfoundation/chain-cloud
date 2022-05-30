@@ -197,6 +197,7 @@ export interface _SERVICE {
       arg_3: string,
       arg_4: Profile,
     ) => Promise<OptGroupRes>,
+  'update_log_canister' : (arg_0: Principal) => Promise<undefined>,
   'update_project_description' : (
       arg_0: Principal,
       arg_1: bigint,

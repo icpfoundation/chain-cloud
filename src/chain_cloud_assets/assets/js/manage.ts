@@ -39,8 +39,14 @@ interface ManageInterface {
 }
 
 interface ImageStoreInterface {
-    image_store(manageCanister: Principal, user: Principal, group_id: bigint, imageData: Array<number>): imageStoreRes
-    get_image(user: Principal, group_id: bigint): Array<number>
+    group_image_store(user: Principal, group_id: bigint, imageData: Array<number>): imageStoreRes
+    project_image_store(user: Principal, group_id: bigint, project_id: bigint, imageData: Array<number>): imageStoreRes
+    get_group_image(user: Principal, group_id: bigint): Array<number>
+    get_project_image(
+        user: Principal,
+        group_id: bigint,
+        project_id: bigint,
+    ): Array<number>,
 }
 interface CanisterLogInterface {
     get_log(user: Principal, group_id: bigint, page: bigint): [] | [Array<[Principal, bigint, Action, Array<string>]>]
@@ -76,13 +82,23 @@ class ManageCanister {
         return getGroupInfoRes
     }
 
-    async imageStore(manageCanister: Principal, account: Principal, group_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
-        let imageStoreRes = await this.imageActor.image_store(manageCanister, account, group_id, imageData)
+    async groupImageStore(account: Principal, group_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
+        let imageStoreRes = await this.imageActor.group_image_store(account, group_id, imageData)
         return imageStoreRes
     }
 
-    async getImage(account: Principal, group_id: bigint): Promise<Array<number>> {
-        let getImageRes = await this.imageActor.get_image(account, group_id)
+    async projectImageStore(account: Principal, group_id: bigint, project_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
+        let imageStoreRes = await this.imageActor.project_image_store(account, group_id, project_id, imageData)
+        return imageStoreRes
+    }
+
+    async getGroupImage(account: Principal, group_id: bigint): Promise<Array<number>> {
+        let getImageRes = await this.imageActor.get_group_image(account, group_id)
+        return getImageRes
+    }
+
+    async getProjectImage(account: Principal, group_id: bigint, project_id: bigint): Promise<Array<number>> {
+        let getImageRes = await this.imageActor.get_project_image(account, group_id, project_id)
         return getImageRes
     }
 

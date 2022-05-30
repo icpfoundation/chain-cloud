@@ -452,6 +452,14 @@ export default {
       let info = "增加组失败";
       if ("Ok" in addProjectRes) {
         info = "增加组成功";
+        let enc = new TextEncoder();
+        let imageStoreRes = await manageCanister.projectImageStore(
+          account,
+          this.project.in_group,
+          this.project.id,
+          Array.from(enc.encode(this.imgurl))
+        );
+        console.log("imageStoreRes", imageStoreRes);
       }
       this.$Notice.info({
         title: info,

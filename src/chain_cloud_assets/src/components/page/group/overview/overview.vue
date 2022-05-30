@@ -255,7 +255,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Overview</div>
-      <span class="titlePath">Group1 / {{ group.name }} / Overview</span>
+      <span class="titlePath"> {{ group.name }} / Overview</span>
     </div>
     <div class="head">
       <div class="headLeft">

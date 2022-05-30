@@ -158,10 +158,7 @@
           @click="toProjectFun(item)"
         >
           <div class="tableImg">
-            <img
-              src="../../../../../assets/chain_cloud/teamscan/icon_projct@2x.png"
-              alt=""
-            />
+            <img :src="item.imageData" alt="" />
           </div>
           <div class="tableInfo">
             <span class="tableItemName">{{ item.name }}</span>
@@ -289,15 +286,36 @@ export default {
       for (let j = 0; j < groupRes[i].length; j++) {
         this.tableData.total = groupRes[i][j][2].projects.length;
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
-          this.tableData.tableList.push({
-            name: groupRes[i][j][2].projects[k][1].name,
-            by: groupRes[i][j][2].projects[k][1].create_by.toString(),
-            dec: groupRes[i][j][2].projects[k][1].description,
-            type: "Recommended",
-            user: groupRes[i][j][0].toString(),
-            groupId: groupRes[i][j][1],
-            projectId: groupRes[i][j][2].projects[k][1].id,
-          });
+          try {
+            let imageData = await manageCanister.getProjectImage(
+              groupRes[i][j][0],
+              groupRes[i][j][1],
+              groupRes[i][j][2].projects[k][1].id
+            );
+
+            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+
+            this.tableData.tableList.push({
+              name: groupRes[i][j][2].projects[k][1].name,
+              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+              dec: groupRes[i][j][2].projects[k][1].description,
+              type: "Recommended",
+              user: groupRes[i][j][0].toString(),
+              groupId: groupRes[i][j][1],
+              projectId: groupRes[i][j][2].projects[k][1].id,
+              imageData: imageData,
+            });
+          } catch (err) {
+            this.tableData.tableList.push({
+              name: groupRes[i][j][2].projects[k][1].name,
+              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+              dec: groupRes[i][j][2].projects[k][1].description,
+              type: "Recommended",
+              user: groupRes[i][j][0].toString(),
+              groupId: groupRes[i][j][1],
+              projectId: groupRes[i][j][2].projects[k][1].id,
+            });
+          }
         }
       }
     }

@@ -94,12 +94,12 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.imageStore = function (manageCanister, account, group_id, imageData) {
+    ManageCanister.prototype.groupImageStore = function (account, group_id, imageData) {
         return __awaiter(this, void 0, void 0, function () {
             var imageStoreRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.imageActor.image_store(manageCanister, account, group_id, imageData)];
+                    case 0: return [4 /*yield*/, this.imageActor.group_image_store(account, group_id, imageData)];
                     case 1:
                         imageStoreRes = _a.sent();
                         return [2 /*return*/, imageStoreRes];
@@ -107,12 +107,38 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.getImage = function (account, group_id) {
+    ManageCanister.prototype.projectImageStore = function (account, group_id, project_id, imageData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var imageStoreRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.imageActor.project_image_store(account, group_id, project_id, imageData)];
+                    case 1:
+                        imageStoreRes = _a.sent();
+                        return [2 /*return*/, imageStoreRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.getGroupImage = function (account, group_id) {
         return __awaiter(this, void 0, void 0, function () {
             var getImageRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.imageActor.get_image(account, group_id)];
+                    case 0: return [4 /*yield*/, this.imageActor.get_group_image(account, group_id)];
+                    case 1:
+                        getImageRes = _a.sent();
+                        return [2 /*return*/, getImageRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.getProjectImage = function (account, group_id, project_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getImageRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.imageActor.get_project_image(account, group_id, project_id)];
                     case 1:
                         getImageRes = _a.sent();
                         return [2 /*return*/, getImageRes];

@@ -314,10 +314,10 @@ export default {
         "115.6 MB (115.6 MB repositories, 0 Bytes build artifacts, 0 Bytes LFS)",
       group: {
         projects: [
-          {
-            size: "860 KB",
-            name: "Production group/project one",
-          },
+          // {
+          //   size: "860 KB",
+          //   name: "Production group/project one",
+          // },
         ],
         name: "aaa",
       },

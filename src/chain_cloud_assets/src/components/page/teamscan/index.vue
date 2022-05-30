@@ -274,7 +274,9 @@
                 :key="index"
                 @click="toGroupItemFun(item)"
               >
-                <div class="tableImg"></div>
+                <div class="tableImg" style="overflow: hidden">
+                  <img :src="item.imageData" alt="" />
+                </div>
                 <div class="tableInfo">
                   <span class="tableItemName">{{ item.name }}</span>
                   <div class="tableItemBy">
@@ -308,7 +310,9 @@
                 :key="index"
                 @click="toProjectItemFun(item)"
               >
-                <div class="tableImg"></div>
+                <div class="tableImg" style="overflow: hidden">
+                  <img :src="item.imageData" alt="" />
+                </div>
                 <div class="tableInfo">
                   <span class="tableItemName">{{ item.name }}</span>
                   <div class="tableItemBy">
@@ -629,21 +633,41 @@ export default {
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
-          this.tableData.tableList.push({
-            name: groupRes[i][j][2].projects[k][1].name,
-            by: groupRes[i][j][2].projects[k][1].create_by.toString(),
-            dec: groupRes[i][j][2].projects[k][1].description,
-            type: "Recommended",
-            user: groupRes[i][j][0].toString(),
-            groupId: groupRes[i][j][1],
-            projectId: groupRes[i][j][2].projects[k][1].id,
-            typeId: 2,
-          });
+          try {
+            let imageData = await manageCanister.getProjectImage(
+              groupRes[i][j][0],
+              groupRes[i][j][1],
+              groupRes[i][j][2].projects[k][1].id
+            );
+            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+            this.tableData.tableList.push({
+              name: groupRes[i][j][2].projects[k][1].name,
+              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+              dec: groupRes[i][j][2].projects[k][1].description,
+              type: "Recommended",
+              user: groupRes[i][j][0].toString(),
+              groupId: groupRes[i][j][1],
+              projectId: groupRes[i][j][2].projects[k][1].id,
+              typeId: 2,
+              imageData: imageData,
+            });
+          } catch (err) {
+            this.tableData.tableList.push({
+              name: groupRes[i][j][2].projects[k][1].name,
+              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+              dec: groupRes[i][j][2].projects[k][1].description,
+              type: "Recommended",
+              user: groupRes[i][j][0].toString(),
+              groupId: groupRes[i][j][1],
+              projectId: groupRes[i][j][2].projects[k][1].id,
+              typeId: 2,
+            });
+          }
         }
       }
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
-          let imageData = await manageCanister.getImage(
+          let imageData = await manageCanister.getGroupImage(
             groupRes[i][j][0],
             groupRes[i][j][1]
           );
