@@ -337,14 +337,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-  TEST_PROJECT_ID,
-  TEST_PROJECT_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+import { TEST_CANISTER } from "@/chain_cloud_assets/assets/js/config";
 export default {
   data() {
     return {
@@ -424,7 +417,11 @@ export default {
   },
   methods: {
     async saveFun() {
-      let account = Principal.fromText(TEST_USER);
+      if (!window.manageCanister) {
+        throw "No login account";
+      }
+      let account = window.manageCanister.identity;
+
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
@@ -432,7 +429,7 @@ export default {
       this.project.canisters = [Principal.fromText(TEST_CANISTER)];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
-      console.log("projectType");
+
       let projectType = {};
       if (this.projectType == "NFT") {
         projectType[this.projectType] = null;
@@ -444,7 +441,7 @@ export default {
         projectType[types] = null;
       }
       this.project.function = projectType;
-      let addProjectRes = await manageCanister.addProject(
+      let addProjectRes = await window.manageCanister.addProject(
         account,
         this.project.in_group,
         this.project
@@ -453,20 +450,18 @@ export default {
       if ("Ok" in addProjectRes) {
         info = "增加组成功";
         let enc = new TextEncoder();
-        let imageStoreRes = await manageCanister.projectImageStore(
+        let imageStoreRes = await window.manageCanister.projectImageStore(
           account,
           this.project.in_group,
           this.project.id,
           Array.from(enc.encode(this.imgurl))
         );
-        console.log("imageStoreRes", imageStoreRes);
       }
       this.$Notice.info({
         title: info,
         background: true,
         duration: 3,
       });
-      console.log("addProjectRes", addProjectRes);
     },
     previewImage(e) {
       var dt = e.target;

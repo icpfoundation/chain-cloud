@@ -146,17 +146,12 @@ import UserProjects from "./user_projects";
 import UserPersonal from "./user_personal";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {
       user: {
-        account: TEST_USER,
+        account: "",
       },
       tabList: [
         {
@@ -229,6 +224,11 @@ export default {
       this.title = item.name;
     },
   },
-  created() {},
+  created() {
+    if (!window.manageCanister) {
+      throw "No login account";
+    }
+    this.user.account = window.manageCanister.identity.toString();
+  },
 };
 </script>

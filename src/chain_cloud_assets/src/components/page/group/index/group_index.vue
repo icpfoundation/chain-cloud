@@ -187,10 +187,7 @@
 <script>
 import { Principal } from "@dfinity/principal";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
-import {
-  TEST_USER,
-  TEST_GROUP_ID,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {

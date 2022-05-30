@@ -228,12 +228,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {
@@ -270,8 +265,11 @@ export default {
   },
   methods: {},
   async created() {
-    let account = Principal.fromText(TEST_USER);
-    let getUserInfoRes = await manageCanister.getUserInfo(account);
+    if (!window.manageCanister) {
+      throw "No login account";
+    }
+    let account = window.manageCanister.identity;
+    let getUserInfoRes = await window.manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {

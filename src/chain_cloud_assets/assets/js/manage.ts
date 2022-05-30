@@ -1,9 +1,10 @@
 
 import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes, Project, ProjectInfoRes, UserRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
-import { Principal } from "@dfinity/principal";
+import { Principal, } from "@dfinity/principal";
+
 import { Action } from "./manage/canister_log/canister_log.did"
-import { Actor, HttpAgent } from "@dfinity/agent";
+import { Actor, HttpAgent, Identity } from "@dfinity/agent";
 
 
 interface ManageInterface {
@@ -56,10 +57,12 @@ class ManageCanister {
     manageActor: ManageInterface
     imageActor: ImageStoreInterface
     canisterLogActor: CanisterLogInterface
-    constructor(manageActor: ManageInterface, imageActor: ImageStoreInterface, canisterLogActor: CanisterLogInterface) {
+    public identity: Principal
+    constructor(manageActor: ManageInterface, imageActor: ImageStoreInterface, canisterLogActor: CanisterLogInterface, identity?: Principal) {
         this.manageActor = manageActor
         this.imageActor = imageActor
         this.canisterLogActor = canisterLogActor
+        this.identity = identity
     }
 
     async addUser(name: string, profile: Profile): Promise<OptGroupRes> {

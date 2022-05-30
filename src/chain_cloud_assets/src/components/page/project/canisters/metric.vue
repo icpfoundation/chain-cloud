@@ -77,6 +77,9 @@ export default {
         top: 30,
         bottom: 20,
       },
+      legend: {
+        data: ["Canister cycle Balance", "Canister cycle WarningLine"],
+      },
       xAxis: {
         type: "category",
         boundaryGap: false,
@@ -85,14 +88,26 @@ export default {
       yAxis: {
         type: "value",
       },
-      series: {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: "line",
-        itemStyle: {
-          color: "#1776FF",
+      series: [
+        {
+          data: [820, 732, 601, 534, 390, 230, 120],
+          type: "line",
+          itemStyle: {
+            color: "#1776FF",
+          },
+          areaStyle: {},
+          name: "Canister cycle Balance",
         },
-        areaStyle: {},
-      },
+        {
+          data: [300, 300, 300, 300, 300, 300, 300],
+          name: "Canister cycle WarningLine",
+          type: "line",
+          itemStyle: {
+            color: "#d8625a",
+          },
+          areaStyle: {},
+        },
+      ],
     };
     this.lineEachart1.setOption(option1, true);
     this.lineEachart2 = echarts.init(document.getElementById("bar"));

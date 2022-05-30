@@ -316,12 +316,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {
@@ -341,10 +336,16 @@ export default {
   },
   methods: {
     async saveFun() {
+      if (!window.manageCanister) {
+        throw "No login account";
+      }
       this.group.id = Number(this.group.id);
-      let manage_canister = Principal.fromText(MANAGE_CANISTER_LOCALNET);
-      let userIdentity = Principal.fromText(TEST_USER);
-      let addUserRes = await manageCanister.addUser("test", { Public: null });
+
+      let account = window.manageCanister.identity;
+      let addUserRes = await window.manageCanister.addUser("test", {
+        Public: null,
+      });
+
       // if (addUserRes.Err) {
       //   throw addUserRes.Err;
       //   return;
@@ -355,27 +356,28 @@ export default {
         this.type == "Public" ? { Public: null } : { Private: null };
       this.group.members = [
         [
-          userIdentity,
+          account,
           {
             name: "management",
             authority: { Operational: null },
-            identity: userIdentity,
+            identity: account,
             join_time: currentTime,
           },
         ],
       ];
-      // add test project
-      // this.group.projects = [[1]];
-      let account = Principal.fromText(TEST_USER);
-      let addGroupRes = await manageCanister.addGroup(account, this.group);
+
+      let addGroupRes = await window.manageCanister.addGroup(
+        account,
+        this.group
+      );
       if (addGroupRes.Err) {
         throw addGroupRes.Err;
         return;
       }
       let enc = new TextEncoder();
 
-      let imageStoreRes = await manageCanister.groupImageStore(
-        userIdentity,
+      let imageStoreRes = await window.manageCanister.groupImageStore(
+        account,
         this.group.id,
         Array.from(enc.encode(this.imgurl))
       );
@@ -404,6 +406,8 @@ export default {
       }
     },
   },
-  created() {},
+  created() {
+    console.log("window.manageCanister....", window.manageCanister);
+  },
 };
 </script>

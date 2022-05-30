@@ -37,10 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var ManageCanister = /** @class */ (function () {
-    function ManageCanister(manageActor, imageActor, canisterLogActor) {
+    function ManageCanister(manageActor, imageActor, canisterLogActor, identity) {
         this.manageActor = manageActor;
         this.imageActor = imageActor;
         this.canisterLogActor = canisterLogActor;
+        this.identity = identity;
     }
     ManageCanister.prototype.addUser = function (name, profile) {
         return __awaiter(this, void 0, void 0, function () {

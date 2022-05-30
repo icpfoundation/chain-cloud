@@ -394,11 +394,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {

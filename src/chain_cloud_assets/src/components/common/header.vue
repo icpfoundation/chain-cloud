@@ -118,18 +118,18 @@
         class="loginview"
         @mouseenter="enter"
         @mouseleave="leave"
-        @click.self="doSomething"
+        @click.self="plugLogin"
       >
-        <span @click.self="doSomething"> {{ principleShort }} </span>
+        <span @click.self="plugLogin"> {{ principleShort }} </span>
         <img
           class="dfxlogo"
           src="../../../assets/img/logo_difinity@2x.png"
           alt="dfinity logo"
-          @click.self="doSomething"
+          @click.self="plugLogin"
         />
       </div>
       <div class="tab" v-if="tabShow && principleShort != 'Login'">
-        <div @click.stop="doSomething" class="tabItem">Your profile</div>
+        <div @click.stop="plugLogin" class="tabItem">Your profile</div>
         <div @click.stop="logoutAction" class="tabItem">Sign out</div>
       </div>
       <span
@@ -145,7 +145,10 @@
 <script>
 import { AuthClient } from "@dfinity/auth-client";
 import { mapActions, mapGetters } from "vuex";
-
+import {
+  initManageCanister,
+  initPlug,
+} from "@/chain_cloud_assets/assets/js/actor";
 export default {
   name: "headerview",
   data() {
@@ -161,7 +164,8 @@ export default {
         },
       ],
       value: "",
-      IDENTITY_URL: "https://identity.ic0.app",
+      //IDENTITY_URL: "https://identity.ic0.app",
+      IDENTITY_URL: "http://localhost:8000",
       principle: "",
       principleShort: "Login",
       maxTimeToLive: 120,
@@ -228,7 +232,20 @@ export default {
       // let loginview = document.getElementsByClassName("loginviewCol");
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
-
+    async plugLogin() {
+      this.tabShow = false;
+      if (!window.manageCanister) {
+        let manageCanister = await initPlug();
+        window.manageCanister = manageCanister;
+        this.principle = manageCanister.identity;
+        this.principleShort =
+          manageCanister.identity.toString().substring(0, 8) + "...";
+      } else {
+        if (this.$router.path != "/user") {
+          this.$router.push("/user");
+        }
+      }
+    },
     doSomething: async function (event) {
       this.tabShow = false;
       if (event) {
@@ -239,6 +256,8 @@ export default {
             identityProvider: this.IDENTITY_URL,
             onSuccess: async () => {
               let identity = this.authClient.getIdentity();
+              // let manageCanister = initManageCanister(identity);
+              // window.manageCanister = manageCanister;
               localStorage.setItem("identity", identity);
               let principle = identity.getPrincipal();
               that.principle = principle;

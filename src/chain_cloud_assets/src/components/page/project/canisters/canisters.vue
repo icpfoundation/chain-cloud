@@ -302,11 +302,11 @@
           <div class="line"></div>
           <div class="idInfo">
             <div class="idInfoTitle">Created time</div>
-            <span>2022-05-15T15:13:45</span>
+            <span>{{ project.createdTime }}</span>
           </div>
           <div class="idInfo">
             <div class="idInfoTitle">Update time</div>
-            <span>2022-05-15T15:13:45</span>
+            <span>{{ project.updateTime }}</span>
           </div>
         </div>
         <div class="headItem headRight">
@@ -375,17 +375,14 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-  TEST_PROJECT_ID,
-} from "@/chain_cloud_assets/assets/js/config";
+import { formatDate } from "@/chain_cloud_assets/assets/js/util";
+
 export default {
   data() {
     return {
       project: {
+        createdTime: "unknown",
+        updateTime: "unknown",
         id: 0,
         name: "",
         canisters: [],
@@ -483,6 +480,12 @@ export default {
       throw getProjectRest.Err;
     }
 
+    let formatTime = formatDate(
+      getProjectRest.Ok[0].create_time,
+      "yyyy-MM-dd hh:mm:ss"
+    );
+    this.project.createdTime = formatTime;
+    this.project.updateTime = formatTime;
     this.project.name = getProjectRest.Ok[0].name;
     if (getProjectRest.Ok.length > 0) {
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
@@ -512,6 +515,18 @@ export default {
               getCanisterStatusRes.Ok[0].settings.freezing_threshold[0],
             memory_allocation:
               getCanisterStatusRes.Ok[0].settings.memory_allocation[0],
+          });
+        } else {
+          this.project.canisters.push({
+            id: getProjectRest.Ok[0].canisters[i].toString(),
+            cycles: 0,
+            memory_size: "unknown",
+            module_hash: "unknown",
+            status: "unknown",
+            compute_allocation: "unknown",
+            controllers: "unknown",
+            freezing_threshold: "unknown",
+            memory_allocation: "unknown",
           });
         }
       }

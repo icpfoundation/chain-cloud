@@ -132,12 +132,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {
@@ -179,14 +174,17 @@ export default {
   },
   methods: {},
   async created() {
-    let account = Principal.fromText(TEST_USER);
-    let getUserInfoRes = await manageCanister.getUserInfo(account);
+    if (!window.manageCanister) {
+      throw "No login account";
+    }
+    let account = window.manageCanister.identity;
+    let getUserInfoRes = await window.manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
 
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        let getLogRes = await manageCanister.getLog(
+        let getLogRes = await window.manageCanister.getLog(
           account,
           getUserInfoRes.Ok.groups[i][1].id,
           1
@@ -194,7 +192,7 @@ export default {
 
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
-            if (getLogRes[j][k][0].toString() == TEST_USER) {
+            if (getLogRes[j][k][0].toString() == account.toString()) {
               let duration = parseInt(
                 Number(
                   currentTime - BigInt(getLogRes[j][k][1]) / BigInt(1000000000)
