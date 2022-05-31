@@ -179,7 +179,11 @@ export default {
   },
   components: {},
   methods: {
-    ...mapActions(["setICIdentityConfig", "removeICIdentity"]),
+    ...mapActions([
+      "setICIdentityConfig",
+      "removeICIdentity",
+      "manageCanisterConfig",
+    ]),
 
     handleSelect(key, keyPath) {
       this.activeIndex = key;
@@ -233,10 +237,10 @@ export default {
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
     async plugLogin() {
-      this.tabShow = false;
       if (!window.manageCanister) {
         let manageCanister = await initPlug();
-        window.manageCanister = manageCanister;
+        this.manageCanisterConfig(manageCanister);
+
         this.principle = manageCanister.identity;
         this.principleShort =
           manageCanister.identity.toString().substring(0, 8) + "...";
@@ -302,6 +306,7 @@ export default {
       this.principal = "Login";
       this.principleShort = "Login";
       this.leave();
+      this.manageCanisterConfig(null);
     },
   },
 

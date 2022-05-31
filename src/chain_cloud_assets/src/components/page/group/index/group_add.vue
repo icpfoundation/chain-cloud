@@ -316,7 +316,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -336,20 +336,20 @@ export default {
   },
   methods: {
     async saveFun() {
-      if (!window.manageCanister) {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
         throw "No login account";
       }
+
       this.group.id = Number(this.group.id);
 
-      let account = window.manageCanister.identity;
-      let addUserRes = await window.manageCanister.addUser("test", {
+      let account = manageCanister.identity;
+      let addUserRes = await manageCanister.addUser(account.toString(), {
         Public: null,
       });
-
-      // if (addUserRes.Err) {
-      //   throw addUserRes.Err;
-      //   return;
-      // }
+      if (addUserRes.Err) {
+        console.log(addUserRes.Err);
+      }
       let currentTime = new Date().getTime();
       this.group.create_time = currentTime;
       this.group.visibility =
@@ -366,17 +366,14 @@ export default {
         ],
       ];
 
-      let addGroupRes = await window.manageCanister.addGroup(
-        account,
-        this.group
-      );
+      let addGroupRes = await manageCanister.addGroup(account, this.group);
       if (addGroupRes.Err) {
         throw addGroupRes.Err;
         return;
       }
       let enc = new TextEncoder();
 
-      let imageStoreRes = await window.manageCanister.groupImageStore(
+      let imageStoreRes = await manageCanister.groupImageStore(
         account,
         this.group.id,
         Array.from(enc.encode(this.imgurl))
@@ -406,8 +403,9 @@ export default {
       }
     },
   },
-  created() {
-    console.log("window.manageCanister....", window.manageCanister);
+  computed: {
+    ...mapGetters(["getManageCanister"]),
   },
+  created() {},
 };
 </script>

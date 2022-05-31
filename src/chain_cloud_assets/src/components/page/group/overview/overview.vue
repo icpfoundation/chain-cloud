@@ -394,7 +394,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -510,15 +510,23 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
     let url = window.location.href;
-    console.log(url);
     if (!this.$route.params) {
       throw "params not found";
     }
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
-    let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
+    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
     if (getGroupInfoRes.Err) {
       throw getGroupInfoRes.Err;
       return;

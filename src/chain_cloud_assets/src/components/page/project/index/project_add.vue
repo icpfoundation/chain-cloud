@@ -338,6 +338,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { TEST_CANISTER } from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -415,13 +416,16 @@ export default {
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {
     async saveFun() {
-      if (!window.manageCanister) {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
         throw "No login account";
       }
-      let account = window.manageCanister.identity;
-
+      let account = manageCanister.identity;
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
@@ -441,7 +445,7 @@ export default {
         projectType[types] = null;
       }
       this.project.function = projectType;
-      let addProjectRes = await window.manageCanister.addProject(
+      let addProjectRes = await manageCanister.addProject(
         account,
         this.project.in_group,
         this.project
@@ -450,7 +454,7 @@ export default {
       if ("Ok" in addProjectRes) {
         info = "增加组成功";
         let enc = new TextEncoder();
-        let imageStoreRes = await window.manageCanister.projectImageStore(
+        let imageStoreRes = await manageCanister.projectImageStore(
           account,
           this.project.in_group,
           this.project.id,

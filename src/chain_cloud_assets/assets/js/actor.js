@@ -61,17 +61,12 @@ function initManageCanister(identity, host = "http://localhost:8000") {
 
 
 async function initPlug(host = "http://localhost:8000") {
-
   let whitelist = [MANAGE_CANISTER_LOCALNET, IMAGESTORE_CANISTER_LOCALNET, CANISTER_LOG_LOCALNET];
-
 
   let publicKey = await window.ic.plug.requestConnect({
     whitelist,
     host,
   });
-
-
-
 
   let principalId = await window.ic.plug.agent.getPrincipal();
 

@@ -146,7 +146,7 @@ import UserProjects from "./user_projects";
 import UserPersonal from "./user_personal";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -209,6 +209,17 @@ export default {
     UserProjects,
     UserPersonal,
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+    getmanagecanister() {
+      return this.getManageCanister();
+    },
+  },
+  watch: {
+    getmanagecanister(newdata, olddata) {
+      this.user.account = newdata.identity.toString();
+    },
+  },
   methods: {
     toHome() {
       this.$router.push({
@@ -225,10 +236,11 @@ export default {
     },
   },
   created() {
-    if (!window.manageCanister) {
+    let canister = this.getManageCanister();
+    if (!canister) {
       throw "No login account";
     }
-    this.user.account = window.manageCanister.identity.toString();
+    this.user.account = canister.identity.toString();
   },
 };
 </script>

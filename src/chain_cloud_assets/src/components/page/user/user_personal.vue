@@ -247,7 +247,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -289,12 +289,16 @@ export default {
     };
   },
   methods: {},
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
-    if (!window.manageCanister) {
+    let manageCanister = this.getManageCanister();
+    if (!manageCanister) {
       throw "No login account";
     }
-    let account = window.manageCanister.identity;
-    let getUserInfoRes = await window.manageCanister.getUserInfo(account);
+    let account = manageCanister.identity;
+    let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
       let currentTime = BigInt(new Date().getTime());

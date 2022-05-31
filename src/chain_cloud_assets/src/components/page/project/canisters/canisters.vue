@@ -376,7 +376,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { formatDate } from "@/chain_cloud_assets/assets/js/util";
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -461,16 +461,23 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
     let url = window.location.href;
-    console.log(url);
     if (!this.$route.params) {
       throw "params  not found";
+    }
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
     }
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
-    let getProjectRest = await manageCanister.getProjectInfo(
+    let getProjectRest = await manage.getProjectInfo(
       account,
       groupId,
       projectId
@@ -489,7 +496,7 @@ export default {
     this.project.name = getProjectRest.Ok[0].name;
     if (getProjectRest.Ok.length > 0) {
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
-        let getCanisterStatusRes = await manageCanister.getCanisterStatus(
+        let getCanisterStatusRes = await manage.getCanisterStatus(
           account,
           groupId,
           projectId,
@@ -532,7 +539,7 @@ export default {
       }
 
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-      let getLogRes = await manageCanister.getLog(account, groupId, 1);
+      let getLogRes = await manage.getLog(account, groupId, 1);
       for (let i = 0; i < getLogRes.length; i++) {
         for (let j = 0; j < getLogRes[i].length; j++) {
           if (
