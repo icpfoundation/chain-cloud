@@ -191,6 +191,10 @@
   </div>
 </template>
 <script>
+import { canisterInterface } from "@/chain_cloud_assets/assets/js/interface";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+
 export default {
   data() {
     return {
@@ -241,6 +245,13 @@ export default {
       }
     },
   },
-  created() {},
+  async created() {
+    let agent = new HttpAgent({
+      host: "https://ic0.app",
+    });
+    let canister = Principal.fromText("224jh-lqaaa-aaaad-qaxda-cai");
+    let res = await canisterInterface(agent, canister);
+    console.log("res", res);
+  },
 };
 </script>
