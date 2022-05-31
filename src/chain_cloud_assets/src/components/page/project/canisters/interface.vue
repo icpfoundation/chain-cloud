@@ -194,7 +194,8 @@
 import { canisterInterface } from "@/chain_cloud_assets/assets/js/interface";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-
+import { mapGetters } from "vuex";
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 export default {
   data() {
     return {
@@ -245,13 +246,41 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
-    let agent = new HttpAgent({
-      host: "https://ic0.app",
-    });
-    let canister = Principal.fromText("224jh-lqaaa-aaaad-qaxda-cai");
-    let res = await canisterInterface(agent, canister);
-    console.log("res", res);
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
+    let getProjectRest = await manage.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+    if (getProjectRest.Ok.length > 0) {
+      let agent = new HttpAgent({
+        host: "https://ic0.app",
+      });
+      for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
+        //Note: that only the cansiter developed by motoko can be used to obtain data,
+        // and the interface of rust development needs to be exposed by the developer
+        try {
+          let res = await canisterInterface(
+            agent,
+            getProjectRest.Ok[0].canisters[i]
+          );
+          console.log("res", res);
+        } catch (err) {
+          console.log("get canister interface failed:", err);
+        }
+      }
+    }
   },
 };
 </script>

@@ -219,7 +219,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/interface',
+      path: 'projectoverview/interface/:user/:groupId/:projectId',
       name: 'interface',
       component: projectinterface,
       meta: {
