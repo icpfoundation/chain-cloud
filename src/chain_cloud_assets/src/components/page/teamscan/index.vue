@@ -1,6 +1,5 @@
 <style scoped>
 .app {
-  margin-top: 100px;
   width: 100%;
   padding-bottom: 100px;
 }
@@ -191,10 +190,61 @@
   font-weight: 400;
   color: #666666;
 }
+.content_top_bg {
+  width: 100%;
+  height: 10%;
+  position: relative;
+}
+.content_top_bg_content {
+  height: 400px;
+  position: relative;
+  width: 1200px;
+  margin: auto;
+  /* margin-top: -74px; */
+}
+.teamscan_top_bg {
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+}
+.content_top_bg_team_scan {
+  width: 35%;
+  height: 13%;
+  position: absolute;
+  bottom: 35%;
+}
+.banner_bg_teamscan {
+  width: 100%;
+  height: 70%;
+  position: absolute;
+  padding-right: 35px;
+  padding-left: 10%;
+  bottom: 0;
+}
 </style>
 
 <template>
   <div class="app">
+    <div class="content_top_bg" style="">
+      <img
+        src="../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png"
+        alt=""
+        class="teamscan_top_bg"
+      />
+      <div class="content_top_bg_content">
+        <img
+          src="../../../../assets/chain_cloud/teamscan/team_scan@2x.png"
+          alt=""
+          class="content_top_bg_team_scan"
+        />
+        <img
+          src="../../../../assets/chain_cloud/teamscan/banner_bg_teamscan_dec@2x.png"
+          alt=""
+          class="banner_bg_teamscan"
+        />
+      </div>
+    </div>
     <div class="content">
       <div class="search">
         <Select

@@ -53,7 +53,7 @@
   position: absolute;
   left: 0;
   width: 122px;
-  top: 35px;
+  top: 30px;
 }
 .tabItem {
   margin: 0;
@@ -113,13 +113,8 @@
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
-    <div class="loginviewCol">
-      <div
-        class="loginview"
-        @mouseenter="enter"
-        @mouseleave="leave"
-        @click.self="plugLogin"
-      >
+    <div class="loginviewCol" @mouseleave="leave">
+      <div class="loginview" @mouseenter="enter" @click.self="plugLogin">
         <span @click.self="plugLogin"> {{ principleShort }} </span>
         <img
           class="dfxlogo"
@@ -132,12 +127,12 @@
         <div @click.stop="plugLogin" class="tabItem">Your profile</div>
         <div @click.stop="logoutAction" class="tabItem">Sign out</div>
       </div>
-      <span
+      <!-- <span
         class="name"
         @click="toPersonFun"
         v-if="principleShort != 'Login'"
         >{{ principleShort }}</span
-      >
+      > -->
     </div>
   </div>
 </template>
@@ -232,7 +227,7 @@ export default {
     },
 
     leave() {
-      // this.tabShow = false;
+      this.tabShow = false;
       // let loginview = document.getElementsByClassName("loginviewCol");
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
