@@ -345,6 +345,7 @@ export default {
   data() {
     return {
       roleValue: null,
+      keyword: "",
       typeList: [
         {
           name: "Types",

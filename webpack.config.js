@@ -100,7 +100,7 @@ module.exports = {
         options: {
           limit: 10000000, //10000
           name: 'img/[name].[ext]',
-          esModule:false
+          esModule: false
         }
       }
     ]
@@ -144,4 +144,8 @@ module.exports = {
     contentBase: path.resolve(__dirname, "./src/chain_cloud_assets"),
     watchContentBase: true
   },
+  experiments: {
+    asyncWebAssembly: true,
+    syncWebAssembly: true
+  }
 };

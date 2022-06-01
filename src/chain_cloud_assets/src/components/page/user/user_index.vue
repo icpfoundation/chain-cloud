@@ -108,8 +108,8 @@
         alt=""
       />
       <span class="swifter">{{ user.account }}</span>
-      <span class="time">{{ user.createTime }} </span>
-      <span class="headInfo">Internet identity: {{ user.account }}</span>
+      <span class="time">Create Time:{{ user.createTime }} </span>
+      <span class="headInfo">Internet Identity: {{ user.account }}</span>
     </div>
     <div class="content">
       <div class="contentBox">

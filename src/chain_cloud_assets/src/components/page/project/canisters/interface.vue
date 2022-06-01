@@ -104,7 +104,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Interface</div>
-      <span class="titlePath">Project info / Chain-Cloud / Interface</span>
+      <span class="titlePath">{{ this.canister }} / Interface</span>
     </div>
     <div class="content">
       <div class="actiontab">
@@ -130,7 +130,10 @@
           </div>
         </div>
         <div class="tableBox">
-          <span>.title {</span>
+          <pre>
+          {{ tabList[selectIdx].data }}
+          </pre>
+          <!-- <span>.title {</span>
           <span> height: 0.8rem;</span>
           <span> display: flex;</span>
           <span> flex-direction: column;</span>
@@ -184,7 +187,7 @@
           <span> height: 0.8rem;</span>
           <span> display: flex;</span>
           <span> flex-direction: column;</span>
-          <span> justify-content: center;</span>
+          <span> justify-content: center;</span> -->
         </div>
       </div>
     </div>
@@ -195,41 +198,51 @@ import { canisterInterface } from "@/chain_cloud_assets/assets/js/interface";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+const didc = import("didc");
 export default {
   data() {
     return {
+      canister: "",
+      selectIdx: 0,
       tabList: [
         {
           name: "Candid",
           select: true,
           id: 1,
+          data: "",
         },
         {
           name: "Motoko",
           select: false,
           id: 2,
+          data: "",
         },
         {
           name: "Rust",
           select: false,
           id: 3,
+          data: "",
         },
         {
           name: "TypeScri",
           select: false,
           id: 4,
+          data: "",
         },
         {
           name: "JavaScri",
           select: false,
           id: 5,
+          data: "",
         },
       ],
     };
   },
   methods: {
     chooseFun(item, index) {
+      this.selectIdx = index;
       this.tabList.forEach((element) => {
         element.select = false;
       });
@@ -264,22 +277,36 @@ export default {
       projectId
     );
     if (getProjectRest.Ok.length > 0) {
-      let agent = new HttpAgent({
-        // host: "https://ic0.app",
-        host: "https://localhost:8000",
-      });
+      let agentOptions = {
+        host: "https://ic0.app",
+      };
+      let agent = new HttpAgent(agentOptions);
+
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         //Note: that only the cansiter developed by motoko can be used to obtain data,
         // and the interface of rust development needs to be exposed by the developer
         try {
+          this.canister = getProjectRest.Ok[0].canisters[i].toString();
           let res = await canisterInterface(
             agent,
-            getProjectRest.Ok[0].canisters[i]
+            //getProjectRest.Ok[0].canisters[i]
+            Principal.fromText("224jh-lqaaa-aaaad-qaxda-cai")
           );
-          console.log("res", res);
+
+          didc.then((mod) => {
+            const service = `${res}`;
+            const bindings = mod.generate(service); // Bindings { js: "...", ts: "...", motoko: "..." }
+
+            this.tabList[4].data = bindings.js;
+            this.tabList[3].data = bindings.ts;
+          });
+          this.tabList[0].data = res;
+          this.tabList[1].data = res;
+          this.tabList[2].data = res;
         } catch (err) {
           console.log("get canister interface failed:", err);
         }
+        break;
       }
     }
   },
