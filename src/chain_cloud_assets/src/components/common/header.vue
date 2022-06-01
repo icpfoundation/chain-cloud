@@ -175,7 +175,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getPrinciple"]),
+    ...mapGetters(["getPrinciple", "getManageCanister"]),
   },
   components: {},
   methods: {
@@ -236,8 +236,10 @@ export default {
       // let loginview = document.getElementsByClassName("loginviewCol");
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
+
     async plugLogin() {
-      if (!window.manageCanister) {
+      let manageCansiter = this.getManageCanister();
+      if (!manageCansiter) {
         let manageCanister = await initPlug();
         this.manageCanisterConfig(manageCanister);
 

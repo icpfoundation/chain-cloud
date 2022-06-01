@@ -178,7 +178,9 @@
             v-for="(item, index) in projectList"
             :key="index"
           >
-            <div class="grouptype">{{ item.groupType }}</div>
+            <div class="grouptype" style="overflow: hidden">
+              <img :src="item.imageData" alt="" />
+            </div>
             <div class="groupContent" :class="{ groupContentInfo: item.info }">
               <span class="groupName">{{ item.name }}</span>
               <span>{{ item.info }}</span>
@@ -277,15 +279,45 @@ export default {
 
     if (getUserInfoRes.Ok) {
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        this.projectList.push({
-          groupType: "Z",
-          name: getUserInfoRes.Ok.groups[i][1].name,
-          id: getUserInfoRes.Ok.groups[i][1].id,
-          info: getUserInfoRes.Ok.groups[i][1].description,
-          shuqian: 3,
-          peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-          xingNum: 2,
-        });
+        try {
+          let imageData = await manageCanister.getGroupImage(
+            account,
+            getUserInfoRes.Ok.groups[i][1].id
+          );
+
+          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          this.projectList.push({
+            groupType: "Z",
+            name: getUserInfoRes.Ok.groups[i][1].name,
+            id: getUserInfoRes.Ok.groups[i][1].id,
+            info: getUserInfoRes.Ok.groups[i][1].description,
+            shuqian: 3,
+            peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+            xingNum: 2,
+            imageData: imageData,
+          });
+        } catch (err) {
+          this.projectList.push({
+            groupType: "Z",
+            name: getUserInfoRes.Ok.groups[i][1].name,
+            id: getUserInfoRes.Ok.groups[i][1].id,
+            info: getUserInfoRes.Ok.groups[i][1].description,
+            shuqian: 3,
+            peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+            xingNum: 2,
+            imageData: "",
+          });
+        }
+
+        // this.projectList.push({
+        //   groupType: "Z",
+        //   name: getUserInfoRes.Ok.groups[i][1].name,
+        //   id: getUserInfoRes.Ok.groups[i][1].id,
+        //   info: getUserInfoRes.Ok.groups[i][1].description,
+        //   shuqian: 3,
+        //   peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+        //   xingNum: 2,
+        // });
       }
     }
   },

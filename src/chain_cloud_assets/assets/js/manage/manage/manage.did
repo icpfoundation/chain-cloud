@@ -107,6 +107,7 @@ type User = record {
      identity: principal;
      groups: vec record {nat64; Group; };
      relation_project: vec record {principal; vec RelationProject;};
+     create_time:nat64;
 };
 
 type UserRes = variant{

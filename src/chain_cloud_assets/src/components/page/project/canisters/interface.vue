@@ -265,7 +265,8 @@ export default {
     );
     if (getProjectRest.Ok.length > 0) {
       let agent = new HttpAgent({
-        host: "https://ic0.app",
+        // host: "https://ic0.app",
+        host: "https://localhost:8000",
       });
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         //Note: that only the cansiter developed by motoko can be used to obtain data,

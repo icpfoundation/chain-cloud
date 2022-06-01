@@ -187,7 +187,9 @@
             v-for="(item, index) in projectList"
             :key="index"
           >
-            <div class="grouptype">{{ item.groupType }}</div>
+            <div class="grouptype" style="overflow: hidden">
+              <img :src="item.imageData" alt="" />
+            </div>
             <div class="groupContent">
               <div class="groupContentTop">
                 <span class="groupName">{{ item.name }}</span>
@@ -327,15 +329,36 @@ export default {
           } else {
             create_time = `create ${duration} s ago`;
           }
-          this.projectList.push({
-            groupType: "",
-            name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
-            id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
-            type: "Maintainer",
-            info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
-            xingNum: 2,
-            time: create_time,
-          });
+          try {
+            let imageData = await manageCanister.getProjectImage(
+              account,
+              getUserInfoRes.Ok.groups[i][1].id,
+              getUserInfoRes.Ok.groups[i][1].projects[j][1].id
+            );
+
+            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+            this.projectList.push({
+              groupType: "",
+              name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+              id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+              type: "Maintainer",
+              info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+              xingNum: 2,
+              time: create_time,
+              imageData: imageData,
+            });
+          } catch (err) {
+            this.projectList.push({
+              groupType: "",
+              name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+              id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+              type: "Maintainer",
+              info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+              xingNum: 2,
+              time: create_time,
+              imageData: "",
+            });
+          }
         }
       }
     }

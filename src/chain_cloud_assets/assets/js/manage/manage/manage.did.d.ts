@@ -81,6 +81,7 @@ export type Result = { 'Ok' : null } |
 export interface User {
   'user_name' : string,
   'groups' : Array<[bigint, Group]>,
+  'create_time' : bigint,
   'identity' : Principal,
   'relation_project' : Array<[Principal, Array<RelationProject>]>,
   'profile' : Profile,

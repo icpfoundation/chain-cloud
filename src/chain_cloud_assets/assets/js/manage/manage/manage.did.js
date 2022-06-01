@@ -88,6 +88,7 @@ export const idlFactory = ({ IDL }) => {
   const User = IDL.Record({
     'user_name' : IDL.Text,
     'groups' : IDL.Vec(IDL.Tuple(IDL.Nat64, Group)),
+    'create_time' : IDL.Nat64,
     'identity' : IDL.Principal,
     'relation_project' : IDL.Vec(
       IDL.Tuple(IDL.Principal, IDL.Vec(RelationProject))
