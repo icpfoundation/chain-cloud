@@ -239,6 +239,7 @@
               placeholder="my-awesome-group"
               style="width: 720px; margin-top: 10px"
               :clearable="true"
+              v-model="group['url']"
             />
           </div>
           <div class="description">
@@ -331,6 +332,7 @@ export default {
         create_time: 0,
         projects: [],
         members: [],
+        url: "",
       },
     };
   },
