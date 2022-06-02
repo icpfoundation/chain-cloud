@@ -278,10 +278,11 @@ export default {
     );
     if (getProjectRest.Ok.length > 0) {
       let agentOptions = {
-        host: "https://ic0.app",
+        // host: "https://ic0.app",
+        host: "http://localhost:8000",
       };
       let agent = new HttpAgent(agentOptions);
-
+      await agent.fetchRootKey();
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         //Note: that only the cansiter developed by motoko can be used to obtain data,
         // and the interface of rust development needs to be exposed by the developer
@@ -289,14 +290,13 @@ export default {
           this.canister = getProjectRest.Ok[0].canisters[i].toString();
           let res = await canisterInterface(
             agent,
-            //getProjectRest.Ok[0].canisters[i]
-            Principal.fromText("224jh-lqaaa-aaaad-qaxda-cai")
+            getProjectRest.Ok[0].canisters[i]
+            // Principal.fromText("224jh-lqaaa-aaaad-qaxda-cai")
           );
 
           didc.then((mod) => {
             const service = `${res}`;
-            const bindings = mod.generate(service); // Bindings { js: "...", ts: "...", motoko: "..." }
-
+            const bindings = mod.generate(service);
             this.tabList[4].data = bindings.js;
             this.tabList[3].data = bindings.ts;
           });

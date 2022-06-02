@@ -215,7 +215,7 @@
           <div class="leftContent">
             <div class="leftContentItem">
               <span>Path</span>
-              <span class="leftContentItemDec">production</span>
+              <span class="leftContentItemDec">{{ group.url }}</span>
             </div>
             <div class="leftContentItem">
               <span>Description</span>
@@ -315,7 +315,8 @@ export default {
           //   name: "Production group/project one",
           // },
         ],
-        name: "aaa",
+        name: "",
+        url: "",
       },
       tableData: {
         tableList: [
@@ -392,6 +393,7 @@ export default {
     let currentTime = BigInt(new Date().getTime());
     let totalMemory_size = BigInt(0);
     this.group.name = getGroupInfoRes.Ok[0].name;
+    this.group.url = getGroupInfoRes.Ok[0].url;
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
         let memory_size = BigInt(0);

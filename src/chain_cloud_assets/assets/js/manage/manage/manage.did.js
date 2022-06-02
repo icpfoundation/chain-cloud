@@ -42,6 +42,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Group = IDL.Record({
     'id' : IDL.Nat64,
+    'url' : IDL.Text,
     'members' : IDL.Vec(IDL.Tuple(IDL.Principal, Member)),
     'projects' : IDL.Vec(IDL.Tuple(IDL.Nat64, Project)),
     'name' : IDL.Text,

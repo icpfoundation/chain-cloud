@@ -55,6 +55,7 @@ type Group = record {
     create_time: nat64;
     projects:vec record { nat64; Project; };
     members: vec record { principal; Member; };
+    url:text;
 };
 
 type Result = variant{

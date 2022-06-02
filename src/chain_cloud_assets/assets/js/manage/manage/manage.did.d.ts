@@ -24,6 +24,7 @@ export type GetGroupMemberInfoRes = { 'Ok' : Member } |
   { 'Err' : string };
 export interface Group {
   'id' : bigint,
+  'url' : string,
   'members' : Array<[Principal, Member]>,
   'projects' : Array<[bigint, Project]>,
   'name' : string,
