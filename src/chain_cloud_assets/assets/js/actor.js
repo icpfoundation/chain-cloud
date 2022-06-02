@@ -55,7 +55,7 @@ function initManageCanister(identity, host = "http://localhost:8000") {
       identity: identity
     },
   })
-  return new ManageCanister(manage_canister, imageStore_canister, log_canister, identity._principal)
+  return new ManageCanister(manage_canister, imageStore_canister, log_canister, identity.getPrincipal())
 }
 
 
