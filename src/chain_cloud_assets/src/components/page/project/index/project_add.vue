@@ -337,14 +337,8 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-  TEST_PROJECT_ID,
-  TEST_PROJECT_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+import { TEST_CANISTER } from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -422,9 +416,16 @@ export default {
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {
     async saveFun() {
-      let account = Principal.fromText(TEST_USER);
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
@@ -432,7 +433,7 @@ export default {
       this.project.canisters = [Principal.fromText(TEST_CANISTER)];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
-      console.log("projectType");
+
       let projectType = {};
       if (this.projectType == "NFT") {
         projectType[this.projectType] = null;
@@ -452,13 +453,19 @@ export default {
       let info = "增加组失败";
       if ("Ok" in addProjectRes) {
         info = "增加组成功";
+        let enc = new TextEncoder();
+        let imageStoreRes = await manageCanister.projectImageStore(
+          account,
+          this.project.in_group,
+          this.project.id,
+          Array.from(enc.encode(this.imgurl))
+        );
       }
       this.$Notice.info({
         title: info,
         background: true,
         duration: 3,
       });
-      console.log("addProjectRes", addProjectRes);
     },
     previewImage(e) {
       var dt = e.target;

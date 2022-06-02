@@ -81,6 +81,7 @@ export type Result = { 'Ok' : null } |
 export interface User {
   'user_name' : string,
   'groups' : Array<[bigint, Group]>,
+  'create_time' : bigint,
   'identity' : Principal,
   'relation_project' : Array<[Principal, Array<RelationProject>]>,
   'profile' : Profile,
@@ -197,6 +198,7 @@ export interface _SERVICE {
       arg_3: string,
       arg_4: Profile,
     ) => Promise<OptGroupRes>,
+  'update_log_canister' : (arg_0: Principal) => Promise<undefined>,
   'update_project_description' : (
       arg_0: Principal,
       arg_1: bigint,

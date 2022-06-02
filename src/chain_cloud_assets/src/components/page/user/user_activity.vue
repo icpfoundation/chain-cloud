@@ -132,12 +132,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -177,9 +172,16 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {},
   async created() {
-    let account = Principal.fromText(TEST_USER);
+    let manageCanister = this.getManageCanister();
+    if (!manageCanister) {
+      throw "No login account";
+    }
+    let account = manageCanister.identity;
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
@@ -194,7 +196,7 @@ export default {
 
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
-            if (getLogRes[j][k][0].toString() == TEST_USER) {
+            if (getLogRes[j][k][0].toString() == account.toString()) {
               let duration = parseInt(
                 Number(
                   currentTime - BigInt(getLogRes[j][k][1]) / BigInt(1000000000)

@@ -1,9 +1,10 @@
 
 import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes, Project, ProjectInfoRes, UserRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
-import { Principal } from "@dfinity/principal";
+import { Principal, } from "@dfinity/principal";
+
 import { Action } from "./manage/canister_log/canister_log.did"
-import { Actor, HttpAgent } from "@dfinity/agent";
+import { Actor, HttpAgent, Identity } from "@dfinity/agent";
 
 
 interface ManageInterface {
@@ -39,8 +40,14 @@ interface ManageInterface {
 }
 
 interface ImageStoreInterface {
-    image_store(manageCanister: Principal, user: Principal, group_id: bigint, imageData: Array<number>): imageStoreRes
-    get_image(user: Principal, group_id: bigint): Array<number>
+    group_image_store(user: Principal, group_id: bigint, imageData: Array<number>): imageStoreRes
+    project_image_store(user: Principal, group_id: bigint, project_id: bigint, imageData: Array<number>): imageStoreRes
+    get_group_image(user: Principal, group_id: bigint): Array<number>
+    get_project_image(
+        user: Principal,
+        group_id: bigint,
+        project_id: bigint,
+    ): Array<number>,
 }
 interface CanisterLogInterface {
     get_log(user: Principal, group_id: bigint, page: bigint): [] | [Array<[Principal, bigint, Action, Array<string>]>]
@@ -50,10 +57,12 @@ class ManageCanister {
     manageActor: ManageInterface
     imageActor: ImageStoreInterface
     canisterLogActor: CanisterLogInterface
-    constructor(manageActor: ManageInterface, imageActor: ImageStoreInterface, canisterLogActor: CanisterLogInterface) {
+    public identity: Principal
+    constructor(manageActor: ManageInterface, imageActor: ImageStoreInterface, canisterLogActor: CanisterLogInterface, identity?: Principal) {
         this.manageActor = manageActor
         this.imageActor = imageActor
         this.canisterLogActor = canisterLogActor
+        this.identity = identity
     }
 
     async addUser(name: string, profile: Profile): Promise<OptGroupRes> {
@@ -76,13 +85,23 @@ class ManageCanister {
         return getGroupInfoRes
     }
 
-    async imageStore(manageCanister: Principal, account: Principal, group_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
-        let imageStoreRes = await this.imageActor.image_store(manageCanister, account, group_id, imageData)
+    async groupImageStore(account: Principal, group_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
+        let imageStoreRes = await this.imageActor.group_image_store(account, group_id, imageData)
         return imageStoreRes
     }
 
-    async getImage(account: Principal, group_id: bigint): Promise<Array<number>> {
-        let getImageRes = await this.imageActor.get_image(account, group_id)
+    async projectImageStore(account: Principal, group_id: bigint, project_id: bigint, imageData: Array<number>): Promise<imageStoreRes> {
+        let imageStoreRes = await this.imageActor.project_image_store(account, group_id, project_id, imageData)
+        return imageStoreRes
+    }
+
+    async getGroupImage(account: Principal, group_id: bigint): Promise<Array<number>> {
+        let getImageRes = await this.imageActor.get_group_image(account, group_id)
+        return getImageRes
+    }
+
+    async getProjectImage(account: Principal, group_id: bigint, project_id: bigint): Promise<Array<number>> {
+        let getImageRes = await this.imageActor.get_project_image(account, group_id, project_id)
         return getImageRes
     }
 

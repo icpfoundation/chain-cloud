@@ -1,5 +1,6 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
+  margin-top: 1rem;
   width: 100%;
 }
 
@@ -323,7 +324,6 @@ export default {
   },
   async created() {
     let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-
     let user = Principal.fromText(TEST_USER);
     let getLogRes = await manageCanister.getLog(user, TEST_GROUP_ID, 1);
     for (let i = 0; i < getLogRes.length; i++) {

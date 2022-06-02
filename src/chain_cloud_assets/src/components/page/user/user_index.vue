@@ -107,9 +107,9 @@
         src="../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
         alt=""
       />
-      <span class="swifter">Dayly Swifter</span>
-      <span class="time">Since April 15, 2019</span>
-      <span class="headInfo">Internet identity: {{ user.account }}</span>
+      <span class="swifter">{{ user.account }}</span>
+      <span class="time">Create Time:{{ user.createTime }} </span>
+      <span class="headInfo">Internet Identity: {{ user.account }}</span>
     </div>
     <div class="content">
       <div class="contentBox">
@@ -146,17 +146,15 @@ import UserProjects from "./user_projects";
 import UserPersonal from "./user_personal";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
+
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       user: {
-        account: TEST_USER,
+        account: "",
+        createTime: "",
       },
       tabList: [
         {
@@ -214,7 +212,29 @@ export default {
     UserProjects,
     UserPersonal,
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+    getmanagecanister() {
+      return this.getManageCanister();
+    },
+  },
+  watch: {
+    async getmanagecanister(newdata, olddata) {
+      await this.userConfig(newdata.identity);
+    },
+  },
   methods: {
+    async userConfig(identity) {
+      let canister = this.getManageCanister();
+      this.user.account = identity.toString();
+      let gerUserInfoRes = await canister.getUserInfo(identity);
+
+      if (gerUserInfoRes.Ok) {
+        this.user.createTime = dateFormat(
+          gerUserInfoRes.Ok.create_time / BigInt(1000000)
+        );
+      }
+    },
     toHome() {
       this.$router.push({
         name: "index",
@@ -229,6 +249,12 @@ export default {
       this.title = item.name;
     },
   },
-  created() {},
+  async created() {
+    let canister = this.getManageCanister();
+    if (!canister) {
+      throw "No login account";
+    }
+    await this.userConfig(canister.identity);
+  },
 };
 </script>

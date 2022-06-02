@@ -299,11 +299,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-} from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -369,11 +365,19 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
 
-    let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
+    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
     if (getGroupInfoRes.Err) {
       throw getGroupInfoRes.Err;
       return;
@@ -396,7 +400,7 @@ export default {
           k < getGroupInfoRes.Ok[0].projects[j][1].canisters.length;
           k++
         ) {
-          let getCanisterStatusRes = await manageCanister.getCanisterStatus(
+          let getCanisterStatusRes = await manage.getCanisterStatus(
             account,
             groupId,
             getGroupInfoRes.Ok[0].projects[j][1].id,

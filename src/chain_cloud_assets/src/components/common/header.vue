@@ -53,7 +53,7 @@
   position: absolute;
   left: 0;
   width: 122px;
-  top: 35px;
+  top: 30px;
 }
 .tabItem {
   margin: 0;
@@ -113,31 +113,26 @@
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
-    <div class="loginviewCol">
-      <div
-        class="loginview"
-        @mouseenter="enter"
-        @mouseleave="leave"
-        @click.self="doSomething"
-      >
-        <span @click.self="doSomething"> {{ principleShort }} </span>
+    <div class="loginviewCol" @mouseleave="leave">
+      <div class="loginview" @mouseenter="enter" @click.self="plugLogin">
+        <span @click.self="plugLogin"> {{ principleShort }} </span>
         <img
           class="dfxlogo"
           src="../../../assets/img/logo_difinity@2x.png"
           alt="dfinity logo"
-          @click.self="doSomething"
+          @click.self="plugLogin"
         />
       </div>
       <div class="tab" v-if="tabShow && principleShort != 'Login'">
-        <div @click.stop="doSomething" class="tabItem">Your profile</div>
+        <div @click.stop="plugLogin" class="tabItem">Your profile</div>
         <div @click.stop="logoutAction" class="tabItem">Sign out</div>
       </div>
-      <span
+      <!-- <span
         class="name"
         @click="toPersonFun"
         v-if="principleShort != 'Login'"
         >{{ principleShort }}</span
-      >
+      > -->
     </div>
   </div>
 </template>
@@ -145,7 +140,10 @@
 <script>
 import { AuthClient } from "@dfinity/auth-client";
 import { mapActions, mapGetters } from "vuex";
-
+import {
+  initManageCanister,
+  initPlug,
+} from "@/chain_cloud_assets/assets/js/actor";
 export default {
   name: "headerview",
   data() {
@@ -161,7 +159,8 @@ export default {
         },
       ],
       value: "",
-      IDENTITY_URL: "https://identity.ic0.app",
+      //IDENTITY_URL: "https://identity.ic0.app",
+      IDENTITY_URL: "http://localhost:8000",
       principle: "",
       principleShort: "Login",
       maxTimeToLive: 120,
@@ -171,11 +170,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getPrinciple"]),
+    ...mapGetters(["getPrinciple", "getManageCanister"]),
   },
   components: {},
   methods: {
-    ...mapActions(["setICIdentityConfig", "removeICIdentity"]),
+    ...mapActions([
+      "setICIdentityConfig",
+      "removeICIdentity",
+      "manageCanisterConfig",
+    ]),
 
     handleSelect(key, keyPath) {
       this.activeIndex = key;
@@ -224,11 +227,26 @@ export default {
     },
 
     leave() {
-      // this.tabShow = false;
+      this.tabShow = false;
       // let loginview = document.getElementsByClassName("loginviewCol");
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
 
+    async plugLogin() {
+      let manageCansiter = this.getManageCanister();
+      if (!manageCansiter) {
+        let manageCanister = await initPlug();
+        this.manageCanisterConfig(manageCanister);
+
+        this.principle = manageCanister.identity;
+        this.principleShort =
+          manageCanister.identity.toString().substring(0, 8) + "...";
+      } else {
+        if (this.$router.path != "/user") {
+          this.$router.push("/user");
+        }
+      }
+    },
     doSomething: async function (event) {
       this.tabShow = false;
       if (event) {
@@ -239,6 +257,8 @@ export default {
             identityProvider: this.IDENTITY_URL,
             onSuccess: async () => {
               let identity = this.authClient.getIdentity();
+              // let manageCanister = initManageCanister(identity);
+              // window.manageCanister = manageCanister;
               localStorage.setItem("identity", identity);
               let principle = identity.getPrincipal();
               that.principle = principle;
@@ -283,6 +303,7 @@ export default {
       this.principal = "Login";
       this.principleShort = "Login";
       this.leave();
+      this.manageCanisterConfig(null);
     },
   },
 

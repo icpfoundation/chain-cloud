@@ -1,6 +1,5 @@
 <style scoped>
 .app {
-  margin-top: 100px;
   width: 100%;
   padding-bottom: 100px;
 }
@@ -191,10 +190,61 @@
   font-weight: 400;
   color: #666666;
 }
+.content_top_bg {
+  width: 100%;
+  height: 10%;
+  position: relative;
+}
+.content_top_bg_content {
+  height: 400px;
+  position: relative;
+  width: 1200px;
+  margin: auto;
+  /* margin-top: -74px; */
+}
+.teamscan_top_bg {
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+}
+.content_top_bg_team_scan {
+  width: 35%;
+  height: 13%;
+  position: absolute;
+  bottom: 35%;
+}
+.banner_bg_teamscan {
+  width: 100%;
+  height: 70%;
+  position: absolute;
+  padding-right: 35px;
+  padding-left: 10%;
+  bottom: 0;
+}
 </style>
 
 <template>
   <div class="app">
+    <div class="content_top_bg" style="">
+      <img
+        src="../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png"
+        alt=""
+        class="teamscan_top_bg"
+      />
+      <div class="content_top_bg_content">
+        <img
+          src="../../../../assets/chain_cloud/teamscan/team_scan@2x.png"
+          alt=""
+          class="content_top_bg_team_scan"
+        />
+        <img
+          src="../../../../assets/chain_cloud/teamscan/banner_bg_teamscan_dec@2x.png"
+          alt=""
+          class="banner_bg_teamscan"
+        />
+      </div>
+    </div>
     <div class="content">
       <div class="search">
         <Select
@@ -228,6 +278,7 @@
               class="typeItem"
               v-for="(typeItem, typeIndex) in item.list"
               :key="typeIndex"
+              @click="filterType(typeItem)"
             >
               {{ typeItem.name }}
             </div>
@@ -274,7 +325,9 @@
                 :key="index"
                 @click="toGroupItemFun(item)"
               >
-                <div class="tableImg"></div>
+                <div class="tableImg" style="overflow: hidden">
+                  <img :src="item.imageData" alt="" />
+                </div>
                 <div class="tableInfo">
                   <span class="tableItemName">{{ item.name }}</span>
                   <div class="tableItemBy">
@@ -308,7 +361,9 @@
                 :key="index"
                 @click="toProjectItemFun(item)"
               >
-                <div class="tableImg"></div>
+                <div class="tableImg" style="overflow: hidden">
+                  <img :src="item.imageData" alt="" />
+                </div>
                 <div class="tableInfo">
                   <span class="tableItemName">{{ item.name }}</span>
                   <div class="tableItemBy">
@@ -340,6 +395,7 @@ export default {
   data() {
     return {
       roleValue: null,
+      keyword: "",
       typeList: [
         {
           name: "Types",
@@ -525,16 +581,15 @@ export default {
   },
   methods: {
     selectFun(data) {
-      console.log("selectFun");
       // console.log(data)
     },
     inputFun(value) {
       this.inputValue = value;
     },
     searchFun() {
-      console.log(this.inputValue);
       let groupList = [];
       let projectList = [];
+
       this.tableData.tableList.forEach((element) => {
         let index = element.name.indexOf(this.inputValue);
         if (index != -1) {
@@ -543,8 +598,8 @@ export default {
           } else {
             projectList.push(element);
           }
-          this.groupList = groupList.slice(0, 8);
-          this.projectList = projectList.slice(0, 8);
+          this.groupList = groupList;
+          this.projectList = groupList;
         }
       });
     },
@@ -564,7 +619,6 @@ export default {
       this.groupShow = true;
     },
     getMoreParams(item) {
-      console.log("getMoreParams");
       this.roleValue = item.value;
       let arr = [];
       if (item.typeId === 1) {
@@ -589,7 +643,6 @@ export default {
     },
     chooseFun(item) {
       item.select = !item.select;
-      console.log("dsfdsf");
       let arr = [];
       this.filtersList.forEach((element) => {
         if (element.select) {
@@ -622,33 +675,93 @@ export default {
         name: "project_index",
       });
     },
+    filterType(item) {
+      switch (item.name) {
+        case "Group":
+          this.projectShow = false;
+          this.groupShow = true;
+          break;
+        case "Project":
+          this.projectShow = true;
+          this.groupShow = false;
+          break;
+        default:
+          this.groupShow = false;
+          this.projectShow = true;
+          this.projectList = [];
+          this.tableData.tableList.forEach((element) => {
+            if (element.label == item.name) {
+              this.projectList.push(element);
+            }
+          });
+      }
+    },
   },
+
   async created() {
     let groupRes = await manageCanister.visibleProject();
     this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
-          this.tableData.tableList.push({
-            name: groupRes[i][j][2].projects[k][1].name,
-            by: groupRes[i][j][2].projects[k][1].create_by.toString(),
-            dec: groupRes[i][j][2].projects[k][1].description,
-            type: "Recommended",
-            user: groupRes[i][j][0].toString(),
-            groupId: groupRes[i][j][1],
-            projectId: groupRes[i][j][2].projects[k][1].id,
-            typeId: 2,
-          });
+          let label = "";
+          if ("NFT" in groupRes[i][j][2].projects[k][1].function) {
+            label = "NFT";
+          } else {
+            let projectType = Object.keys(
+              groupRes[i][j][2].projects[k][1].function
+            )[0];
+
+            label =
+              projectType.slice(0, 1).toLowerCase() + projectType.slice(1);
+          }
+          try {
+            let imageData = await manageCanister.getProjectImage(
+              groupRes[i][j][0],
+              groupRes[i][j][1],
+              groupRes[i][j][2].projects[k][1].id
+            );
+            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+            this.tableData.tableList.push({
+              value: groupRes[i][j][2].projects[k][1].name,
+              label: label,
+              name: groupRes[i][j][2].projects[k][1].name,
+              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+              dec: groupRes[i][j][2].projects[k][1].description,
+              type: "Recommended",
+              user: groupRes[i][j][0].toString(),
+              groupId: groupRes[i][j][1],
+              projectId: groupRes[i][j][2].projects[k][1].id,
+              typeId: 2,
+              imageData: imageData,
+            });
+          } catch (err) {
+            this.tableData.tableList.push({
+              value: groupRes[i][j][2].projects[k][1].name,
+              label: label,
+              name: groupRes[i][j][2].projects[k][1].name,
+              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+              dec: groupRes[i][j][2].projects[k][1].description,
+              type: "Recommended",
+              user: groupRes[i][j][0].toString(),
+              groupId: groupRes[i][j][1],
+              projectId: groupRes[i][j][2].projects[k][1].id,
+              typeId: 2,
+            });
+          }
         }
       }
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
-          let imageData = await manageCanister.getImage(
+          let imageData = await manageCanister.getGroupImage(
             groupRes[i][j][0],
             groupRes[i][j][1]
           );
           imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+
           this.tableData.tableList.push({
+            value: groupRes[i][j][2].name,
+            label: groupRes[i][j][2].name,
             name: groupRes[i][j][2].name,
             by: groupRes[i][j][0],
             dec: groupRes[i][j][2].description,
@@ -668,8 +781,8 @@ export default {
             groupId: groupRes[i][j][2].id,
             typeId: 1,
           });
-          this.tableData.total = this.tableData.tableList.length;
         }
+        this.tableData.total = this.tableData.tableList.length;
       }
     }
     let groupList = [];

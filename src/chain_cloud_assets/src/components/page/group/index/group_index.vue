@@ -187,10 +187,7 @@
 <script>
 import { Principal } from "@dfinity/principal";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
-import {
-  TEST_USER,
-  TEST_GROUP_ID,
-} from "@/chain_cloud_assets/assets/js/config";
+
 export default {
   data() {
     return {
@@ -269,14 +266,16 @@ export default {
   },
   async created() {
     let groupRes = await manageCanister.visibleProject();
+
     this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
-          let imageData = await manageCanister.getImage(
+          let imageData = await manageCanister.getGroupImage(
             groupRes[i][j][0],
             groupRes[i][j][1]
           );
+
           imageData = new TextDecoder().decode(Uint8Array.from(imageData));
           this.tableData.tableList.push({
             name: groupRes[i][j][2].name,

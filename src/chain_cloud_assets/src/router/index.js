@@ -219,7 +219,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/interface',
+      path: 'projectoverview/interface/:user/:groupId/:projectId',
       name: 'interface',
       component: projectinterface,
       meta: {
@@ -237,7 +237,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/metric',
+      path: 'projectoverview/metric/:user/:groupId/:projectId',
       name: 'metric',
       component: metric,
       meta: {

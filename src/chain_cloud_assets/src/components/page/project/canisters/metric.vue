@@ -48,7 +48,7 @@
     </div>
     <div class="content">
       <div class="itemBox">
-        <span>Cycle_balance</span>
+        <span>Cycle Balance</span>
         <div id="line" style="height: 3.24rem" class="echartLineWidth"></div>
       </div>
       <div class="itemBox">
@@ -60,6 +60,9 @@
 </template>
 <script>
 import * as echarts from "echarts";
+import { mapGetters } from "vuex";
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
 export default {
   data() {
     return {
@@ -68,14 +71,34 @@ export default {
     };
   },
   methods: {},
-  mounted() {
-    this.lineEachart1 = echarts.init(document.getElementById("line"));
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
+  async mounted() {
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
+    let getProjectRest = await manage.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+
     let option1 = {
       grid: {
         left: 50,
         right: 40,
         top: 30,
         bottom: 20,
+      },
+      legend: {
+        data: ["WarningLine"],
       },
       xAxis: {
         type: "category",
@@ -84,16 +107,51 @@ export default {
       },
       yAxis: {
         type: "value",
+        name: "Billion",
       },
-      series: {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+      series: [],
+    };
+
+    if (getProjectRest.Ok.length > 0) {
+      let warnline = Number(
+        getProjectRest.Ok[0].canister_cycle_floor / BigInt(100000000)
+      );
+      option1.series.push({
+        data: [
+          warnline,
+          warnline,
+          warnline,
+          warnline,
+          warnline,
+          warnline,
+          warnline,
+        ],
         type: "line",
         itemStyle: {
-          color: "#1776FF",
+          color: "#f49394",
         },
         areaStyle: {},
-      },
-    };
+        name: "WarningLine",
+      });
+      for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
+        let canister =
+          getProjectRest.Ok[0].canisters[i].toString().slice(0, 5) +
+          " canister cycle";
+
+        option1.legend.data.push(canister);
+        option1.series.push({
+          data: [120, 132, 101, 534, 390, 230, 120],
+          type: "line",
+          itemStyle: {
+            color: "#1776FF",
+          },
+          areaStyle: {},
+          name: canister,
+        });
+      }
+    }
+    this.lineEachart1 = echarts.init(document.getElementById("line"));
+
     this.lineEachart1.setOption(option1, true);
     this.lineEachart2 = echarts.init(document.getElementById("bar"));
     let option2 = {

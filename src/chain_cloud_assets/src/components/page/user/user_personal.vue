@@ -187,7 +187,9 @@
             v-for="(item, index) in projectList"
             :key="index"
           >
-            <div class="grouptype">{{ item.groupType }}</div>
+            <div class="grouptype" style="overflow: hidden">
+              <img :src="item.imageData" alt="" />
+            </div>
             <div class="groupContent">
               <div class="groupContentTop">
                 <span class="groupName">{{ item.name }}</span>
@@ -247,12 +249,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -294,8 +291,15 @@ export default {
     };
   },
   methods: {},
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
-    let account = Principal.fromText(TEST_USER);
+    let manageCanister = this.getManageCanister();
+    if (!manageCanister) {
+      throw "No login account";
+    }
+    let account = manageCanister.identity;
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
@@ -325,15 +329,36 @@ export default {
           } else {
             create_time = `create ${duration} s ago`;
           }
-          this.projectList.push({
-            groupType: "",
-            name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
-            id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
-            type: "Maintainer",
-            info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
-            xingNum: 2,
-            time: create_time,
-          });
+          try {
+            let imageData = await manageCanister.getProjectImage(
+              account,
+              getUserInfoRes.Ok.groups[i][1].id,
+              getUserInfoRes.Ok.groups[i][1].projects[j][1].id
+            );
+
+            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+            this.projectList.push({
+              groupType: "",
+              name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+              id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+              type: "Maintainer",
+              info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+              xingNum: 2,
+              time: create_time,
+              imageData: imageData,
+            });
+          } catch (err) {
+            this.projectList.push({
+              groupType: "",
+              name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+              id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+              type: "Maintainer",
+              info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+              xingNum: 2,
+              time: create_time,
+              imageData: "",
+            });
+          }
         }
       }
     }

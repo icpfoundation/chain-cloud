@@ -178,7 +178,9 @@
             v-for="(item, index) in projectList"
             :key="index"
           >
-            <div class="grouptype">{{ item.groupType }}</div>
+            <div class="grouptype" style="overflow: hidden">
+              <img :src="item.imageData" alt="" />
+            </div>
             <div class="groupContent" :class="{ groupContentInfo: item.info }">
               <span class="groupName">{{ item.name }}</span>
               <span>{{ item.info }}</span>
@@ -228,12 +230,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-import {
-  MANAGE_CANISTER_LOCALNET,
-  TEST_USER,
-  TEST_GROUP_ID,
-  TEST_CANISTER,
-} from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -268,22 +265,59 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {},
   async created() {
-    let account = Principal.fromText(TEST_USER);
+    let manageCanister = this.getManageCanister();
+    if (!manageCanister) {
+      throw "No login account";
+    }
+    let account = manageCanister.identity;
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        this.projectList.push({
-          groupType: "Z",
-          name: getUserInfoRes.Ok.groups[i][1].name,
-          id: getUserInfoRes.Ok.groups[i][1].id,
-          info: getUserInfoRes.Ok.groups[i][1].description,
-          shuqian: 3,
-          peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-          xingNum: 2,
-        });
+        try {
+          let imageData = await manageCanister.getGroupImage(
+            account,
+            getUserInfoRes.Ok.groups[i][1].id
+          );
+
+          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          this.projectList.push({
+            groupType: "Z",
+            name: getUserInfoRes.Ok.groups[i][1].name,
+            id: getUserInfoRes.Ok.groups[i][1].id,
+            info: getUserInfoRes.Ok.groups[i][1].description,
+            shuqian: 3,
+            peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+            xingNum: 2,
+            imageData: imageData,
+          });
+        } catch (err) {
+          this.projectList.push({
+            groupType: "Z",
+            name: getUserInfoRes.Ok.groups[i][1].name,
+            id: getUserInfoRes.Ok.groups[i][1].id,
+            info: getUserInfoRes.Ok.groups[i][1].description,
+            shuqian: 3,
+            peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+            xingNum: 2,
+            imageData: "",
+          });
+        }
+
+        // this.projectList.push({
+        //   groupType: "Z",
+        //   name: getUserInfoRes.Ok.groups[i][1].name,
+        //   id: getUserInfoRes.Ok.groups[i][1].id,
+        //   info: getUserInfoRes.Ok.groups[i][1].description,
+        //   shuqian: 3,
+        //   peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+        //   xingNum: 2,
+        // });
       }
     }
   },
