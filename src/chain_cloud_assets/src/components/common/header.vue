@@ -114,17 +114,17 @@
       </el-menu>
     </div>
     <div class="loginviewCol" @mouseleave="leave">
-      <div class="loginview" @mouseenter="enter" @click.self="plugLogin">
-        <span @click.self="plugLogin"> {{ principleShort }} </span>
+      <div class="loginview" @mouseenter="enter" @click.self="doSomething">
+        <span @click.self="doSomething"> {{ principleShort }} </span>
         <img
           class="dfxlogo"
           src="../../../assets/img/logo_difinity@2x.png"
           alt="dfinity logo"
-          @click.self="plugLogin"
+          @click.self="doSomething"
         />
       </div>
       <div class="tab" v-if="tabShow && principleShort != 'Login'">
-        <div @click.stop="plugLogin" class="tabItem">Your profile</div>
+        <div @click.stop="doSomething" class="tabItem">Your profile</div>
         <div @click.stop="logoutAction" class="tabItem">Sign out</div>
       </div>
       <!-- <span
