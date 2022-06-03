@@ -71,6 +71,9 @@ module.exports = {
       stream: require.resolve("stream-browserify/"),
       util: require.resolve("util/"),
     },
+    alias: {
+      '@': path.join(__dirname, "src")
+    }
   },
   output: {
     filename: "index.js",
@@ -96,7 +99,8 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000000, //10000
-          name: 'img/[name].[ext]'
+          name: 'img/[name].[ext]',
+          esModule: false
         }
       }
     ]
@@ -140,4 +144,8 @@ module.exports = {
     contentBase: path.resolve(__dirname, "./src/chain_cloud_assets"),
     watchContentBase: true
   },
+  experiments: {
+    asyncWebAssembly: true,
+    syncWebAssembly: true
+  }
 };

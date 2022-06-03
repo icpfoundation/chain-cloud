@@ -1,13 +1,15 @@
 <style scoped>
 .aboutusApp {
   width: 100%;
+  background: #F8FBFF;
+  height: 569px;
+  display: flex;
+  justify-content: center;
 }
 .content {
   width: 1200px;
-  margin: 0 auto;
   display: flex;
-  height: 500px;
-  background: #f8fbff;
+  margin-top: 118px;
 }
 .contentRight {
   font-size: 32px;
@@ -48,8 +50,8 @@
 .aboutusImg {
   width: 436px;
   height: 330px;
-  margin-top: 34px;
-  margin-right: 40px;
+  margin-top: 22px;
+  margin-right: 44px;
 }
 .foot {
   width: 100%;
@@ -121,19 +123,6 @@
         <div class="contentRightInfo">Our goal is to create a research environment rich in opportunities for product impact, to build a product environment that actively benefits from research.</div>
         <div class="contentRightInfo">Start working with JiaoziDB that bring rust and integrity into the data life cycle by providing end-to-end cryptographically verifiable tracking and provenance for all artifacts,
           actions, and dependencies, at scale.</div>
-      </div>
-    </div>
-    <div class="foot">
-      <img src="../../../assets/img/home/foottop_bg@2x.png" alt="" class="footImg">
-      <div class="footContent">
-        <div class="footLeft">
-          <span>Contact us！</span>
-          <img src="../../../assets/img/home/icon_tab_w_r@2x.png" alt="">
-        </div>
-        <div class="footRgiht">
-          <span>Get Start</span>
-          <img src="../../../assets/img/home/arrowright@2x.png" alt="">
-        </div>
       </div>
     </div>
   </div>

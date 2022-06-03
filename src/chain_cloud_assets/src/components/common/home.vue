@@ -2,13 +2,12 @@
   <div>
     <div class="bgImg">
       <img src="../../../assets/img/home/bg.png" alt="" class="bg">
-      <headerview></headerview>
       <bannerview></bannerview>
     </div>
     <towork></towork>
     <usecloud></usecloud>
     <aboutus></aboutus>
-    <footerview></footerview>
+    <!-- <footerview></footerview> -->
   </div>
 </template>
 
@@ -42,12 +41,6 @@ export default {
   },
   methods: {},
   mounted() {
-    //installation_id
-    //setup_action
-    console.log(window.location.search.toString());
-    console.log("path: %s", this.$router.path);
-    console.log(this.$router.params);
-
     let urlParams = new URLSearchParams(window.location.search);
     let hascanister = urlParams.has("canisterId");
     let hasinstall_id = urlParams.has("installation_id");

@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
 var agent_1 = require("./agent");
 var util_1 = require("./util");
@@ -124,7 +124,7 @@ var ChainCloudApi = /** @class */ (function () {
                             subnetName: canisterResult[0].name,
                             network: canisterResult[1].network,
                             createtimestamp: (0, util_1.formatDate)(canisterResult[1].createtimestamp * 1000, "yyyy-MM-dd hh:mm:ss"),
-                            updateTimestamp: (0, util_1.formatDate)(canisterResult[1].updateTimestamp * 1000, "yyyy-MM-dd hh:mm:ss")
+                            updateTimestamp: (0, util_1.formatDate)(canisterResult[1].updateTimestamp * 1000, "yyyy-MM-dd hh:mm:ss"),
                         });
                         _a.label = 4;
                     case 4:
@@ -139,11 +139,11 @@ var ChainCloudApi = /** @class */ (function () {
                 }
             });
         }); };
-        this.api = axios_1["default"].create({
-            baseURL: host
+        this.api = axios_1.default.create({
+            baseURL: host,
         });
     }
     return ChainCloudApi;
 }());
 var chainCloudApi = new ChainCloudApi(CHAIN_CLOUD_HOST);
-exports["default"] = chainCloudApi;
+exports.default = chainCloudApi;
