@@ -1,5 +1,5 @@
 
-import { Profile, OptGroupRes, Group, GroupInfoRes, CanisterStatusRes, Project, ProjectInfoRes, UserRes } from "./manage/manage/manage.did"
+import { Profile, OptGroupRes, Group, GroupInfoRes, Member, CanisterStatusRes, Project, ProjectInfoRes, UserRes } from "./manage/manage/manage.did"
 import { imageStoreRes } from "./manage/image_store/image_store.did"
 import { Principal, } from "@dfinity/principal";
 
@@ -37,6 +37,18 @@ interface ManageInterface {
 
     get_user_info(account: Principal): UserRes,
 
+    add_group_member(
+        account: Principal,
+        group_id: bigint,
+        member: Member,
+    ): OptGroupRes,
+
+
+    remove_group_member(
+        account: Principal,
+        group_id: bigint,
+        member: Principal,
+    ): OptGroupRes,
 }
 
 interface ImageStoreInterface {
@@ -145,6 +157,25 @@ class ManageCanister {
     async getUserInfo(account: Principal): Promise<UserRes> {
         let getUserInfoRes = await this.manageActor.get_user_info(account)
         return getUserInfoRes
+    }
+
+    async addGroupMember(
+        account: Principal,
+        group_id: bigint,
+        member: Member,
+    ): Promise<OptGroupRes> {
+        let addGroupMemberRes = await this.manageActor.add_group_member(account, group_id, member)
+        return addGroupMemberRes
+    }
+
+
+    async removeGroupMember(
+        account: Principal,
+        group_id: bigint,
+        member: Principal,
+    ): Promise<OptGroupRes> {
+        let rmGroupMemberRes = await this.manageActor.remove_group_member(account, group_id, member)
+        return rmGroupMemberRes
     }
 }
 

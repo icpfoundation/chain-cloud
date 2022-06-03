@@ -225,6 +225,32 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
+    ManageCanister.prototype.addGroupMember = function (account, group_id, member) {
+        return __awaiter(this, void 0, void 0, function () {
+            var addGroupMemberRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.add_group_member(account, group_id, member)];
+                    case 1:
+                        addGroupMemberRes = _a.sent();
+                        return [2 /*return*/, addGroupMemberRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.removeGroupMember = function (account, group_id, member) {
+        return __awaiter(this, void 0, void 0, function () {
+            var rmGroupMemberRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.remove_group_member(account, group_id, member)];
+                    case 1:
+                        rmGroupMemberRes = _a.sent();
+                        return [2 /*return*/, rmGroupMemberRes];
+                }
+            });
+        });
+    };
     return ManageCanister;
 }());
 exports["default"] = ManageCanister;

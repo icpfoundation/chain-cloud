@@ -364,6 +364,7 @@ export default {
             authority: { Operational: null },
             identity: account,
             join_time: currentTime,
+            expiration_time: [],
           },
         ],
       ];

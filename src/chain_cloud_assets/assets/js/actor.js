@@ -22,21 +22,21 @@ var createActorMain = createActor("bedhi-xqaaa-aaaaj-aadja-cai", {
 
 var manage_canister = manageActor(MANAGE_CANISTER_LOCALNET, {
   agentOptions: {
-    host: "http://localhost:8000",
+    host: "https://ic0.app",
   },
 });
 var imageStore_canister = imageStore(IMAGESTORE_CANISTER_LOCALNET, {
   agentOptions: {
-    host: "http://localhost:8000",
+    host: "https://ic0.app",
   },
 });
 var log_canister = canisterLog(CANISTER_LOG_LOCALNET, {
   agentOptions: {
-    host: "http://localhost:8000",
+    host: "https://ic0.app",
   },
 });
 
-function initManageCanister(identity, host = "http://localhost:8000") {
+function initManageCanister(identity, host = "https://ic0.app") {
   let manage_canister = manageActor(MANAGE_CANISTER_LOCALNET, {
     agentOptions: {
       host: host,
@@ -60,7 +60,7 @@ function initManageCanister(identity, host = "http://localhost:8000") {
 
 
 
-async function initPlug(host = "http://localhost:8000") {
+async function initPlug(host = "https://ic0.app") {
   let whitelist = [MANAGE_CANISTER_LOCALNET, IMAGESTORE_CANISTER_LOCALNET, CANISTER_LOG_LOCALNET];
 
   let publicKey = await window.ic.plug.requestConnect({

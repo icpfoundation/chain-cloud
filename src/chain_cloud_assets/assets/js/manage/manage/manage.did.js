@@ -9,6 +9,7 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'authority' : Authority,
     'identity' : IDL.Principal,
+    'expiration_time' : IDL.Opt(IDL.Nat64),
   });
   const ProjectType = IDL.Variant({
     'NFT' : IDL.Null,

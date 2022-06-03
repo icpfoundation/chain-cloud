@@ -262,19 +262,20 @@
       </div>
       <div class="headRight">
         <div class="cel buttonCom">Cancel</div>
-        <div class="add buttonCom">Add to group</div>
+        <div class="add buttonCom" @click="addGroupMember">Add to group</div>
       </div>
     </div>
     <div class="search">
       <div class="searchItem">
-        <span>Uername or email address</span>
+        <span>user identity</span>
         <Input
           placeholder="Search for members by name, username, or email"
           suffix="ios-search"
-          style="width: 4.4rem; margin: 0.1rem 0"
+          style="width: 3.4rem; margin: 0.1rem 0"
           :clearable="true"
           @keyup.enter.native="searchFun($event)"
           @on-clear="searchFun"
+          v-model="memeber['identity']"
         />
         <div class="searchItemDec">
           Search for members by name, username, or email, or invite new ones
@@ -282,8 +283,24 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>Select a role</span>
-        <Select v-model="roleValue" style="width: 4.4rem; margin: 0.1rem 0">
+        <span>user name</span>
+        <Input
+          placeholder="Search for members by name, username, or email"
+          suffix="ios-search"
+          style="width: 3.4rem; margin: 0.1rem 0"
+          :clearable="true"
+          @keyup.enter.native="searchFun($event)"
+          @on-clear="searchFun"
+          v-model="memeber['name']"
+        />
+        <div class="searchItemDec">
+          Search for members by name, username, or email, or invite new ones
+          using their email address.
+        </div>
+      </div>
+      <div class="searchItem">
+        <span>Select a authority</span>
+        <Select v-model="roleValue" style="width: 3.4rem; margin: 0.1rem 0">
           <Option
             v-for="(item, index) in roleList"
             :value="item.value"
@@ -298,14 +315,15 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>Uername or email address</span>
+        <span>expiration time</span>
         <DatePicker
           :clearable="false"
           format="yyyy-MM-dd"
           type="date"
           placement="bottom-end"
           placeholder="YYYY-MM-DD"
-          style="width: 4.4rem; margin: 0.1rem 0"
+          style="width: 3.4rem; margin: 0.1rem 0"
+          @on-change="onChanage"
         >
         </DatePicker>
         <div class="searchItemDec">
@@ -377,7 +395,13 @@
                   >{{ item.label }}</Option
                 >
               </Select>
-              <div class="leave" :class="{ leaveStop: item.isMe }">leave</div>
+              <div
+                class="leave"
+                :class="{ leaveStop: item.isMe }"
+                @click="removeGroupMember(item)"
+              >
+                leave
+              </div>
             </div>
           </div>
         </div>
@@ -401,28 +425,32 @@ import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+import moment from "moment";
 export default {
   data() {
     return {
       group: {
         name: "",
       },
+      memeber: {
+        join_time: 0,
+        name: "",
+        authority: null,
+        identity: "",
+        expiration_time: [],
+      },
       roleValue: "1",
       roleList: [
         {
           value: "1",
-          label: "Guest",
-        },
-        {
-          value: "2",
           label: "Reporter",
         },
         {
-          value: "3",
+          value: "2",
           label: "Developer",
         },
         {
-          value: "4",
+          value: "3",
           label: "Maintainer",
         },
       ],
@@ -430,18 +458,14 @@ export default {
       nameList: [
         {
           value: "1",
-          label: "Guest",
-        },
-        {
-          value: "2",
           label: "Reporter",
         },
         {
-          value: "3",
+          value: "2",
           label: "Developer",
         },
         {
-          value: "4",
+          value: "3",
           label: "Maintainer",
         },
       ],
@@ -519,6 +543,80 @@ export default {
         duration: 3,
       });
     },
+    onChanage(date, dateString) {
+      let expir =
+        BigInt(new Date(moment(date, "yyyy-MM-dd")).getTime()) *
+        BigInt(1000000);
+      this.memeber.expiration_time = [expir];
+    },
+    async addGroupMember() {
+      switch (this.roleValue) {
+        case "1":
+          this.memeber.authority = { Read: null };
+          break;
+        case "1":
+          this.memeber.authority = { Write: null };
+          break;
+        case "1":
+          this.memeber.authority = { Operational: null };
+      }
+      this.memeber.join_time = new Date().getTime();
+      this.memeber.identity = Principal.fromText(this.memeber.identity);
+      let canister = this.getManageCanister();
+      if (!canister) {
+        throw "Account not logged in";
+      }
+      let account = Principal.fromText(this.$route.params.user);
+      let groupId = BigInt(this.$route.params.groupId);
+
+      let addGroupMemberRes = await canister.addGroupMember(
+        account,
+        groupId,
+        this.memeber
+      );
+
+      if ("Ok" in addGroupMemberRes) {
+        this.$Notice.info({
+          title: "添加组成员成功",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$Notice.info({
+          title: "添加组成员失败",
+          background: true,
+          duration: 3,
+        });
+      }
+    },
+    async removeGroupMember(item) {
+      let canister = this.getManageCanister();
+      if (!canister) {
+        throw "Account not logged in";
+      }
+      let account = Principal.fromText(this.$route.params.user);
+      let groupId = BigInt(this.$route.params.groupId);
+
+      let rmGroupMemberRes = await canister.removeGroupMember(
+        account,
+        groupId,
+        item.identity
+      );
+
+      if ("Ok" in rmGroupMemberRes) {
+        this.$Notice.info({
+          title: "移除组成员成功",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$Notice.info({
+          title: "移除组成员失败",
+          background: true,
+          duration: 3,
+        });
+      }
+    },
   },
   computed: {
     ...mapGetters(["getManageCanister"]),
@@ -540,6 +638,7 @@ export default {
     this.group.name = getGroupInfoRes.Ok[0].name;
     let currentTime = BigInt(new Date().getTime());
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
+      this.tableData.total = getGroupInfoRes.Ok[0].members.length;
       for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
         let duration = parseInt(
           Number(
@@ -561,6 +660,7 @@ export default {
           name: getGroupInfoRes.Ok[0].members[k][1].name,
           time: create_time,
           expires: "forever",
+          identity: getGroupInfoRes.Ok[0].members[k][1].identity,
         });
       }
     }

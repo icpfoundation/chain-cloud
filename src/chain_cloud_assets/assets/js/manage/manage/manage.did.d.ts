@@ -42,6 +42,7 @@ export interface Member {
   'name' : string,
   'authority' : Authority,
   'identity' : Principal,
+  'expiration_time' : [] | [bigint],
 }
 export type OptGroupRes = { 'Ok' : null } |
   { 'Err' : string };

@@ -285,8 +285,8 @@ export default {
   async created() {
     let groupRes = await manageCanister.visibleProject();
 
-    this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
+      this.tableData.total = groupRes[i].length;
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
           let imageData = await manageCanister.getGroupImage(
