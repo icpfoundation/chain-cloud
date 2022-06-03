@@ -318,7 +318,11 @@ export default {
       }
       let visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
-      let account = Principal.fromText(TEST_USER);
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
       let updateGroupRes =
         await manageCanister.updateGroupNameAndDescriptionAndVisibility(
           account,
@@ -331,10 +335,8 @@ export default {
         throw updateGroupRes.Err;
       }
 
-      let manage_canister = Principal.fromText(MANAGE_CANISTER_LOCALNET);
       let enc = new TextEncoder();
-      let imageStoreRes = await manageCanister.imageStore(
-        manage_canister,
+      let imageStoreRes = await manageCanister.groupImageStore(
         account,
         BigInt(this.group.id),
         Array.from(enc.encode(this.imgurl))

@@ -554,10 +554,10 @@ export default {
         case "1":
           this.memeber.authority = { Read: null };
           break;
-        case "1":
+        case "2":
           this.memeber.authority = { Write: null };
           break;
-        case "1":
+        case "3":
           this.memeber.authority = { Operational: null };
       }
       this.memeber.join_time = new Date().getTime();
