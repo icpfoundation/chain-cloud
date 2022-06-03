@@ -47,7 +47,7 @@ const getCanisterInfo = async (canisterId) => {
             subnet: subnet,
             name: `Application ${res[0]}`,
             moduleHash,
-            controllerId:controllerId[0]
+            controllerId: controllerId[0]
         }
     } else {
         throw new Error('cert verify failed')
@@ -59,12 +59,12 @@ const getWalletCycle = async (identity, canisterid) => {
         let createActorLocal = walletActor(
             canisterid,
             {
-              agentOptions: {
-                host: IC0,
-                identity,
-              },
+                agentOptions: {
+                    host: IC0,
+                    identity,
+                },
             }
-          );
+        );
         let balance = await createActorLocal.wallet_balance()
         return balance
     } catch (err) {
@@ -72,4 +72,4 @@ const getWalletCycle = async (identity, canisterid) => {
     }
 }
 
-export {getCanisterInfo,getWalletCycle}
+export { getCanisterInfo, getWalletCycle }

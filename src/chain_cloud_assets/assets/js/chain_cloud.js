@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var principal_1 = require("@dfinity/principal");
 var CanisterStatus;
 (function (CanisterStatus) {
@@ -145,4 +145,4 @@ var ChainCloudCanister = /** @class */ (function () {
     };
     return ChainCloudCanister;
 }());
-exports["default"] = ChainCloudCanister;
+exports.default = ChainCloudCanister;

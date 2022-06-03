@@ -1,0 +1,13 @@
+
+
+type imageStoreRes = variant{
+    Ok:null;
+    Err:text;
+};
+service:(principal) -> {
+    group_image_store:(principal,nat64, blob) ->(imageStoreRes);
+    project_image_store:(principal,nat64,nat64, blob) ->(imageStoreRes);
+    get_group_image:(principal,nat64) -> (blob) query;
+    get_project_image:(principal,nat64,nat64) -> (blob) query;
+    update_manage_canister:(principal) -> ();
+}
