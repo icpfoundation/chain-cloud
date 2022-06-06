@@ -214,11 +214,11 @@ export default {
               href: "branches",
               select: false,
             },
-            {
-                menuName: 'Commits',
-                href: 'commits',
-                select: false,
-            }
+            // {
+            //     menuName: 'Commits',
+            //     href: 'commits',
+            //     select: false,
+            // }
           ],
           isSon: true,
           select: true,
