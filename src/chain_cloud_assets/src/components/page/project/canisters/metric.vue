@@ -52,7 +52,7 @@
         <div id="line" style="height: 3.24rem" class="echartLineWidth"></div>
       </div>
       <div class="itemBox">
-        <span>Cycle_balance</span>
+        <span>Call function quantity</span>
         <div id="bar" style="height: 3.24rem" class="echartLineWidth"></div>
       </div>
     </div>
@@ -61,7 +61,10 @@
 <script>
 import * as echarts from "echarts";
 import { mapGetters } from "vuex";
-import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import {
+  manageCanister,
+  chainCloud,
+} from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 export default {
   data() {
@@ -89,7 +92,7 @@ export default {
       groupId,
       projectId
     );
-
+    let currentTime = new Date().getTime();
     let option1 = {
       grid: {
         left: 50,
@@ -139,8 +142,27 @@ export default {
           " canister cycle";
 
         option1.legend.data.push(canister);
+
+        let event = await chainCloud.getCanisterEventByTime(
+          "ejhe2-miaaa-aaaag-qaazq-cai",
+          new Date().getTime() - 24 * 3600 * 1000
+        );
+        let map = new Map();
+        let cycle = [0, 0, 0, 0, 0, 0, 0];
+        for (let i of event) {
+          let idx = Number(
+            BigInt(currentTime) - BigInt(i.transaction_time) / BigInt(100000000)
+          );
+          if (cycle[idx] == 0) {
+            cycle[idx] = Number(BigInt(i.cycle) / BigInt(100000000));
+          }
+        }
+        if (cycle.length > 7) {
+          cycle.slice(0, 6);
+        }
+
         option1.series.push({
-          data: [120, 132, 101, 534, 390, 230, 120],
+          data: cycle,
           type: "line",
           itemStyle: {
             color: "#1776FF",
@@ -150,6 +172,26 @@ export default {
         });
       }
     }
+
+    let event = await chainCloud.getCanisterEventByTime(
+      "ejhe2-miaaa-aaaag-qaazq-cai",
+      new Date().getTime() - 24 * 3600 * 1000
+    );
+    let map = new Map();
+
+    console.log("event", event);
+    for (let i of event) {
+      if (!map.get(i.method_name)) {
+        map.set(i.method_name, 1);
+        continue;
+      }
+      map.set(i.method_name, map.get(i.method_name) + 1);
+    }
+    var array = Array.from(map);
+    array.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+
     this.lineEachart1 = echarts.init(document.getElementById("line"));
 
     this.lineEachart1.setOption(option1, true);
@@ -196,25 +238,35 @@ export default {
           show: false,
         },
       },
-      series: [
-        {
-          name: "2011",
-          type: "bar",
-          itemStyle: {
-            color: "#1776FF",
-          },
-          data: [18203, 23489, 29034, 104970, 131744, 630230],
-        },
-        {
-          name: "2012",
-          type: "bar",
-          itemStyle: {
-            color: "#48C982",
-          },
-          data: [19325, 23438, 31000, 121594, 134141, 681807],
-        },
-      ],
+      series: [],
     };
+    if (array.length > 2) {
+      array = array.slice(0, 1);
+    }
+    let color = ["#48C982", "#1776FF"];
+    array.forEach((ele, index) => {
+      console.log("ele", ele, index);
+      option2.series.push({
+        type: "bar",
+        itemStyle: {
+          color: color[index],
+        },
+        label: {
+          show: true,
+          formatter: function (value) {
+            return value.data.method;
+          },
+        },
+        data: [
+          { method: ele[0], value: ele[1] },
+          { method: ele[0], value: ele[1] },
+          { method: ele[0], value: ele[1] },
+          { method: ele[0], value: ele[1] },
+          { method: ele[0], value: ele[1] },
+          { method: ele[0], value: ele[1] },
+        ],
+      });
+    });
     this.lineEachart2.setOption(option2, true);
   },
 };
