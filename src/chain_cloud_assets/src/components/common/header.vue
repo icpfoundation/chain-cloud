@@ -249,8 +249,9 @@ export default {
     doSomething: async function (event) {
       this.tabShow = false;
       if (event) {
+        let manageCansiter = this.getManageCanister();
         let principle = window.localStorage.getItem("principleString");
-        if (principle == "" || principle == undefined || principle == null) {
+        if (!manageCansiter) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
