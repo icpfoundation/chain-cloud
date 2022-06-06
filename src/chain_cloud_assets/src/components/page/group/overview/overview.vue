@@ -399,7 +399,7 @@ export default {
   data() {
     return {
       group: {
-        name: "Project Group 1",
+        name: "",
       },
       tabList: [
         {
@@ -423,57 +423,7 @@ export default {
         },
       ],
       tableData: {
-        tableList: [
-          /*
-          {
-            name: "go-statemachine",
-            group: "G",
-            groupInfo: "go-statemachine",
-            time: "18 days ago",
-            isLock: true,
-            isXing: true,
-            isBizoZhi: true,
-            biaozhi: "Maintainer",
-          },
-          {
-            name: "Zap",
-            group: "Z",
-            groupInfo: "go-statemachine",
-            time: "17 days ago",
-            isLock: true,
-            isXing: false,
-            isBizoZhi: true,
-            biaozhi: "Owner",
-          },
-          {
-            name: "go-statemachine",
-            group: "Z",
-            groupInfo: "go-statemachine",
-            time: "16days ago",
-            isLock: false,
-            isXing: false,
-            isBizoZhi: false,
-          },
-          {
-            name: "go-statemachine",
-            group: "G",
-            groupInfo: "go-statemachine",
-            time: "15 days ago",
-            isLock: false,
-            isXing: false,
-            isBizoZhi: false,
-          },
-          {
-            name: "go-statemachine",
-            group: "G",
-            groupInfo: "go-statemachine",
-            time: "14 days ago",
-            isLock: false,
-            isXing: false,
-            isBizoZhi: false,
-          },
-          */
-        ],
+        tableList: [],
         total: 5,
         page: 1,
         pageSize: 3,
@@ -560,7 +510,7 @@ export default {
 
         this.tableData.tableList.push({
           name: getGroupInfoRes.Ok[i].projects[j][1].name,
-          group: getGroupInfoRes.Ok[0].description,
+          group: getGroupInfoRes.Ok[0].description.substring(0, 1),
           groupInfo: getGroupInfoRes.Ok[i].projects[j][1].description,
           time: create_time,
           isLock: false,

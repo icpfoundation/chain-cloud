@@ -1,5 +1,6 @@
 <style scoped>
-.app { margin-top:1rem;
+.app {
+  margin-top: 1rem;
   width: 100%;
 }
 
@@ -260,23 +261,23 @@
 export default {
   data() {
     return {
-      activeBoolean:true,
-      stableBoolean:true,
+      activeBoolean: true,
+      stableBoolean: true,
       tabList: [
         {
           name: "All",
           select: true,
-          id:1,
+          id: 1,
         },
         {
           name: "Active",
           select: false,
-          id:2,
+          id: 2,
         },
         {
           name: "Stable",
           select: false,
-          id:3,
+          id: 3,
         }
       ],
       groupValue: '1',
@@ -335,15 +336,15 @@ export default {
         element.select = false
       })
       item.select = true;
-      if(item.id===1){
-        this.activeBoolean=true;
-        this.stableBoolean=true
-      }else if(item.id===2){
-         this.activeBoolean=true;
-        this.stableBoolean=false
-      }else if(item.id===3){
-         this.activeBoolean=false;
-        this.stableBoolean=true
+      if (item.id === 1) {
+        this.activeBoolean = true;
+        this.stableBoolean = true
+      } else if (item.id === 2) {
+        this.activeBoolean = true;
+        this.stableBoolean = false
+      } else if (item.id === 3) {
+        this.activeBoolean = false;
+        this.stableBoolean = true
       }
     },
     headPageFun(value) {

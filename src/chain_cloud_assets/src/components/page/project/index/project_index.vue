@@ -43,6 +43,7 @@
   cursor: pointer;
   margin-top: 30px;
 }
+
 .addGroup img {
   width: 16px;
   height: 16px;
@@ -71,9 +72,11 @@
   display: flex;
   cursor: pointer;
 }
+
 .tableItem:hover {
   background: #f8f8f8;
 }
+
 .tableImg {
   width: 60px;
   height: 60px;
@@ -83,6 +86,7 @@
   margin-right: 20px;
   margin-top: 4px;
 }
+
 .tableImg img {
   width: 100%;
   height: 100%;
@@ -134,6 +138,7 @@
   width: 130px;
   justify-content: center;
 }
+
 .pageStyle {
   display: flex;
   justify-content: center;
@@ -142,16 +147,19 @@
   height: 72px;
   align-items: center;
 }
+
 .tableImg img {
   width: 100%;
   height: 100%;
 }
+
 .head_bg {
   position: relative;
 
   width: 100%;
   height: 8%;
 }
+
 .teamscan_top_bg {
   width: 100%;
 }
@@ -160,21 +168,14 @@
 <template>
   <div class="app">
     <div class="head_bg">
-      <img
-        src="../../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png"
-        alt=""
-        class="teamscan_top_bg"
-      />
+      <img src="../../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png" alt="" class="teamscan_top_bg" />
       <div class="head">
         <div>
           <span>Projects</span>
         </div>
 
         <div class="addGroup" @click="addFun">
-          <img
-            src="../../../../../assets/chain_cloud/group/icon_add_white@2x (1).png"
-            alt=""
-          />
+          <img src="../../../../../assets/chain_cloud/group/icon_add_white@2x (1).png" alt="" />
 
           <span>New Project</span>
         </div>
@@ -182,12 +183,7 @@
     </div>
     <div class="content">
       <div class="table">
-        <div
-          class="tableItem"
-          v-for="(item, index) in tableData.tableList"
-          :key="index"
-          @click="toProjectFun(item)"
-        >
+        <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index" @click="toProjectFun(item)">
           <div class="tableImg">
             <img :src="item.imageData" alt="" style="overflow: hidden" />
           </div>
@@ -195,10 +191,7 @@
             <span class="tableItemName">{{ item.name }}</span>
             <div class="tableItemBy">
               <span>{{ item.by }}</span>
-              <img
-                src="../../../../../assets/chain_cloud/group/icon_check@2x.png"
-                alt=""
-              />
+              <img src="../../../../../assets/chain_cloud/group/icon_check@2x.png" alt="" />
             </div>
             <div class="tableItemDec">{{ item.dec }}</div>
             <div class="tableItemDiv">{{ item.type }}</div>
@@ -206,15 +199,8 @@
         </div>
       </div>
       <div class="pageStyle">
-        <Page
-          v-if="tableData.total > 0"
-          :total="tableData.total"
-          :current="tableData.page"
-          show-total
-          :page-size="tableData.pageSize"
-          size="small"
-          @on-change="headPageFun"
-        />
+        <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
+          :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
       </div>
     </div>
   </div>
