@@ -1,7 +1,8 @@
 <style scoped>
-.layoutApp{
+.layoutApp {
   margin-top: 74px;
 }
+
 .logo {
   display: flex;
   flex: 1;
@@ -137,50 +138,32 @@
 
 <template>
   <div class="layoutApp">
-    <div
-      class="appwrappBanner"
-      v-bind:style="{ minHeight: browserHeight + 'px' }"
-    >
+    <div class="appwrappBanner" v-bind:style="{ minHeight: browserHeight + 'px' }">
       <div class="appWrappLeft">
         <div class="appWrappLeftHead">
-          <img
-            src="../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-            alt=""
-          />
+          <img src="../../../assets/chain_cloud/menu/pic_group_avatar@2x.png" alt="" />
           <span>Chain-Cloud</span>
         </div>
         <div class="appWrappLeftBox">
-          <div
-            class="menuItem menuItemMain"
-            v-for="(item, index) in menuList"
-            :key="index"
-            @click="chooseFun(item, index)"
-          >
+          <div class="menuItem menuItemMain" v-for="(item, index) in menuList" :key="index"
+            @click="chooseFun(item, index)">
             <div class="fatherItem" :class="{ chooseClass: item.select }">
               <div class="menuItemMainLeft">
                 <img :src="item.selUrl" alt="" v-if="item.select" />
                 <img :src="item.norUrl" alt="" v-else />
                 <span :class="{ chooseSonClass: item.select }">{{
-                  item.menuName
+                    item.menuName
                 }}</span>
               </div>
-              <img
-                src="../../../assets/chain_cloud/menu/icon_arrow_down@2x.png"
-                class="menuItemMainRight"
-                alt=""
-                v-if="item.isSon && item.select"
-              />
+              <img src="../../../assets/chain_cloud/menu/icon_arrow_down@2x.png" class="menuItemMainRight" alt=""
+                v-if="item.isSon && item.select" />
             </div>
             <div class="childrenBox" v-if="item.isSon && item.select">
-              <div
-                class="childrenmenuItem"
-                v-for="(itemChildren, indexChildren) in item.children"
-                :key="indexChildren"
-                @click.stop="chooseSonFun(item, itemChildren, indexChildren)"
-              >
+              <div class="childrenmenuItem" v-for="(itemChildren, indexChildren) in item.children" :key="indexChildren"
+                @click.stop="chooseSonFun(item, itemChildren, indexChildren)">
                 <div class="childImg"></div>
                 <span :class="{ chooseSonClass: itemChildren.select }">{{
-                  itemChildren.menuName
+                    itemChildren.menuName
                 }}</span>
               </div>
             </div>
@@ -231,11 +214,11 @@ export default {
               href: "branches",
               select: false,
             },
-            // {
-            //     menuName: 'Commits',
-            //     href: 'commits',
-            //     select: false,
-            // }
+            {
+                menuName: 'Commits',
+                href: 'commits',
+                select: false,
+            }
           ],
           isSon: true,
           select: true,
@@ -282,6 +265,8 @@ export default {
       // localStorage.activeMenuHref = item.href
       // localStorage.activeMenuIndex = index
 
+      console.log(this.$router.params)
+
       this.$router.push({
         name: item.href,
         params: this.$route.params,
@@ -292,8 +277,14 @@ export default {
         element.select = false;
       });
       itemChildren.select = true;
+
+      console.log("child item")
+
+      console.log(this.$router.params)
+
       this.$router.push({
         name: itemChildren.href,
+        params: this.$route.params,
       });
     },
   },
