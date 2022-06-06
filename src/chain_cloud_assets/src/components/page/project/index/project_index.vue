@@ -83,6 +83,10 @@
   margin-right: 20px;
   margin-top: 4px;
 }
+.tableImg img {
+  width: 100%;
+  height: 100%;
+}
 
 .tableInfo {
   display: flex;
@@ -185,7 +189,7 @@
           @click="toProjectFun(item)"
         >
           <div class="tableImg">
-            <img :src="item.imageData" alt="" />
+            <img :src="item.imageData" alt="" style="overflow: hidden" />
           </div>
           <div class="tableInfo">
             <span class="tableItemName">{{ item.name }}</span>

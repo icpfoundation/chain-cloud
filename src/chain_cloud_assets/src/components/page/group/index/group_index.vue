@@ -78,6 +78,11 @@
   border: 1px solid #e6e6e6;
   margin-right: 20px;
   margin-top: 4px;
+  background-position: center;
+}
+.tableImg img {
+  width: 100%;
+  height: 100%;
 }
 
 .tableInfo {
