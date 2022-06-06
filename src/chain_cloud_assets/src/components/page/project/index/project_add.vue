@@ -422,15 +422,22 @@ export default {
   methods: {
     async saveFun() {
       let manageCanister = this.getManageCanister();
+
       if (!manageCanister) {
-        throw "No login account";
+        this.$Notice.info({
+          title: "Please log in to the account",
+          background: true,
+          duration: 3,
+        });
+        return;
       }
+
       let account = manageCanister.identity;
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
       this.project.create_by = account;
-      this.project.canisters = [Principal.fromText(TEST_CANISTER)];
+      this.project.canisters = [];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
 
@@ -450,9 +457,10 @@ export default {
         this.project.in_group,
         this.project
       );
-      let info = "增加组失败";
+
+      let info = "";
       if ("Ok" in addProjectRes) {
-        info = "增加组成功";
+        info = "Successfully added";
         let enc = new TextEncoder();
         let imageStoreRes = await manageCanister.projectImageStore(
           account,
@@ -460,6 +468,8 @@ export default {
           this.project.id,
           Array.from(enc.encode(this.imgurl))
         );
+      } else {
+        info = "Add failed: " + addProjectRes.Err;
       }
       this.$Notice.info({
         title: info,

@@ -144,7 +144,7 @@ let router = new Router({
       },
     },
     {
-      path: 'setting',
+      path: 'setting/:user/:groupId',
       name: 'setting',
       component: setting,
       meta: {
