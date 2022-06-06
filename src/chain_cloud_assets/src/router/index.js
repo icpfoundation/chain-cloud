@@ -192,7 +192,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/branches',
+      path: 'projectoverview/branches/:owner/:repo',
       name: 'branches',
       component: branches,
       meta: {
@@ -201,7 +201,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/commits',
+      path: 'projectoverview/commits/:owner/:repo',
       name: 'commits',
       component: commits,
       meta: {
