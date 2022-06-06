@@ -159,14 +159,14 @@
             <div class="groupName">
               <span>10th June</span>
               <div class="groupNameItem">
-                <span class="groupNameItemtime">18:09</span>
-                <span class="groupNameItemTo">新增</span>
-                <span>canister 4jgqq-aqaaa-aaaah-qaaza-cai</span>
+                <span class="groupNameItemtime">{{ item.time }}</span>
+                <span class="groupNameItemTo">{{ item.operation }}</span>
+                <span>{{ item.data }}</span>
               </div>
               <div class="groupNameItem">
-                <span class="groupNameItemtime">18:09</span>
-                <span class="groupNameItemTo">更新</span>
-                <span>canister 4jgqq-aqaaa-aaaah-qaaza-cai</span>
+                <span class="groupNameItemtime">{{ item.time }}</span>
+                <span class="groupNameItemTo">{{ item.operation }}</span>
+                <span>{{ item.data }}</span>
               </div>
             </div>
           </div>
@@ -176,6 +176,10 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import { formatDate } from "@/chain_cloud_assets/assets/js/util";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -202,37 +206,40 @@ export default {
       ],
       tableData: {
         tableList: [
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
-          {
-            projectName: "tidy go.sum",
-            author: "yongyu",
-            time: "18 days ago",
-          },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
+          // {
+          //   projectName: "tidy go.sum",
+          //   author: "yongyu",
+          //   time: "18 days ago",
+          // },
         ],
         total: 5,
         page: 1,
         pageSize: 3,
       },
     };
+  },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
   },
   methods: {
     headPageFun(value) {
@@ -243,9 +250,61 @@ export default {
       });
     },
   },
-  created() {
+  async created() {
     let url = window.location.href;
     console.log(url);
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
+    let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
+    let getLogRes = await manage.getLog(account, groupId, 1);
+
+    for (let i = 0; i < getLogRes.length; i++) {
+      for (let j = 0; j < getLogRes[i].length; j++) {
+        let duration = parseInt(
+          Number(currentTime - getLogRes[i][j][1] / BigInt(1000000000))
+        );
+
+        let create_time = "0 s ago";
+        if (duration >= 86400) {
+          create_time = `${parseInt(duration / 86400)} day ago`;
+        } else if (duration >= 3600) {
+          create_time = `${parseInt(duration / 3600)} hour ago`;
+        } else if (duration >= 60) {
+          create_time = `${parseInt(duration / 60)} min ago`;
+        } else {
+          create_time = `${duration} s ago`;
+        }
+
+        let logData =
+          getLogRes[i][j][3][0].length > 30
+            ? getLogRes[i][j][3][0].slice(0, 30) + "..."
+            : getLogRes[i][j][3][0];
+
+        let operation = "";
+        if ("UpdateProjectCanister" in getLogRes[i][j][2]) {
+          if (getLogRes[i][j][2].UpdateProjectCanister[1] != projectId) {
+            continue;
+          }
+          operation = getLogRes[i][j][2].UpdateProjectCanister[2];
+        } else {
+          continue;
+        }
+
+        this.tableData.tableList.push({
+          name: getLogRes[i][j][0].toString(),
+          time: create_time,
+          project: projectId,
+          operation: operation,
+          data: logData,
+        });
+      }
+    }
   },
 };
 </script>

@@ -228,7 +228,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/activities',
+      path: 'projectoverview/activities/:user/:groupId/:projectId',
       name: 'activities',
       component: activities,
       meta: {
