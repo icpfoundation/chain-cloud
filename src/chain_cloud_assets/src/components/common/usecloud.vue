@@ -43,6 +43,9 @@
       <div class="tabarItem" style="width:270px">
         <img src="../../../assets/img/logo/logo5.png" alt="">
       </div>
+      <div class="tabarItem" style="width:270px">
+        <img src="../../../assets/img/logo/logo7.svg" alt="">
+      </div>
       <div class="tabarItem" style="width:240px">
         <img src="../../../assets/img/logo/logo1.jpg" alt="">
       </div>
