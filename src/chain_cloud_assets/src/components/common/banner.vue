@@ -147,7 +147,7 @@ export default {
   components: {},
   methods: {
     doStart() {
-      window.open("http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/");
+      window.open("https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/");
       // let principle = window.localStorage.getItem("principleString");
       // if (principle == undefined || principle == "" || principle == null) {
       //   this.$message({

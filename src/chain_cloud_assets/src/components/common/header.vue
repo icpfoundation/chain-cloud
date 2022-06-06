@@ -184,7 +184,7 @@ export default {
 
       switch (this.activeIndex) {
         case "1":
-          window.open("http://rno2w-sqaaa-aaaaa-aaacq-cai.localhost:8000/");
+          window.open("https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/");
           break;
 
         case "2":
