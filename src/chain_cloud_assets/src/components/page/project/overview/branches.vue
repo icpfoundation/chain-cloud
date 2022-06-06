@@ -293,7 +293,7 @@ export default {
       ],
       tableData: {
         tableList: [],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3
       }
@@ -335,7 +335,7 @@ export default {
         .then(function (response) {
           let ret = response.data
 
-          that.total = ret.length()
+          that.total = ret.length
 
           for (let i = 0; i < ret.length; i++) {
             const element = ret[i];
