@@ -395,6 +395,7 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
 } from "@/chain_cloud_assets/assets/js/config";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -701,8 +702,11 @@ export default {
       }
     },
   },
-
-  async created() {
+  mounted() {},
+  async mounted() {
+    let topInstance = Loading.service({
+      target: ".right",
+    });
     let groupRes = await manageCanister.visibleProject();
     this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
@@ -800,6 +804,7 @@ export default {
     });
     this.groupList = groupList.slice(0, 8);
     this.projectList = projectList.slice(0, 8);
+    topInstance.close();
   },
 };
 </script>
