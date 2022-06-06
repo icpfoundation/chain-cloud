@@ -339,8 +339,14 @@ export default {
   methods: {
     async saveFun() {
       let manageCanister = this.getManageCanister();
+
       if (!manageCanister) {
-        throw "No login account";
+        this.$Notice.info({
+          title: "Please log in to the account",
+          background: true,
+          duration: 3,
+        });
+        return;
       }
 
       this.group.id = Number(this.group.id);
@@ -371,22 +377,25 @@ export default {
 
       let addGroupRes = await manageCanister.addGroup(account, this.group);
       if (addGroupRes.Err) {
-        throw addGroupRes.Err;
+        let err = "Add failed: " + addGroupRes.Err;
+        this.$Notice.info({
+          title: err,
+          background: true,
+          duration: 3,
+        });
         return;
       }
       let enc = new TextEncoder();
-
       let imageStoreRes = await manageCanister.groupImageStore(
         account,
         this.group.id,
         Array.from(enc.encode(this.imgurl))
       );
       if (imageStoreRes.Err) {
-        throw imageStoreRes.Err;
-        return;
+        console.log("Picture storage failed", imageStoreRes.Err);
       }
       this.$Notice.info({
-        title: "添加组成功",
+        title: "Successfully added",
         background: true,
         duration: 3,
       });

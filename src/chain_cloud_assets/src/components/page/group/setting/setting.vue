@@ -189,7 +189,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Setting</div>
-      <span class="titlePath">Group1 / Project group 001 / Setting</span>
+      <span class="titlePath">{{ group.name }} / Setting</span>
     </div>
     <div class="content">
       <div class="leftBoxName">Naming, visibility</div>
@@ -294,6 +294,7 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
 } from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -307,18 +308,19 @@ export default {
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {
     async saveFun() {
-      if (
-        (this.group.id == "0") |
-        (this.group.name == "") |
-        (this.group.description == "")
-      ) {
-        throw "enter valid data";
-      }
+      let account = Principal.fromText(this.$route.params.user);
       let visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
-      let account = Principal.fromText(TEST_USER);
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+
       let updateGroupRes =
         await manageCanister.updateGroupNameAndDescriptionAndVisibility(
           account,
@@ -331,10 +333,8 @@ export default {
         throw updateGroupRes.Err;
       }
 
-      let manage_canister = Principal.fromText(MANAGE_CANISTER_LOCALNET);
       let enc = new TextEncoder();
-      let imageStoreRes = await manageCanister.imageStore(
-        manage_canister,
+      let imageStoreRes = await manageCanister.groupImageStore(
         account,
         BigInt(this.group.id),
         Array.from(enc.encode(this.imgurl))
@@ -344,7 +344,7 @@ export default {
         return;
       }
       this.$Notice.info({
-        title: "修改成功",
+        title: "Modified successfully",
         background: true,
         duration: 3,
       });
@@ -364,6 +364,26 @@ export default {
       }
     },
   },
-  created() {},
+  async created() {
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = Number(this.$route.params.groupId);
+    this.group.id = groupId;
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+
+    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
+    if (getGroupInfoRes.Err) {
+      throw getGroupInfoRes.Err;
+      return;
+    }
+
+    if (getGroupInfoRes.Ok.length > 0) {
+      this.group.name = getGroupInfoRes.Ok[0].name;
+      this.group.description = getGroupInfoRes.Ok[0].description;
+    }
+  },
 };
 </script>
