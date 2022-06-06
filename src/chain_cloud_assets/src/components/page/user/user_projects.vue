@@ -36,6 +36,7 @@
   display: flex;
   align-items: flex-start;
   position: relative;
+  cursor: pointer;
 }
 
 .connect {
@@ -180,6 +181,7 @@
             class="tableItem"
             v-for="(item, index) in projectList"
             :key="index"
+            @click="getProjectInfo(item)"
           >
             <div class="grouptype" style="overflow: hidden">
               <img :src="item.imageData" alt="" />
@@ -266,7 +268,23 @@ export default {
   computed: {
     ...mapGetters(["getManageCanister"]),
   },
-  methods: {},
+  methods: {
+    getProjectInfo(item) {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
+      this.$router.push({
+        name: "project",
+        params: {
+          user: account.toString(),
+          groupId: item.groupId,
+          projectId: item.id,
+        },
+      });
+    },
+  },
   async created() {
     let manageCanister = this.getManageCanister();
     if (!manageCanister) {
@@ -311,6 +329,7 @@ export default {
 
             imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.projectList.push({
+              groupId: getUserInfoRes.Ok.groups[i][1].id,
               groupType: "",
               name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
               id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
@@ -322,6 +341,7 @@ export default {
             });
           } catch (err) {
             this.projectList.push({
+              groupId: getUserInfoRes.Ok.groups[i][1].id,
               groupType: "",
               name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
               id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,

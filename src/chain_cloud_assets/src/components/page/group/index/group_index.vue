@@ -209,6 +209,7 @@
 </template>
 <script>
 import { Principal } from "@dfinity/principal";
+import { Loading } from "element-ui";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 
 export default {
@@ -287,7 +288,10 @@ export default {
       });
     },
   },
-  async created() {
+  async mounted() {
+    let topInstance = Loading.service({
+      target: ".content",
+    });
     let groupRes = await manageCanister.visibleProject();
 
     for (let i = 0; i < groupRes.length; i++) {
@@ -319,6 +323,7 @@ export default {
         }
       }
     }
+    topInstance.close();
   },
 };
 </script>

@@ -208,7 +208,7 @@
 <script>
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
-
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -244,7 +244,10 @@ export default {
       });
     },
   },
-  async created() {
+  async mounted() {
+    let topInstance = Loading.service({
+      target: ".content",
+    });
     let groupRes = await manageCanister.visibleProject();
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
@@ -268,6 +271,7 @@ export default {
               groupId: groupRes[i][j][1],
               projectId: groupRes[i][j][2].projects[k][1].id,
               imageData: imageData,
+              git: groupRes[i][j][2].projects[k][1].git_repo_url,
             });
           } catch (err) {
             this.tableData.tableList.push({
@@ -278,11 +282,13 @@ export default {
               user: groupRes[i][j][0].toString(),
               groupId: groupRes[i][j][1],
               projectId: groupRes[i][j][2].projects[k][1].id,
+              git: groupRes[i][j][2].projects[k][1].git_repo_url,
             });
           }
         }
       }
     }
+    topInstance.close();
   },
 };
 </script>

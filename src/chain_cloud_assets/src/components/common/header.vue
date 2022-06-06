@@ -260,16 +260,16 @@ export default {
               this.manageCanisterConfig(manageCanister);
 
               // window.manageCanister = manageCanister;
-              localStorage.setItem("identity", identity);
+              // localStorage.setItem("identity", identity);
               let principle = identity.getPrincipal();
               that.principle = principle;
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
-              that.setICIdentityConfig(principle, identity);
-              window.localStorage.setItem(
-                "principleString",
-                principle.toString()
-              );
+              // that.setICIdentityConfig(principle, identity);
+              // window.localStorage.setItem(
+              //   "principleString",
+              //   principle.toString()
+              // );
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );

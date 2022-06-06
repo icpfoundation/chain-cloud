@@ -29,6 +29,7 @@
   display: flex;
   align-items: flex-start;
   position: relative;
+  cursor: pointer;
 }
 
 .connect {
@@ -177,6 +178,7 @@
             class="tableItem"
             v-for="(item, index) in projectList"
             :key="index"
+            @click="getGroupInfo(item)"
           >
             <div class="grouptype" style="overflow: hidden">
               <img :src="item.imageData" alt="" />
@@ -268,7 +270,22 @@ export default {
   computed: {
     ...mapGetters(["getManageCanister"]),
   },
-  methods: {},
+  methods: {
+    getGroupInfo(item) {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
+      this.$router.push({
+        name: "group",
+        params: {
+          user: account.toString(),
+          groupId: item.id,
+        },
+      });
+    },
+  },
   async created() {
     let manageCanister = this.getManageCanister();
     if (!manageCanister) {

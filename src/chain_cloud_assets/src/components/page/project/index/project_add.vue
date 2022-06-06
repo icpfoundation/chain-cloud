@@ -227,12 +227,13 @@
           <div class="nameItem">
             <span>Projects name</span>
             <Input
-              placeholder="Production project"
+              placeholder="Project name"
               style="width: 320px; margin-top: 10px"
               :clearable="true"
               v-model="project['name']"
             />
           </div>
+
           <div class="nameItem">
             <span>Projects URL</span>
             <Input
@@ -245,7 +246,7 @@
           <div class="nameItem">
             <span>Group Id</span>
             <Input
-              placeholder="my-awesome-project"
+              placeholder="group id"
               style="width: 720px; margin-top: 10px"
               :clearable="true"
               v-model="project['in_group']"
@@ -272,7 +273,19 @@
               >
             </Select>
           </div>
-
+          <div class="nameItem">
+            <span
+              >To Account Identity: (If you want to create a project under
+              another account, fill in the address of the target account
+              here)</span
+            >
+            <Input
+              placeholder="to account identity"
+              style="width: 320px; margin-top: 10px"
+              :clearable="true"
+              v-model="toAccount"
+            />
+          </div>
           <div class="description">
             <span>Projects avatar</span>
             <div class="fileBox">
@@ -342,6 +355,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      toAccount: "",
       project: {
         id: 0,
         members: [],
@@ -431,12 +445,23 @@ export default {
         });
         return;
       }
-
-      let account = manageCanister.identity;
+      console.log(this.toAccount == "");
+      if (this.toAccount == "") {
+        this.toAccount = manageCanister.identity.toString();
+      } else {
+        try {
+          this.toAccount = Principal.fromText(this.toAccount);
+          this.toAccount = this.toAccount.toString();
+        } catch (err) {
+          console.log("invalid to account");
+          return;
+        }
+      }
+      //let account = manageCanister.identity;
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
-      this.project.create_by = account;
+      this.project.create_by = manageCanister.identity;
       this.project.canisters = [];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
@@ -453,7 +478,7 @@ export default {
       }
       this.project.function = projectType;
       let addProjectRes = await manageCanister.addProject(
-        account,
+        Principal.fromText(this.toAccount),
         this.project.in_group,
         this.project
       );
@@ -463,7 +488,7 @@ export default {
         info = "Successfully added";
         let enc = new TextEncoder();
         let imageStoreRes = await manageCanister.projectImageStore(
-          account,
+          Principal.fromText(this.toAccount),
           this.project.in_group,
           this.project.id,
           Array.from(enc.encode(this.imgurl))
