@@ -82,8 +82,17 @@
   flex: 1;
 }
 
-.rightItem {
+.rightItem-project {
   width: 100%;
+  min-height: 200px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.rightItem-group {
+  width: 100%;
+  min-height: 200px;
   font-size: 24px;
   font-weight: 600;
   color: #333333;
@@ -139,6 +148,10 @@
   border: 1px solid #e6e6e6;
   margin-right: 20px;
   margin-top: 4px;
+}
+.tableImg img {
+  width: 100%;
+  height: 100%;
 }
 
 .tableInfo {
@@ -307,7 +320,7 @@
           </div>
         </div>
         <div class="right">
-          <div class="rightItem" v-if="groupShow">
+          <div class="rightItem-group" v-if="groupShow">
             <div class="itemTitle">
               <span>Groups</span>
               <span class="all" @click="toGroupFun">
@@ -343,7 +356,7 @@
               </div>
             </div>
           </div>
-          <div class="rightItem" v-if="projectShow">
+          <div class="rightItem-project" v-if="projectShow">
             <div class="itemTitle">
               <span>Projects</span>
               <span class="all" @click="toProjectFun">
@@ -391,6 +404,7 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
 } from "@/chain_cloud_assets/assets/js/config";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -503,71 +517,7 @@ export default {
         },
       ],
       tableData: {
-        tableList: [
-          // {
-          //   value: "yong1",
-          //   label: "yong1",
-          //   typeId: 1,
-          //   name: "yong1",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-          // {
-          //   value: "yong2",
-          //   label: "yong2",
-          //   typeId: 1,
-          //   name: "yong2",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-          // {
-          //   value: "yong3",
-          //   label: "yong3",
-          //   typeId: 1,
-          //   name: "yong3",
-          //   by: "By imgbot",
-          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-          //   type: "Recommended",
-          // },
-          // {
-          //   value: "feng1",
-          //   label: "feng1",
-          //   typeId: 1,
-          //   name: "feng1",
-          //   by: "By imgbot",
-          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-          //   type: "Recommended",
-          // },
-          // {
-          //   value: "feng1",
-          //   label: "feng1",
-          //   typeId: 2,
-          //   name: "feng1",
-          //   by: "By imgbot",
-          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-          //   type: "Recommended",
-          // },
-          // {
-          //   value: "yong4",
-          //   label: "yong4",
-          //   typeId: 2,
-          //   name: "yong4",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-          // {
-          //   value: "yong5",
-          //   label: "yong5",
-          //   typeId: 2,
-          //   name: "yong5",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          // },
-        ],
+        tableList: [],
         total: 5,
         page: 1,
         pageSize: 3,
@@ -697,8 +647,14 @@ export default {
       }
     },
   },
-
-  async created() {
+  mounted() {},
+  async mounted() {
+    let topInstance = Loading.service({
+      target: ".rightItem-group",
+    });
+    let projectLoading = Loading.service({
+      target: ".rightItem-project",
+    });
     let groupRes = await manageCanister.visibleProject();
     this.tableData.total = groupRes.length;
     for (let i = 0; i < groupRes.length; i++) {
@@ -796,6 +752,8 @@ export default {
     });
     this.groupList = groupList.slice(0, 8);
     this.projectList = projectList.slice(0, 8);
+    topInstance.close();
+    projectLoading.close();
   },
 };
 </script>

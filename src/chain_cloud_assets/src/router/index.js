@@ -144,7 +144,7 @@ let router = new Router({
       },
     },
     {
-      path: 'setting',
+      path: 'setting/:user/:groupId',
       name: 'setting',
       component: setting,
       meta: {
@@ -183,7 +183,7 @@ let router = new Router({
     name: 'project',
     component: project,
     children: [{
-      path: 'projectoverview/:user/:groupId/:projectId',
+      path: 'projectoverview/:user/:groupId/:projectId/:owner/:repo',
       name: 'projectoverview',
       component: projectoverview,
       meta: {
@@ -228,7 +228,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/activities',
+      path: 'projectoverview/activities/:user/:groupId/:projectId',
       name: 'activities',
       component: activities,
       meta: {

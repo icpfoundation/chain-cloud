@@ -78,6 +78,11 @@
   border: 1px solid #e6e6e6;
   margin-right: 20px;
   margin-top: 4px;
+  background-position: center;
+}
+.tableImg img {
+  width: 100%;
+  height: 100%;
 }
 
 .tableInfo {
@@ -204,55 +209,15 @@
 </template>
 <script>
 import { Principal } from "@dfinity/principal";
+import { Loading } from "element-ui";
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 
 export default {
   data() {
     return {
       tableData: {
-        tableList: [
-          // {
-          //   name: "yong1",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          //   groupId: 0,
-          //   imageData: "",
-          // },
-          // {
-          //   name: "yong2",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          //   groupId: 0,
-          //   imageData: "",
-          // },
-          // {
-          //   name: "yong3",
-          //   by: "By imgbot",
-          //   dec: "Daily,automatic backups of your repos and metadata. Restore your backups with metadata in seconds + Sync to your S3 or Azure",
-          //   type: "Recommended",
-          //   groupId: 0,
-          //   imageData: "",
-          // },
-          // {
-          //   name: "yong4",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          //   groupId: 0,
-          //   imageData: "",
-          // },
-          // {
-          //   name: "yong5",
-          //   by: "By imgbot",
-          //   dec: "A GitHub app that optimizes your images",
-          //   type: "Recommended",
-          //   groupId: 0,
-          //   imageData: "",
-          // },
-        ],
-        total: 5,
+        tableList: [],
+        total: 0,
         page: 1,
         pageSize: 3,
       },
@@ -282,7 +247,11 @@ export default {
       });
     },
   },
-  async created() {
+  async mounted() {
+    let topInstance = Loading.service({
+      target: ".content",
+    });
+    
     let groupRes = await manageCanister.visibleProject();
 
     for (let i = 0; i < groupRes.length; i++) {
@@ -314,6 +283,7 @@ export default {
         }
       }
     }
+    topInstance.close();
   },
 };
 </script>

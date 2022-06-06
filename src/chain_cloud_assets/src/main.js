@@ -57,10 +57,11 @@ const i18n = new VueI18n({
     locale: 'en',
     messages
 });
+
 ElementLocale.i18n((key, value) => i18n.t(key, value))
 
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | DFINITY NNS Explorer`;
+    document.title = `${to.meta.title}`;
     // const role = localStorage.getItem('nns_useraccount');
     // if (!role && to.path !== '/login') {
     //     next('/login');
@@ -85,6 +86,7 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
+
 (function () {
     var whdef = 100 / 1920;// 表示1920的设计图,使用100PX的默认值,使用100px只是为了方便计算 其他值都可以
     var wW = window.innerWidth;// 当前窗口的宽度

@@ -249,8 +249,9 @@ export default {
     doSomething: async function (event) {
       this.tabShow = false;
       if (event) {
+        let manageCansiter = this.getManageCanister();
         let principle = window.localStorage.getItem("principleString");
-        if (principle == "" || principle == undefined || principle == null) {
+        if (!manageCansiter) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
@@ -260,16 +261,16 @@ export default {
               this.manageCanisterConfig(manageCanister);
 
               // window.manageCanister = manageCanister;
-              localStorage.setItem("identity", identity);
+              // localStorage.setItem("identity", identity);
               let principle = identity.getPrincipal();
               that.principle = principle;
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
-              that.setICIdentityConfig(principle, identity);
-              window.localStorage.setItem(
-                "principleString",
-                principle.toString()
-              );
+              // that.setICIdentityConfig(principle, identity);
+              // window.localStorage.setItem(
+              //   "principleString",
+              //   principle.toString()
+              // );
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );

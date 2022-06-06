@@ -231,6 +231,19 @@
   color: #ffffff;
 }
 
+.authority {
+  width: 1rem;
+  height: 0.32rem;
+  border-radius: 0.04rem;
+  border: 0.01rem solid #666666;
+  text-align: center;
+  line-height: 0.32rem;
+  font-size: 0.13rem;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #666666;
+  margin-right: 0.2rem;
+}
 .leaveStop {
   background: #f2f2f2;
   border-radius: 0.04rem;
@@ -336,7 +349,7 @@
       <div class="leftBoxName">Existing members</div>
       <div class="contentBox">
         <div class="action">
-          <div class="actionName">Members with access to Project Group 1</div>
+          <div class="actionName">Members with access to {{ group.name }}</div>
           <div class="actionSearch">
             <Input
               placeholder="search"
@@ -345,6 +358,7 @@
               :clearable="true"
               @keyup.enter.native="searchFun($event)"
               @on-clear="searchFun"
+              v-model="searchName"
             />
             <Select v-model="nameValue" style="width: 2rem" placeholder="name">
               <Option
@@ -383,7 +397,7 @@
               </div>
             </div>
             <div class="itemWidth2">
-              <Select
+              <!-- <Select
                 v-model="item.nameValue"
                 style="width: 1rem; margin-right: 0.2rem"
                 placeholder="name"
@@ -394,7 +408,8 @@
                   :key="index"
                   >{{ item.label }}</Option
                 >
-              </Select>
+              </Select> -->
+              <div class="authority">{{ item.authority }}</div>
               <div
                 class="leave"
                 :class="{ leaveStop: item.isMe }"
@@ -432,6 +447,8 @@ export default {
       group: {
         name: "",
       },
+      searchName: "",
+      searchRes: [],
       memeber: {
         join_time: 0,
         name: "",
@@ -455,6 +472,7 @@ export default {
         },
       ],
       nameValue: "0",
+
       nameList: [
         {
           value: "1",
@@ -522,7 +540,7 @@ export default {
           //   expires: "Expires in over 9 years",
           // },
         ],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3,
       },
@@ -530,11 +548,26 @@ export default {
   },
   methods: {
     searchFun() {
-      this.$Notice.info({
-        title: "暂无搜索",
-        background: true,
-        duration: 3,
-      });
+      if (this.searchName == "") {
+        this.tableData.tableList = this.searchRes;
+        this.tableData.total = this.tableData.tableList.length;
+      } else {
+        let Res = [];
+        this.tableData.tableList.forEach((element) => {
+          if (element.name == this.searchName) {
+            Res.push(element);
+          }
+        });
+        if (Res.length == 0) {
+          this.$Notice.info({
+            title: "not found",
+            background: true,
+            duration: 3,
+          });
+        }
+        this.tableData.tableList = Res;
+        this.tableData.total = Res.length;
+      }
     },
     headPageFun(value) {
       this.$Notice.info({
@@ -554,10 +587,10 @@ export default {
         case "1":
           this.memeber.authority = { Read: null };
           break;
-        case "1":
+        case "2":
           this.memeber.authority = { Write: null };
           break;
-        case "1":
+        case "3":
           this.memeber.authority = { Operational: null };
       }
       this.memeber.join_time = new Date().getTime();
@@ -577,13 +610,13 @@ export default {
 
       if ("Ok" in addGroupMemberRes) {
         this.$Notice.info({
-          title: "添加组成员成功",
+          title: "Successfully added",
           background: true,
           duration: 3,
         });
       } else {
         this.$Notice.info({
-          title: "添加组成员失败",
+          title: "Add failed" + addGroupMemberRes.Err,
           background: true,
           duration: 3,
         });
@@ -605,13 +638,13 @@ export default {
 
       if ("Ok" in rmGroupMemberRes) {
         this.$Notice.info({
-          title: "移除组成员成功",
+          title: "Removed successfully",
           background: true,
           duration: 3,
         });
       } else {
         this.$Notice.info({
-          title: "移除组成员失败",
+          title: "Remove failed",
           background: true,
           duration: 3,
         });
@@ -640,6 +673,17 @@ export default {
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       this.tableData.total = getGroupInfoRes.Ok[0].members.length;
       for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
+        console.log(
+          "getGroupInfoRes.Ok[0].members",
+          getGroupInfoRes.Ok[0].members[k][1].authority
+        );
+        let auth = "Reporter";
+        if ("Read" in getGroupInfoRes.Ok[0].members[k][1].authority) {
+        } else if ("Write" in getGroupInfoRes.Ok[0].members[k][1].authority) {
+          auth = "Developer";
+        } else {
+          auth = "Maintainer";
+        }
         let duration = parseInt(
           Number(
             currentTime - BigInt(getGroupInfoRes.Ok[0].members[k][1].join_time)
@@ -661,9 +705,11 @@ export default {
           time: create_time,
           expires: "forever",
           identity: getGroupInfoRes.Ok[0].members[k][1].identity,
+          authority: auth,
         });
       }
     }
+    this.searchRes = this.tableData.tableList;
   },
 };
 </script>

@@ -278,8 +278,8 @@ export default {
     );
     if (getProjectRest.Ok.length > 0) {
       let agentOptions = {
-        // host: "https://ic0.app",
-        host: "http://localhost:8000",
+        host: "https://ic0.app",
+        // host: "http://localhost:8000",
       };
       let agent = new HttpAgent(agentOptions);
       await agent.fetchRootKey();

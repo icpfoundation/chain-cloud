@@ -306,8 +306,7 @@ export default {
       description: "This is a wonderful and beautiful team.",
       createdTime: "Apr 16,2019 7:54am",
       visibility: "Public",
-      storageSize:
-        "115.6 MB (115.6 MB repositories, 0 Bytes build artifacts, 0 Bytes LFS)",
+      storageSize: "0 KB",
       group: {
         projects: [
           // {
@@ -351,7 +350,7 @@ export default {
           //   biaozhi: "Member",
           // },
         ],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3,
       },

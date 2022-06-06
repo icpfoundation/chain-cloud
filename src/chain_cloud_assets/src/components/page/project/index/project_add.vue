@@ -227,12 +227,13 @@
           <div class="nameItem">
             <span>Projects name</span>
             <Input
-              placeholder="Production project"
+              placeholder="Project name"
               style="width: 320px; margin-top: 10px"
               :clearable="true"
               v-model="project['name']"
             />
           </div>
+
           <div class="nameItem">
             <span>Projects URL</span>
             <Input
@@ -245,7 +246,7 @@
           <div class="nameItem">
             <span>Group Id</span>
             <Input
-              placeholder="my-awesome-project"
+              placeholder="group id"
               style="width: 720px; margin-top: 10px"
               :clearable="true"
               v-model="project['in_group']"
@@ -272,7 +273,28 @@
               >
             </Select>
           </div>
-
+          <div class="nameItem">
+            <span
+              >To Account Identity: (If you want to create a project under
+              another account, fill in the address of the target account
+              here)</span
+            >
+            <Input
+              placeholder="to account identity"
+              style="width: 320px; margin-top: 10px"
+              :clearable="true"
+              v-model="toAccount"
+            />
+          </div>
+          <div class="nameItem">
+            <span>Project Canisters</span>
+            <Input
+              placeholder="to account identity"
+              style="width: 320px; margin-top: 10px"
+              :clearable="true"
+              v-model="canisters"
+            />
+          </div>
           <div class="description">
             <span>Projects avatar</span>
             <div class="fileBox">
@@ -342,6 +364,8 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      toAccount: "",
+      canisters: "",
       project: {
         id: 0,
         members: [],
@@ -422,19 +446,50 @@ export default {
   methods: {
     async saveFun() {
       let manageCanister = this.getManageCanister();
+
       if (!manageCanister) {
-        throw "No login account";
+        this.$Notice.info({
+          title: "Please log in to the account",
+          background: true,
+          duration: 3,
+        });
+        return;
       }
-      let account = manageCanister.identity;
+      console.log(this.toAccount == "");
+      if (this.toAccount == "") {
+        this.toAccount = manageCanister.identity.toString();
+      } else {
+        try {
+          this.toAccount = Principal.fromText(this.toAccount);
+          this.toAccount = this.toAccount.toString();
+        } catch (err) {
+          console.log("invalid to account");
+          return;
+        }
+      }
+      this.project.canisters = [];
+      if (this.canisters != "") {
+        let canisterRes = JSON.parse(this.canisters);
+        for (let i = 0; i < canisterRes.length; i++) {
+          try {
+            this.project.canisters.push(Principal.fromText(canisterRes[i]));
+          } catch (err) {
+            throw "Invalid canister id";
+          }
+        }
+      }
+
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
-      this.project.create_by = account;
-      this.project.canisters = [Principal.fromText(TEST_CANISTER)];
+      this.project.create_by = manageCanister.identity;
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
 
       let projectType = {};
+      if (!this.projectType) {
+        throw "select Projects type";
+      }
       if (this.projectType == "NFT") {
         projectType[this.projectType] = null;
       } else {
@@ -446,20 +501,23 @@ export default {
       }
       this.project.function = projectType;
       let addProjectRes = await manageCanister.addProject(
-        account,
+        Principal.fromText(this.toAccount),
         this.project.in_group,
         this.project
       );
-      let info = "增加组失败";
+
+      let info = "";
       if ("Ok" in addProjectRes) {
-        info = "增加组成功";
+        info = "Successfully added";
         let enc = new TextEncoder();
         let imageStoreRes = await manageCanister.projectImageStore(
-          account,
+          Principal.fromText(this.toAccount),
           this.project.in_group,
           this.project.id,
           Array.from(enc.encode(this.imgurl))
         );
+      } else {
+        info = "Add failed: " + addProjectRes.Err;
       }
       this.$Notice.info({
         title: info,
