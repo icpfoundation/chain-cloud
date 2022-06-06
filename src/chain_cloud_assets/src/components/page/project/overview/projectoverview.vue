@@ -368,33 +368,7 @@ export default {
         },
       ],
       tableData: {
-        tableList: [
-          // {
-          //   projectName: "tidy go.sum",
-          //   author: "yongyu",
-          //   time: "18 days ago",
-          // },
-          // {
-          //   projectName: "tidy go.sum",
-          //   author: "yongyu",
-          //   time: "18 days ago",
-          // },
-          // {
-          //   projectName: "tidy go.sum",
-          //   author: "yongyu",
-          //   time: "18 days ago",
-          // },
-          // {
-          //   projectName: "tidy go.sum",
-          //   author: "yongyu",
-          //   time: "18 days ago",
-          // },
-          // {
-          //   projectName: "tidy go.sum",
-          //   author: "yongyu",
-          //   time: "18 days ago",
-          // },
-        ],
+        tableList: [],
         total: 5,
         page: 1,
         pageSize: 3,
