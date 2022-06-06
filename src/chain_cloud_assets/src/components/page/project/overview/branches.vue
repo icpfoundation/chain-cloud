@@ -209,8 +209,8 @@
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
-                  <div class="protected">Protected</div>
-                  <div class="default">Default</div>
+                  <div v-if="item.protected == true" class="protected">Protected</div>
+                  <!-- <div class="default">Default</div> -->
                 </div>
                 <div class="groupNameInfo">
                   <span>{{ item.commit }}</span>
@@ -235,8 +235,8 @@
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
-                  <div class="protected">Protected</div>
-                  <div class="default">Default</div>
+                  <div v-if="item.protected == true" class="protected">Protected</div>
+                  <!-- <div class="default">Default</div> -->
                 </div>
                 <div class="groupNameInfo">
                   <span>{{ item.commit }}</span>
@@ -292,38 +292,7 @@ export default {
         }
       ],
       tableData: {
-        tableList: [
-          {
-            projectName: "tidy go.sum",
-            commit: "yongyu",
-            typemerge: "Merge branch ‘next’ into ‘master’",
-            time: "14 hours ago"
-          },
-          {
-            projectName: "tidy go.sum",
-            commit: "yongyu",
-            typemerge: "Merge branch ‘next’ into ‘master’",
-            time: "14 hours ago"
-          },
-          {
-            projectName: "tidy go.sum",
-            commit: "yongyu",
-            typemerge: "Merge branch ‘next’ into ‘master’",
-            time: "14 hours ago"
-          },
-          {
-            projectName: "tidy go.sum",
-            commit: "yongyu",
-            typemerge: "Merge branch ‘next’ into ‘master’",
-            time: "14 hours ago"
-          },
-          {
-            projectName: "tidy go.sum",
-            commit: "yongyu",
-            typemerge: "1Merge branch ‘next’ into ‘master’",
-            time: "14 hours ago"
-          },
-        ],
+        tableList: [],
         total: 5,
         page: 1,
         pageSize: 3
@@ -354,10 +323,57 @@ export default {
         duration: 3
       });
     },
+    loadbranchinfo(owner, repo) {
+      let gitbranchurl = "https://api.github.com/repos/" + owner + "/" + repo + "/" + "branches"
+      let that = this
+      this.axios
+        .get(gitbranchurl, {
+          headers: {
+            "Accept": "application/vnd.github.v3+json",
+          }
+        })
+        .then(function (response) {
+          let ret = response.data
+
+          that.total = ret.length()
+
+          for (let i = 0; i < ret.length; i++) {
+            const element = ret[i];
+
+            that.axios
+              .get(element.commit.url, {
+                headers: {
+                  "Accept": "application/vnd.github.v3+json",
+                }
+              })
+              .then(function (response) {
+                let commtinfo = response.data
+                let obj = {
+                  projectName: element.name,
+                  commit: element.commit.sha.substring(0, 12),
+                  typemerge: "  " + commtinfo.commit.message,
+                  time: commtinfo.commit.author.date
+                }
+                that.tableData.tableList.push(obj);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
   created() {
     let url = window.location.href
     console.log(url)
+
+    let owner = this.$route.params.owner;
+    let repo = this.$route.params.repo;
+
+    this.loadbranchinfo(owner, repo)
   },
 }
 </script>

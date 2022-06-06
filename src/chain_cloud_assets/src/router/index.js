@@ -183,7 +183,7 @@ let router = new Router({
     name: 'project',
     component: project,
     children: [{
-      path: 'projectoverview/:user/:groupId/:projectId',
+      path: 'projectoverview/:user/:groupId/:projectId/:owner/:repo',
       name: 'projectoverview',
       component: projectoverview,
       meta: {
@@ -192,7 +192,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/branches/:owner/:repo',
+      path: 'projectoverview/branches',
       name: 'branches',
       component: branches,
       meta: {
@@ -201,7 +201,7 @@ let router = new Router({
       },
     },
     {
-      path: 'projectoverview/commits/:owner/:repo',
+      path: 'projectoverview/commits',
       name: 'commits',
       component: commits,
       meta: {
