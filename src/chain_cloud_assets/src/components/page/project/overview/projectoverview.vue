@@ -400,16 +400,18 @@ export default {
                     time: commtinfo.commit.author.date
                   }
                   that.tableData.tableList.push(obj);
+
+                  if (i == ret.length - 1) {
+                    that.total = that.tableData.tableList.length
+
+                    let retcache = JSON.stringify(that.tableData.tableList)
+                    window.localStorage.setItem(retkey, retcache)
+                  }
                 })
                 .catch(function (error) {
                   console.log(error);
                 });
             }
-
-            that.total = that.tableData.tableList.length
-
-            let retcache = JSON.stringify(that.tableData.tableList)
-            window.localStorage.setItem(retkey, retcache)
           })
           .catch(function (error) {
             console.log(error);
