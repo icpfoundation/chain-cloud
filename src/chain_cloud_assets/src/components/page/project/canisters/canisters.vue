@@ -44,10 +44,12 @@
 .headLeft {
   width: 4.4rem;
   margin-right: 0.2rem;
+  height: 100%;
 }
 
 .headRight {
   flex: 1;
+  height: 100%;
 }
 
 .headRightItem {
@@ -280,7 +282,15 @@
     </div>
     <div class="head">
       <div class="headItemTitle">All canister info</div>
+
+      <el-empty
+        :image-size="50"
+        description="No data"
+        v-if="project.canisters.length == 0"
+      >
+      </el-empty>
       <div
+        v-else
         class="headBox"
         v-for="(item, index) in project.canisters"
         :key="index"
@@ -346,9 +356,16 @@
       <div class="contentBox">
         <div class="table">
           <div class="tableHead">
-            <div class="tableHeadTime">June 2021</div>
+            <div class="tableHeadTime">June 2022</div>
           </div>
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="project.canisters.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in tableData.tableList"
             :key="index"
@@ -376,6 +393,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { formatDate } from "@/chain_cloud_assets/assets/js/util";
+import { getCanisterInfo } from "@/chain_cloud_assets/assets/js/agent";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -524,14 +542,18 @@ export default {
               getCanisterStatusRes.Ok[0].settings.memory_allocation[0],
           });
         } else {
+          let getCanisterInfoRes = await getCanisterInfo(
+            getProjectRest.Ok[0].canisters[i].toString()
+          );
+          console.log("getCanisterInfoRes", getCanisterInfoRes);
           this.project.canisters.push({
             id: getProjectRest.Ok[0].canisters[i].toString(),
             cycles: 0,
             memory_size: "unknown",
-            module_hash: "unknown",
+            module_hash: getCanisterInfoRes.moduleHash,
             status: "unknown",
             compute_allocation: "unknown",
-            controllers: "unknown",
+            controllers: getCanisterInfoRes.controllerId,
             freezing_threshold: "unknown",
             memory_allocation: "unknown",
           });

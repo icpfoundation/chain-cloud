@@ -245,7 +245,7 @@
       <div class="headItem">
         <div class="headItemTitle">Project info</div>
         <div class="headItemLog">
-          <img src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png" alt="" />
+          <img :src="project['imageData']" alt="" />
           <span>{{ project.name }}</span>
         </div>
         <div class="line"></div>
@@ -436,6 +436,17 @@ export default {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
+    try {
+      let imageData = await manageCanister.getProjectImage(
+        account,
+        groupId,
+        projectId
+      );
+
+      this.project.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
     let getProjectRest = await manage.getProjectInfo(
       account,
       groupId,

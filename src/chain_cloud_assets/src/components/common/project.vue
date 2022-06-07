@@ -138,32 +138,47 @@
 
 <template>
   <div class="layoutApp">
-    <div class="appwrappBanner" v-bind:style="{ minHeight: browserHeight + 'px' }">
+    <div
+      class="appwrappBanner"
+      v-bind:style="{ minHeight: browserHeight + 'px' }"
+    >
       <div class="appWrappLeft">
         <div class="appWrappLeftHead">
-          <img src="../../../assets/chain_cloud/menu/pic_group_avatar@2x.png" alt="" />
-          <span>Chain-Cloud</span>
+          <img :src="project['imageData']" alt="" />
+          <span>{{ project.name }}</span>
         </div>
         <div class="appWrappLeftBox">
-          <div class="menuItem menuItemMain" v-for="(item, index) in menuList" :key="index"
-            @click="chooseFun(item, index)">
+          <div
+            class="menuItem menuItemMain"
+            v-for="(item, index) in menuList"
+            :key="index"
+            @click="chooseFun(item, index)"
+          >
             <div class="fatherItem" :class="{ chooseClass: item.select }">
               <div class="menuItemMainLeft">
                 <img :src="item.selUrl" alt="" v-if="item.select" />
                 <img :src="item.norUrl" alt="" v-else />
                 <span :class="{ chooseSonClass: item.select }">{{
-                    item.menuName
+                  item.menuName
                 }}</span>
               </div>
-              <img src="../../../assets/chain_cloud/menu/icon_arrow_down@2x.png" class="menuItemMainRight" alt=""
-                v-if="item.isSon && item.select" />
+              <img
+                src="../../../assets/chain_cloud/menu/icon_arrow_down@2x.png"
+                class="menuItemMainRight"
+                alt=""
+                v-if="item.isSon && item.select"
+              />
             </div>
             <div class="childrenBox" v-if="item.isSon && item.select">
-              <div class="childrenmenuItem" v-for="(itemChildren, indexChildren) in item.children" :key="indexChildren"
-                @click.stop="chooseSonFun(item, itemChildren, indexChildren)">
+              <div
+                class="childrenmenuItem"
+                v-for="(itemChildren, indexChildren) in item.children"
+                :key="indexChildren"
+                @click.stop="chooseSonFun(item, itemChildren, indexChildren)"
+              >
                 <div class="childImg"></div>
                 <span :class="{ chooseSonClass: itemChildren.select }">{{
-                    itemChildren.menuName
+                  itemChildren.menuName
                 }}</span>
               </div>
             </div>
@@ -180,9 +195,16 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      project: {
+        name: "",
+        imageData: "",
+      },
       tabList: [
         {
           name: "IDE",
@@ -251,6 +273,9 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {
     chooseFun(item, index) {
       this.menuList.forEach((element) => {
@@ -276,8 +301,6 @@ export default {
       });
       itemChildren.select = true;
 
-      console.log(this.$router.params)
-
       this.$router.push({
         name: itemChildren.href,
         params: this.$route.params,
@@ -290,7 +313,7 @@ export default {
       document.documentElement.clientHeight ||
       document.body.clientHeight; //浏览器高度
     let url = window.location.href;
-    console.log(localStorage.activeMenuHref);
+
     if (localStorage.activeMenuHref && localStorage.activeMenuHref.length > 3) {
       this.menuList.forEach((element) => {
         element.select = false;
@@ -310,6 +333,36 @@ export default {
         name: "projectoverview",
       });
     }
+  },
+  async created() {
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
+    try {
+      let imageData = await manageCanister.getProjectImage(
+        account,
+        groupId,
+        projectId
+      );
+
+      this.project.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+    let getProjectRest = await manage.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+    if (getProjectRest.Err) {
+      throw getProjectRest.Err;
+    }
+    this.project.name = getProjectRest.Ok[0].name;
   },
 };
 </script>

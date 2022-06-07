@@ -130,7 +130,13 @@
           </div>
         </div>
         <div class="tableBox">
-          <pre>
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="tabList[selectIdx].data == ''"
+          >
+          </el-empty>
+          <pre v-else>
           {{ tabList[selectIdx].data }}
           </pre>
           <!-- <span>.title {</span>
