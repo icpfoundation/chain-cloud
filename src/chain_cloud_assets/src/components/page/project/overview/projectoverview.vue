@@ -107,7 +107,7 @@
 
 .content {
   width: 100%;
-  height: 6.63rem;
+  /* height: 6.63rem; */
   padding: 0.2rem;
   border-radius: 0.04rem;
   background: white;
@@ -226,6 +226,7 @@
   background: #fafafa;
   border: 0.01rem solid #e6e6e6;
   margin-top: 0.2rem;
+  overflow: scroll;
 }
 
 .pageStyle {
@@ -245,10 +246,7 @@
       <div class="headItem">
         <div class="headItemTitle">Project info</div>
         <div class="headItemLog">
-          <img
-            src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-            alt=""
-          />
+          <img :src="project['imageData']" alt="" />
           <span>{{ project.name }}</span>
         </div>
         <div class="line"></div>
@@ -309,7 +307,7 @@
               </div>
             </div>
             <div class="item3">
-              <span>c24e6435</span>
+              <span>{{ item.commit }}</span>
               <div class="item3Sub">
                 <img
                   src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png"
@@ -338,13 +336,14 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
       project: {
-        name: "Chain-Cloud",
+        name: "",
         id: 0,
-        gitURl: "http://github.com/icpfoundation/chain-cloud.git",
+        gitURl: "",
       },
       tabList: [
         {
@@ -369,9 +368,9 @@ export default {
       ],
       tableData: {
         tableList: [],
-        total: 5,
+        total: 0,
         page: 1,
-        pageSize: 3,
+        pageSize: 30,
       },
     };
   },
@@ -382,6 +381,68 @@ export default {
         background: true,
         duration: 3,
       });
+    },
+    loadbranchinfo(owner, repo) {
+      let retkey = owner + "-" + repo;
+      let retlocal = window.localStorage.getItem(retkey);
+      if (retlocal == null || retlocal == undefined || retlocal.length == 0) {
+        let gitbranchurl =
+          "https://api.github.com/repos/" +
+          owner +
+          "/" +
+          repo +
+          "/" +
+          "branches";
+        let that = this;
+        this.axios
+          .get(gitbranchurl, {
+            headers: {
+              Accept: "application/vnd.github.v3+json",
+            },
+          })
+          .then(function (response) {
+            let ret = response.data;
+
+            for (let i = 0; i < ret.length; i++) {
+              const element = ret[i];
+
+              that.axios
+                .get(element.commit.url, {
+                  headers: {
+                    Accept: "application/vnd.github.v3+json",
+                  },
+                })
+                .then(function (response) {
+                  let commtinfo = response.data;
+                  let obj = {
+                    projectName: element.name,
+                    commit: element.commit.sha.substring(0, 12),
+                    typemerge: "  " + commtinfo.commit.message,
+                    time: commtinfo.commit.author.date,
+                  };
+                  that.tableData.tableList.push(obj);
+
+                  if (i == ret.length - 1) {
+                    that.tableData.total = that.tableData.tableList.length;
+                    let retcache = JSON.stringify(that.tableData.tableList);
+                    window.localStorage.setItem(retkey, retcache);
+                  }
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        let itemss = JSON.parse(retlocal);
+        console.log("itemss");
+        console.log(itemss);
+        this.tableData.tableList = itemss;
+        this.tableData.total = itemss.length;
+      }
     },
   },
   computed: {
@@ -401,6 +462,17 @@ export default {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
+    try {
+      let imageData = await manageCanister.getProjectImage(
+        account,
+        groupId,
+        projectId
+      );
+
+      this.project.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
     let getProjectRest = await manage.getProjectInfo(
       account,
       groupId,
@@ -415,6 +487,11 @@ export default {
       this.project.id = getProjectRest.Ok[0].id;
       this.project.gitURl = getProjectRest.Ok[0].git_repo_url;
     }
+
+    let owner = this.$route.params.owner;
+    let repo = this.$route.params.repo;
+
+    this.loadbranchinfo(owner, repo);
   },
 };
 </script>

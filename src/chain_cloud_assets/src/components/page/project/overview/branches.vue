@@ -21,8 +21,6 @@
   font-size: 12px;
 }
 
-
-
 .content {
   width: 100%;
   padding: 0.2rem;
@@ -30,7 +28,6 @@
   background: white;
   margin-top: 0.2rem;
 }
-
 
 .actiontab {
   display: flex;
@@ -51,13 +48,13 @@
 
 .chooseClass {
   background: rgba(23, 118, 255, 0.1);
-  color: #1776FF;
+  color: #1776ff;
 }
 
 .table {
   border-radius: 0.04rem;
   background: white;
-  border: 0.01rem solid #E6E6E6;
+  border: 0.01rem solid #e6e6e6;
 }
 
 .tableHead {
@@ -67,12 +64,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 0.2rem;
-  background: #FAFAFA;
+  background: #fafafa;
   font-size: 0.16rem;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
   color: #333333;
-  border-bottom: 0.01rem solid #E6E6E6;
+  border-bottom: 0.01rem solid #e6e6e6;
 }
 
 .tableMar {
@@ -89,13 +86,13 @@
   height: 0.8rem;
   display: flex;
   background: white;
-  border-bottom: 0.01rem solid #EBEBEB;
+  border-bottom: 0.01rem solid #ebebeb;
   justify-content: space-between;
   padding: 0 0.2rem;
 }
 
 .tableItem:hover {
-  background: #FAFAFA;
+  background: #fafafa;
 }
 
 .item1 {
@@ -110,7 +107,6 @@
   color: #666666;
   padding-top: 0.18rem;
 }
-
 
 .leibie {
   width: 0.16rem;
@@ -130,7 +126,7 @@
   font-size: 0.14rem;
   font-family: UbuntuMono-Regular, UbuntuMono;
   font-weight: 400;
-  color: #1776FF;
+  color: #1776ff;
   display: flex;
   align-items: center;
 }
@@ -139,7 +135,7 @@
   font-weight: 400;
   color: #666666;
   margin-left: 0.02rem;
-  font-size: 0.12rem;
+  font-size: 0.14rem;
 }
 
 .groupNameTop {
@@ -155,7 +151,7 @@
 .protected {
   font-size: 11px;
   font-weight: 500;
-  color: #48C982;
+  color: #48c982;
   padding: 0 0.1rem;
   height: 0.2rem;
   background: rgba(85, 200, 137, 0.2);
@@ -167,7 +163,7 @@
 .default {
   font-size: 11px;
   font-weight: 500;
-  color: #1776FF;
+  color: #1776ff;
   padding: 0 0.1rem;
   height: 0.2rem;
   background: rgba(23, 118, 255, 0.2);
@@ -185,7 +181,7 @@
   justify-content: center;
   height: 0.72rem;
   align-items: center;
-  background: #FAFAFA;
+  background: #fafafa;
 }
 </style>
 
@@ -197,19 +193,36 @@
     </div>
     <div class="content">
       <div class="actiontab">
-        <div class="actionitem" v-for="(item, index) in tabList" :key="index" :class="{ chooseClass: item.select }"
-          @click="chooseFun(item, index)">{{ item.name }}</div>
+        <div
+          class="actionitem"
+          v-for="(item, index) in tabList"
+          :key="index"
+          :class="{ chooseClass: item.select }"
+          @click="chooseFun(item, index)"
+        >
+          {{ item.name }}
+        </div>
       </div>
       <div class="contentBox">
         <div class="table" v-if="activeBoolean">
           <div class="tableHead">Active branches</div>
-          <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in tableData.tableList"
+            :key="index"
+          >
             <div class="item1">
-              <img class="leibie" src="../../../../../assets/chain_cloud/teamscan/icon_branch@2x.png" alt="">
+              <img
+                class="leibie"
+                src="../../../../../assets/chain_cloud/teamscan/icon_branch@2x.png"
+                alt=""
+              />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
-                  <div v-if="item.protected == true" class="protected">Protected</div>
+                  <div v-if="item.protected == true" class="protected">
+                    Protected
+                  </div>
                   <!-- <div class="default">Default</div> -->
                 </div>
                 <div class="groupNameInfo">
@@ -223,19 +236,40 @@
             </div>
           </div>
           <div class="pageStyle">
-            <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-              :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+            <Page
+              v-if="tableData.total > 0"
+              :total="tableData.total"
+              :current="tableData.page"
+              show-total
+              :page-size="tableData.pageSize"
+              size="small"
+              @on-change="headPageFun"
+            />
           </div>
         </div>
-        <div class="table" :class="{ tableMar: activeBoolean }" v-if="stableBoolean">
+        <div
+          class="table"
+          :class="{ tableMar: activeBoolean }"
+          v-if="stableBoolean"
+        >
           <div class="tableHead">Stable branches</div>
-          <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in tableData.tableList"
+            :key="index"
+          >
             <div class="item1">
-              <img class="leibie" src="../../../../../assets/chain_cloud/teamscan/icon_branch@2x.png" alt="">
+              <img
+                class="leibie"
+                src="../../../../../assets/chain_cloud/teamscan/icon_branch@2x.png"
+                alt=""
+              />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
-                  <div v-if="item.protected == true" class="protected">Protected</div>
+                  <div v-if="item.protected == true" class="protected">
+                    Protected
+                  </div>
                   <!-- <div class="default">Default</div> -->
                 </div>
                 <div class="groupNameInfo">
@@ -249,8 +283,15 @@
             </div>
           </div>
           <div class="pageStyle">
-            <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-              :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+            <Page
+              v-if="tableData.total > 0"
+              :total="tableData.total"
+              :current="tableData.page"
+              show-total
+              :page-size="tableData.pageSize"
+              size="small"
+              @on-change="headPageFun"
+            />
           </div>
         </div>
       </div>
@@ -278,102 +319,70 @@ export default {
           name: "Stable",
           select: false,
           id: 3,
-        }
+        },
       ],
-      groupValue: '1',
+      groupValue: "1",
       groupList: [
         {
-          value: '1',
-          label: 'Default'
+          value: "1",
+          label: "Default",
         },
         {
-          value: '2',
-          label: 'Create time'
-        }
+          value: "2",
+          label: "Create time",
+        },
       ],
       tableData: {
         tableList: [],
         total: 0,
         page: 1,
-        pageSize: 3
-      }
-    }
+        pageSize: 10,
+      },
+    };
   },
   methods: {
     chooseFun(item, index) {
-      this.tabList.forEach(element => {
-        element.select = false
-      })
+      this.tabList.forEach((element) => {
+        element.select = false;
+      });
       item.select = true;
       if (item.id === 1) {
         this.activeBoolean = true;
-        this.stableBoolean = true
+        this.stableBoolean = true;
       } else if (item.id === 2) {
         this.activeBoolean = true;
-        this.stableBoolean = false
+        this.stableBoolean = false;
       } else if (item.id === 3) {
         this.activeBoolean = false;
-        this.stableBoolean = true
+        this.stableBoolean = true;
       }
     },
     headPageFun(value) {
       this.$Notice.info({
         title: "暂无后台数据",
         background: true,
-        duration: 3
+        duration: 3,
       });
-    },
-    loadbranchinfo(owner, repo) {
-      let gitbranchurl = "https://api.github.com/repos/" + owner + "/" + repo + "/" + "branches"
-      let that = this
-      this.axios
-        .get(gitbranchurl, {
-          headers: {
-            "Accept": "application/vnd.github.v3+json",
-          }
-        })
-        .then(function (response) {
-          let ret = response.data
-
-          that.total = ret.length
-
-          for (let i = 0; i < ret.length; i++) {
-            const element = ret[i];
-
-            that.axios
-              .get(element.commit.url, {
-                headers: {
-                  "Accept": "application/vnd.github.v3+json",
-                }
-              })
-              .then(function (response) {
-                let commtinfo = response.data
-                let obj = {
-                  projectName: element.name,
-                  commit: element.commit.sha.substring(0, 12),
-                  typemerge: "  " + commtinfo.commit.message,
-                  time: commtinfo.commit.author.date
-                }
-                that.tableData.tableList.push(obj);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
   },
   created() {
-    let url = window.location.href
-    console.log(url)
+    let url = window.location.href;
+    console.log(url);
 
     let owner = this.$route.params.owner;
     let repo = this.$route.params.repo;
 
-    this.loadbranchinfo(owner, repo)
+    let retkey = owner + "-" + repo;
+    let retlocal = window.localStorage.getItem(retkey);
+    if (retlocal == null || retlocal == undefined || retlocal.length == 0) {
+      console.log("make a request");
+    } else {
+      let itemss = JSON.parse(retlocal);
+      console.log("itemss");
+      console.log(itemss);
+      this.tableData.tableList = itemss;
+      this.tableData.total = itemss.length;
+    }
   },
-}
+};
 </script>

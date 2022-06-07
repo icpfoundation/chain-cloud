@@ -146,7 +146,14 @@
           <div class="tableHead">
             <div class="tableHeadTime">June 2021</div>
           </div>
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="tableData.tableList.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in tableData.tableList"
             :key="index"

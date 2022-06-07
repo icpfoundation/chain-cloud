@@ -2,6 +2,7 @@
 .layoutApp {
   margin-top: 74px;
 }
+
 .logo {
   display: flex;
   flex: 1;
@@ -137,50 +138,32 @@
 
 <template>
   <div class="layoutApp">
-    <div
-      class="appwrappBanner"
-      v-bind:style="{ minHeight: browserHeight + 'px' }"
-    >
+    <div class="appwrappBanner" v-bind:style="{ minHeight: browserHeight + 'px' }">
       <div class="appWrappLeft">
         <div class="appWrappLeftHead">
-          <img
-            src="../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-            alt=""
-          />
+          <img :src="group['imageData']" alt="" />
           <span>{{ group.name }}</span>
         </div>
         <div class="appWrappLeftBox">
-          <div
-            class="menuItem menuItemMain"
-            v-for="(item, index) in menuList"
-            :key="index"
-            @click="chooseFun(item, index)"
-          >
+          <div class="menuItem menuItemMain" v-for="(item, index) in menuList" :key="index"
+            @click="chooseFun(item, index)">
             <div class="fatherItem" :class="{ chooseClass: item.select }">
               <div class="menuItemMainLeft">
                 <img :src="item.selUrl" alt="" v-if="item.select" />
                 <img :src="item.norUrl" alt="" v-else />
                 <span :class="{ chooseSonClass: item.select }">{{
-                  item.menuName
+                    item.menuName
                 }}</span>
               </div>
-              <img
-                src="../../../assets/chain_cloud/menu/icon_arrow_down@2x.png"
-                class="menuItemMainRight"
-                alt=""
-                v-if="item.isSon && item.select"
-              />
+              <img src="../../../assets/chain_cloud/menu/icon_arrow_down@2x.png" class="menuItemMainRight" alt=""
+                v-if="item.isSon && item.select" />
             </div>
             <div class="childrenBox" v-if="item.isSon && item.select">
-              <div
-                class="childrenmenuItem"
-                v-for="(itemChildren, indexChildren) in item.children"
-                :key="indexChildren"
-                @click.stop="chooseSonFun(item, itemChildren, indexChildren)"
-              >
+              <div class="childrenmenuItem" v-for="(itemChildren, indexChildren) in item.children" :key="indexChildren"
+                @click.stop="chooseSonFun(item, itemChildren, indexChildren)">
                 <div class="childImg"></div>
                 <span :class="{ chooseSonClass: itemChildren.select }">{{
-                  itemChildren.menuName
+                    itemChildren.menuName
                 }}</span>
               </div>
             </div>
@@ -205,6 +188,7 @@ export default {
     return {
       group: {
         name: "",
+        imageData: "",
       },
       tabList: [
         {
@@ -323,6 +307,13 @@ export default {
   async created() {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
+    try {
+      let imageData = await manageCanister.getGroupImage(account, groupId);
+
+      this.group.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
     let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
 
     if (getGroupInfoRes.Err) {

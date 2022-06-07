@@ -205,10 +205,7 @@
         <div class="leftBoxtop">
           <div class="leftBoxName">Group info</div>
           <div class="leftBoxInfo">
-            <img
-              src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-              alt=""
-            />
+            <img :src="group['imageData']" alt="" />
             <span>{{ group.name }}</span>
           </div>
           <div class="leftBoxLine"></div>
@@ -316,6 +313,7 @@ export default {
         ],
         name: "",
         url: "",
+        imageData: "",
       },
       tableData: {
         tableList: [
@@ -376,7 +374,13 @@ export default {
     }
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
+    try {
+      let imageData = await manageCanister.getGroupImage(account, groupId);
 
+      this.group.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
     let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
     if (getGroupInfoRes.Err) {
       throw getGroupInfoRes.Err;
