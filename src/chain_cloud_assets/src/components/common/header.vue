@@ -92,6 +92,17 @@
   margin-left: 20px;
   cursor: pointer;
 }
+.menuBox .el-menu-item {
+  background: none;
+}
+.menuBox .el-menu-item:hover,
+.is-active {
+  background: none;
+  color: #0059ff;
+}
+.menuBox .is-active {
+  border-bottom: 1.5px solid #0059ff;
+}
 </style>
 
 <template>
@@ -103,11 +114,7 @@
       class="logo"
     />
     <div class="tabar">
-      <el-menu
-        :default-active="activeIndex"
-        @select="handleSelect"
-        class="menuBox"
-      >
+      <el-menu @select="handleSelect" class="menuBox">
         <el-menu-item index="1">IDE</el-menu-item>
         <el-menu-item index="2">TEAM-SCAN</el-menu-item>
         <el-menu-item index="3">ABOUT US</el-menu-item>
@@ -289,6 +296,9 @@ export default {
     },
 
     gohome() {
+      document
+        .getElementsByClassName("is-active")[0]
+        .classList.remove("is-active");
       if (this.$router.currentRoute.path != "/home") {
         this.$router.push("/home");
       }
