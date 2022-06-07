@@ -307,7 +307,7 @@
               </div>
             </div>
             <div class="item3">
-              <span>c24e6435</span>
+              <span>{{ item.commit }}</span>
               <div class="item3Sub">
                 <img
                   src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png"
