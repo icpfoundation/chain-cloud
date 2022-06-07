@@ -215,7 +215,7 @@
           </div>
         </div>
         <div class="right">
-          <div class="nameItem">
+          <!-- <div class="nameItem">
             <span>Group Id</span>
             <Input
               placeholder="Production group"
@@ -223,7 +223,7 @@
               :clearable="true"
               v-model="group['id']"
             />
-          </div>
+          </div> -->
           <div class="nameItem">
             <span>Group name</span>
             <Input
@@ -358,6 +358,16 @@ export default {
       if (addUserRes.Err) {
         console.log(addUserRes.Err);
       }
+      let getUserInfoRes = await manageCanister.getUserInfo(account);
+
+      let nonce = BigInt(1);
+      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+        if (nonce < getUserInfoRes.Ok.groups[i][0]) {
+          nonce = getUserInfoRes.Ok.groups[i][0];
+        }
+      }
+      nonce = nonce + BigInt(1);
+      this.group.id = nonce;
       let currentTime = new Date().getTime();
       this.group.create_time = currentTime;
       this.group.visibility =

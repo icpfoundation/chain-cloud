@@ -215,7 +215,7 @@
           </div>
         </div>
         <div class="right">
-          <div class="nameItem">
+          <!-- <div class="nameItem">
             <span>Projects Id</span>
             <Input
               placeholder="Production project"
@@ -223,7 +223,7 @@
               :clearable="true"
               v-model="project['id']"
             />
-          </div>
+          </div> -->
           <div class="nameItem">
             <span>Projects name</span>
             <Input
@@ -244,13 +244,22 @@
             />
           </div>
           <div class="nameItem">
-            <span>Group Id</span>
-            <Input
+            <span>Select Group</span>
+            <!-- <Input
               placeholder="group id"
               style="width: 720px; margin-top: 10px"
               :clearable="true"
               v-model="project['in_group']"
-            />
+            /> -->
+            <Select v-model="groupId" style="width: 100%">
+              <Option
+                v-for="(item, index) in group"
+                :value="item"
+                :key="index"
+                placeholder="please select"
+                >{{ item.name }}</Option
+              >
+            </Select>
           </div>
           <div class="description">
             <span>Projects description (optional)</span>
@@ -380,6 +389,8 @@ export default {
         in_group: 0,
         function: {},
       },
+      groupId: {},
+      group: [],
       projectTypeList: [
         {
           value: "wallet",
@@ -443,7 +454,48 @@ export default {
   computed: {
     ...mapGetters(["getManageCanister"]),
   },
+  watch: {
+    toAccount: async function (newdata, olddata) {
+      try {
+        let account = Principal.fromText(newdata).toString();
+
+        await this.configGroupInfo(account);
+      } catch (err) {
+        console.log("invalid account");
+      }
+    },
+  },
   methods: {
+    async configGroupInfo(account) {
+      this.group = [];
+
+      let manageCanister = this.getManageCanister();
+      let getUserInfoRes = await manageCanister.getUserInfo(
+        Principal.fromText(account)
+      );
+      if ("Err" in getUserInfoRes) {
+        throw getUserInfoRes.Err;
+      }
+
+      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+        let nonce = BigInt(1);
+        for (
+          let j = 0;
+          j < getUserInfoRes.Ok.groups[i][1].projects.length;
+          j++
+        ) {
+          if (nonce < getUserInfoRes.Ok.groups[i][1].projects[j][0]) {
+            nonce = getUserInfoRes.Ok.groups[i][1].projects[j][0];
+          }
+        }
+        nonce = nonce + BigInt(1);
+        this.group.push({
+          name: getUserInfoRes.Ok.groups[i][1].name,
+          id: getUserInfoRes.Ok.groups[i][1].id.toString(),
+          projectNonce: nonce.toString(),
+        });
+      }
+    },
     async saveFun() {
       let manageCanister = this.getManageCanister();
 
@@ -455,7 +507,7 @@ export default {
         });
         return;
       }
-      console.log(this.toAccount == "");
+
       if (this.toAccount == "") {
         this.toAccount = manageCanister.identity.toString();
       } else {
@@ -467,6 +519,7 @@ export default {
           return;
         }
       }
+
       this.project.canisters = [];
       if (this.canisters != "") {
         let canisterRes = JSON.parse(this.canisters);
@@ -479,8 +532,8 @@ export default {
         }
       }
 
-      this.project.id = Number(this.project.id);
-      this.project.in_group = Number(this.project.in_group);
+      this.project.in_group = BigInt(this.groupId.id);
+      this.project.id = BigInt(this.groupId.projectNonce);
       this.project.create_time = new Date().getTime();
       this.project.create_by = manageCanister.identity;
       this.project.visibility =
@@ -540,6 +593,20 @@ export default {
       }
     },
   },
-  created() {},
+  async created() {
+    let manageCanister = this.getManageCanister();
+    if (!manageCanister) {
+      this.$Notice.info({
+        title: "Please log in to the account",
+        background: true,
+        duration: 3,
+      });
+      this.$router.push({
+        name: "project_index",
+      });
+    }
+
+    await this.configGroupInfo(manageCanister.identity.toString());
+  },
 };
 </script>

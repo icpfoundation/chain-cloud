@@ -168,14 +168,21 @@
 <template>
   <div class="app">
     <div class="head_bg">
-      <img src="../../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png" alt="" class="teamscan_top_bg" />
+      <img
+        src="../../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png"
+        alt=""
+        class="teamscan_top_bg"
+      />
       <div class="head">
         <div>
           <span>Projects</span>
         </div>
 
         <div class="addGroup" @click="addFun">
-          <img src="../../../../../assets/chain_cloud/group/icon_add_white@2x (1).png" alt="" />
+          <img
+            src="../../../../../assets/chain_cloud/group/icon_add_white@2x (1).png"
+            alt=""
+          />
 
           <span>New Project</span>
         </div>
@@ -183,7 +190,12 @@
     </div>
     <div class="content">
       <div class="table">
-        <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index" @click="toProjectFun(item)">
+        <div
+          class="tableItem"
+          v-for="(item, index) in tableData.tableList"
+          :key="index"
+          @click="toProjectFun(item)"
+        >
           <div class="tableImg">
             <img :src="item.imageData" alt="" style="overflow: hidden" />
           </div>
@@ -191,7 +203,10 @@
             <span class="tableItemName">{{ item.name }}</span>
             <div class="tableItemBy">
               <span>{{ item.by }}</span>
-              <img src="../../../../../assets/chain_cloud/group/icon_check@2x.png" alt="" />
+              <img
+                src="../../../../../assets/chain_cloud/group/icon_check@2x.png"
+                alt=""
+              />
             </div>
             <div class="tableItemDec">{{ item.dec }}</div>
             <div class="tableItemDiv">{{ item.type }}</div>
@@ -199,8 +214,15 @@
         </div>
       </div>
       <div class="pageStyle">
-        <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-          :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+        <Page
+          v-if="tableData.total > 0"
+          :total="tableData.total"
+          :current="tableData.page"
+          show-total
+          :page-size="tableData.pageSize"
+          size="small"
+          @on-change="headPageFun"
+        />
       </div>
     </div>
   </div>
@@ -209,6 +231,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { Loading } from "element-ui";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -220,6 +243,9 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   methods: {
     headPageFun(value) {
       this.$Notice.info({
@@ -229,13 +255,21 @@ export default {
       });
     },
     addFun() {
-      this.$router.push({
-        name: "project_add",
-      });
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        this.$Notice.info({
+          title: "Please log in to the account",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$router.push({
+          name: "project_add",
+        });
+      }
     },
     toProjectFun(item) {
-
-      console.log(item)
+      console.log(item);
 
       this.$router.push({
         name: "project",
@@ -267,9 +301,9 @@ export default {
 
             imageData = new TextDecoder().decode(Uint8Array.from(imageData));
 
-            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url
-            let owner = giturl.split("/")[3]
-            let repo = giturl.split("/")[4]
+            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
+            let owner = giturl.split("/")[3];
+            let repo = giturl.split("/")[4];
 
             this.tableData.tableList.push({
               name: groupRes[i][j][2].projects[k][1].name,
@@ -284,10 +318,10 @@ export default {
               gitrepo: repo,
             });
           } catch (err) {
-            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url
-            let owner = giturl.split("/")[3]
-            let repo = giturl.split("/")[4]
-            
+            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
+            let owner = giturl.split("/")[3];
+            let repo = giturl.split("/")[4];
+
             this.tableData.tableList.push({
               name: groupRes[i][j][2].projects[k][1].name,
               by: groupRes[i][j][2].projects[k][1].create_by.toString(),
