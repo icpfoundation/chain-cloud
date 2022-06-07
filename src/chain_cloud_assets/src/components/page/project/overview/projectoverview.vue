@@ -226,6 +226,7 @@
   background: #fafafa;
   border: 0.01rem solid #e6e6e6;
   margin-top: 0.2rem;
+  overflow: scroll;
 }
 
 .pageStyle {
