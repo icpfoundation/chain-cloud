@@ -286,6 +286,15 @@
               v-model="toAccount"
             />
           </div>
+          <div class="nameItem">
+            <span>Project Canisters</span>
+            <Input
+              placeholder="to account identity"
+              style="width: 320px; margin-top: 10px"
+              :clearable="true"
+              v-model="canisters"
+            />
+          </div>
           <div class="description">
             <span>Projects avatar</span>
             <div class="fileBox">
@@ -356,6 +365,7 @@ export default {
   data() {
     return {
       toAccount: "",
+      canisters: "",
       project: {
         id: 0,
         members: [],
@@ -457,16 +467,29 @@ export default {
           return;
         }
       }
-      //let account = manageCanister.identity;
+      this.project.canisters = [];
+      if (this.canisters != "") {
+        let canisterRes = JSON.parse(this.canisters);
+        for (let i = 0; i < canisterRes.length; i++) {
+          try {
+            this.project.canisters.push(Principal.fromText(canisterRes[i]));
+          } catch (err) {
+            throw "Invalid canister id";
+          }
+        }
+      }
+
       this.project.id = Number(this.project.id);
       this.project.in_group = Number(this.project.in_group);
       this.project.create_time = new Date().getTime();
       this.project.create_by = manageCanister.identity;
-      this.project.canisters = [];
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
 
       let projectType = {};
+      if (!this.projectType) {
+        throw "select Projects type";
+      }
       if (this.projectType == "NFT") {
         projectType[this.projectType] = null;
       } else {
