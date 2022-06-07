@@ -30,7 +30,7 @@
 
 .contentbox {
   display: flex;
-  height: 740px;
+  height:1100px;
 }
 
 .left {
