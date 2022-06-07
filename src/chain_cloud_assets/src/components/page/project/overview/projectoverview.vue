@@ -284,9 +284,17 @@
       <div class="contentTitle">Commits</div>
       <div class="contentBox">
         <div class="table">
-          <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
+          <div
+            class="tableItem"
+            v-for="(item, index) in tableData.tableList"
+            :key="index"
+          >
             <div class="item1">
-              <img class="leibie" src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png" alt="" />
+              <img
+                class="leibie"
+                src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
+                alt=""
+              />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
@@ -300,14 +308,24 @@
             <div class="item3">
               <span>c24e6435</span>
               <div class="item3Sub">
-                <img src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png" alt="" />
+                <img
+                  src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png"
+                  alt=""
+                />
               </div>
             </div>
           </div>
         </div>
         <div class="pageStyle">
-          <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
-            :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
+          <Page
+            v-if="tableData.total > 0"
+            :total="tableData.total"
+            :current="tableData.page"
+            show-total
+            :page-size="tableData.pageSize"
+            size="small"
+            @on-change="headPageFun"
+          />
         </div>
       </div>
     </div>
@@ -349,9 +367,9 @@ export default {
       ],
       tableData: {
         tableList: [],
-        total: 5,
+        total: 0,
         page: 1,
-        pageSize: 3,
+        pageSize: 30,
       },
     };
   },
@@ -364,23 +382,25 @@ export default {
       });
     },
     loadbranchinfo(owner, repo) {
-      let retkey = owner + "-" + repo
-      let retlocal = window.localStorage.getItem(retkey)
-      if (retlocal != undefined) {
-        let itemss = JSON.parse(retlocal)
-        console.log(itemss)
-        that.tableData.tableList = itemss
-      } else {
-        let gitbranchurl = "https://api.github.com/repos/" + owner + "/" + repo + "/" + "branches"
-        let that = this
+      let retkey = owner + "-" + repo;
+      let retlocal = window.localStorage.getItem(retkey);
+      if (retlocal == null || retlocal == undefined || retlocal.length == 0) {
+        let gitbranchurl =
+          "https://api.github.com/repos/" +
+          owner +
+          "/" +
+          repo +
+          "/" +
+          "branches";
+        let that = this;
         this.axios
           .get(gitbranchurl, {
             headers: {
-              "Accept": "application/vnd.github.v3+json",
-            }
+              Accept: "application/vnd.github.v3+json",
+            },
           })
           .then(function (response) {
-            let ret = response.data
+            let ret = response.data;
 
             for (let i = 0; i < ret.length; i++) {
               const element = ret[i];
@@ -388,24 +408,23 @@ export default {
               that.axios
                 .get(element.commit.url, {
                   headers: {
-                    "Accept": "application/vnd.github.v3+json",
-                  }
+                    Accept: "application/vnd.github.v3+json",
+                  },
                 })
                 .then(function (response) {
-                  let commtinfo = response.data
+                  let commtinfo = response.data;
                   let obj = {
                     projectName: element.name,
                     commit: element.commit.sha.substring(0, 12),
                     typemerge: "  " + commtinfo.commit.message,
-                    time: commtinfo.commit.author.date
-                  }
+                    time: commtinfo.commit.author.date,
+                  };
                   that.tableData.tableList.push(obj);
 
                   if (i == ret.length - 1) {
-                    that.total = that.tableData.tableList.length
-
-                    let retcache = JSON.stringify(that.tableData.tableList)
-                    window.localStorage.setItem(retkey, retcache)
+                    that.tableData.total = that.tableData.tableList.length;
+                    let retcache = JSON.stringify(that.tableData.tableList);
+                    window.localStorage.setItem(retkey, retcache);
                   }
                 })
                 .catch(function (error) {
@@ -416,6 +435,12 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
+      } else {
+        let itemss = JSON.parse(retlocal);
+        console.log("itemss");
+        console.log(itemss);
+        this.tableData.tableList = itemss;
+        this.tableData.total = itemss.length;
       }
     },
   },
@@ -465,7 +490,7 @@ export default {
     let owner = this.$route.params.owner;
     let repo = this.$route.params.repo;
 
-    this.loadbranchinfo(owner, repo)
+    this.loadbranchinfo(owner, repo);
   },
 };
 </script>
