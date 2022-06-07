@@ -245,10 +245,7 @@
       <div class="headItem">
         <div class="headItemTitle">Project info</div>
         <div class="headItemLog">
-          <img
-            src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-            alt=""
-          />
+          <img src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png" alt="" />
           <span>{{ project.name }}</span>
         </div>
         <div class="line"></div>
@@ -287,17 +284,9 @@
       <div class="contentTitle">Commits</div>
       <div class="contentBox">
         <div class="table">
-          <div
-            class="tableItem"
-            v-for="(item, index) in tableData.tableList"
-            :key="index"
-          >
+          <div class="tableItem" v-for="(item, index) in tableData.tableList" :key="index">
             <div class="item1">
-              <img
-                class="leibie"
-                src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
-                alt=""
-              />
+              <img class="leibie" src="../../../../../assets/chain_cloud/group/pic_avatar01@2x.png" alt="" />
               <div class="groupName">
                 <div class="groupNameTop">
                   <span>{{ item.projectName }}</span>
@@ -311,24 +300,14 @@
             <div class="item3">
               <span>c24e6435</span>
               <div class="item3Sub">
-                <img
-                  src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png"
-                  alt=""
-                />
+                <img src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png" alt="" />
               </div>
             </div>
           </div>
         </div>
         <div class="pageStyle">
-          <Page
-            v-if="tableData.total > 0"
-            :total="tableData.total"
-            :current="tableData.page"
-            show-total
-            :page-size="tableData.pageSize"
-            size="small"
-            @on-change="headPageFun"
-          />
+          <Page v-if="tableData.total > 0" :total="tableData.total" :current="tableData.page" show-total
+            :page-size="tableData.pageSize" size="small" @on-change="headPageFun" />
         </div>
       </div>
     </div>
@@ -338,13 +317,14 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
       project: {
-        name: "Chain-Cloud",
+        name: "",
         id: 0,
-        gitURl: "http://github.com/icpfoundation/chain-cloud.git",
+        gitURl: "",
       },
       tabList: [
         {

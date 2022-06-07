@@ -278,10 +278,6 @@ export default {
       });
       itemChildren.select = true;
 
-      console.log("child item")
-
-      console.log(this.$router.params)
-
       this.$router.push({
         name: itemChildren.href,
         params: this.$route.params,
