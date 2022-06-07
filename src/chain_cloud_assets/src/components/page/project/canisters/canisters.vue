@@ -26,7 +26,6 @@
   border-radius: 0.08rem;
   background: white;
   padding: 0.2rem;
-  display: flex;
 }
 
 .headBox {
@@ -45,10 +44,12 @@
 .headLeft {
   width: 4.4rem;
   margin-right: 0.2rem;
+  height: 100%;
 }
 
 .headRight {
   flex: 1;
+  height: 100%;
 }
 
 .headRightItem {
@@ -281,7 +282,15 @@
     </div>
     <div class="head">
       <div class="headItemTitle">All canister info</div>
+
+      <el-empty
+        :image-size="50"
+        description="No data"
+        v-if="project.canisters.length == 0"
+      >
+      </el-empty>
       <div
+        v-else
         class="headBox"
         v-for="(item, index) in project.canisters"
         :key="index"
@@ -349,7 +358,14 @@
           <div class="tableHead">
             <div class="tableHeadTime">June 2021</div>
           </div>
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="project.canisters.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in tableData.tableList"
             :key="index"
