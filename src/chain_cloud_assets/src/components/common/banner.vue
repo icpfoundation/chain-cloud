@@ -103,35 +103,68 @@
 <template>
   <div class="bannerApp">
     <div class="banner">
-      <img src="../../../assets/img/home/bannerLog.png" alt="" class="bannerLogo">
+      <img
+        src="../../../assets/img/home/bannerLog.png"
+        alt=""
+        class="bannerLogo"
+      />
       <div class="bannerContent">
         <div>Cloud platform development on Web3.0</div>
       </div>
-      <div class="bannerInfo">Enjoy the new generation of Internet technology, Get the dividends of innovation</div>
+      <div class="bannerInfo">
+        Enjoy the new generation of Internet technology, Get the dividends of
+        innovation
+      </div>
       <div class="startbtn" @click="doStart">
         <span>Get Start</span>
-        <img src="../../../assets/img/home/startbtn.png" alt="">
+        <img src="../../../assets/img/home/startbtn.png" alt="" />
       </div>
       <div class="tabarBox">
         <div class="tabarItem">
-          <img src="../../../assets/img/home/icon_immutable@2x.png" alt="" class="tabarItemimg">
+          <img
+            src="../../../assets/img/home/icon_immutable@2x.png"
+            alt=""
+            class="tabarItemimg"
+          />
           <span>Immutable</span>
-          <span class="tabarItemInfo">Append-only, immutable journal tracks history of all changes</span>
+          <span class="tabarItemInfo"
+            >Append-only, immutable journal tracks history of all changes</span
+          >
         </div>
         <div class="tabarItem">
-          <img src="../../../assets/img/home/icon_verifiable@2x.png" alt="" class="tabarItemimg">
+          <img
+            src="../../../assets/img/home/icon_verifiable@2x.png"
+            alt=""
+            class="tabarItemimg"
+          />
           <span>Verifiable</span>
-          <span class="tabarItemInfo">All changes are cryptographically chained and verifiable</span>
+          <span class="tabarItemInfo"
+            >All changes are cryptographically chained and verifiable</span
+          >
         </div>
         <div class="tabarItem">
-          <img src="../../../assets/img/home/icon_opensource@2x.png" alt="" class="tabarItemimg">
+          <img
+            src="../../../assets/img/home/icon_opensource@2x.png"
+            alt=""
+            class="tabarItemimg"
+          />
           <span>Open Source</span>
-          <span class="tabarItemInfo">Build the developer ecosystem and community, Community Attestation Service</span>
+          <span class="tabarItemInfo"
+            >Build the developer ecosystem and community, Community Attestation
+            Service</span
+          >
         </div>
         <div class="tabarItem">
-          <img src="../../../assets/img/home/icon_easytouse@2x.png" alt="" class="tabarItemimg">
+          <img
+            src="../../../assets/img/home/icon_easytouse@2x.png"
+            alt=""
+            class="tabarItemimg"
+          />
           <span>Easy to Use</span>
-          <span class="tabarItemInfo">Familiar SQL operators, IPLD data model supports nested data structures</span>
+          <span class="tabarItemInfo"
+            >Familiar SQL operators, IPLD data model supports nested data
+            structures</span
+          >
         </div>
       </div>
     </div>
@@ -147,23 +180,22 @@ export default {
   components: {},
   methods: {
     doStart() {
-      window.open("https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/");
-      // let principle = window.localStorage.getItem("principleString");
-      // if (principle == undefined || principle == "" || principle == null) {
-      //   this.$message({
-      //     showClose: true,
-      //     message: "Warning, should login first",
-      //     type: "warning",
-      //   });
-      //   return;
-      // }
+      let principle = window.localStorage.getItem("principleString");
+      if (principle == undefined || principle == "" || principle == null) {
+        this.$message({
+          showClose: true,
+          message: "Warning, should login first",
+          type: "warning",
+        });
+        return;
+      }
 
-      // if (this.$router.path != "/deploy") {
-      //   this.$router.push("/deploy");
-      // }
+      let targetUrl =
+        "https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/#principal=" +
+        principle;
+      window.open(targetUrl);
     },
   },
-
 };
 </script>
 
