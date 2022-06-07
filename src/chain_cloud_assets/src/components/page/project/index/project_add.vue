@@ -363,7 +363,7 @@ export default {
         name: "",
         create_by: "",
         description: "",
-        git_repo_url: "https://github.com/icpfoundation/chain-cloud",
+        git_repo_url: "",
         create_time: 0,
         canisters: [],
         visibility: null,

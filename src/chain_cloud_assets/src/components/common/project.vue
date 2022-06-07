@@ -265,8 +265,6 @@ export default {
       // localStorage.activeMenuHref = item.href
       // localStorage.activeMenuIndex = index
 
-      console.log(this.$router.params)
-
       this.$router.push({
         name: item.href,
         params: this.$route.params,
@@ -277,6 +275,8 @@ export default {
         element.select = false;
       });
       itemChildren.select = true;
+
+      console.log(this.$router.params)
 
       this.$router.push({
         name: itemChildren.href,
