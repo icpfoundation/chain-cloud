@@ -26,6 +26,7 @@
   border-radius: 0.08rem;
   background: white;
   padding: 0.2rem;
+  display: flex;
 }
 
 .headBox {
@@ -376,6 +377,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { formatDate } from "@/chain_cloud_assets/assets/js/util";
+import { getCanisterInfo } from "@/chain_cloud_assets/assets/js/agent";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -524,14 +526,18 @@ export default {
               getCanisterStatusRes.Ok[0].settings.memory_allocation[0],
           });
         } else {
+          let getCanisterInfoRes = await getCanisterInfo(
+            getProjectRest.Ok[0].canisters[i].toString()
+          );
+          console.log("getCanisterInfoRes", getCanisterInfoRes);
           this.project.canisters.push({
             id: getProjectRest.Ok[0].canisters[i].toString(),
             cycles: 0,
             memory_size: "unknown",
-            module_hash: "unknown",
+            module_hash: getCanisterInfoRes.moduleHash,
             status: "unknown",
             compute_allocation: "unknown",
-            controllers: "unknown",
+            controllers: getCanisterInfoRes.controllerId,
             freezing_threshold: "unknown",
             memory_allocation: "unknown",
           });

@@ -143,10 +143,7 @@
     >
       <div class="appWrappLeft">
         <div class="appWrappLeftHead">
-          <img
-            src="../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-            alt=""
-          />
+          <img :src="group['imageData']" alt="" />
           <span>{{ group.name }}</span>
         </div>
         <div class="appWrappLeftBox">
@@ -205,6 +202,7 @@ export default {
     return {
       group: {
         name: "",
+        imageData: "",
       },
       tabList: [
         {
@@ -323,6 +321,13 @@ export default {
   async created() {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
+    try {
+      let imageData = await manageCanister.getGroupImage(account, groupId);
+
+      this.group.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
     let getGroupInfoRes = await manageCanister.getGroupInfo(account, groupId);
 
     if (getGroupInfoRes.Err) {

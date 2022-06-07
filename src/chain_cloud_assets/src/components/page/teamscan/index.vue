@@ -205,11 +205,11 @@
 }
 .content_top_bg {
   width: 100%;
-  height: 10%;
+  height: 6%;
   position: relative;
 }
 .content_top_bg_content {
-  height: 400px;
+  height: 350px;
   position: relative;
   width: 1200px;
   margin: auto;

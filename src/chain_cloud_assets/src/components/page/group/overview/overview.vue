@@ -259,10 +259,7 @@
     </div>
     <div class="head">
       <div class="headLeft">
-        <img
-          src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-          alt=""
-        />
+        <img :src="group['imageData']" alt="" />
         <div class="headLeftInfo">
           <span>{{ group.name }}</span>
           <div class="headLeftdec">
@@ -400,6 +397,7 @@ export default {
     return {
       group: {
         name: "",
+        imageData: "",
       },
       tabList: [
         {
@@ -478,6 +476,13 @@ export default {
 
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
+    try {
+      let imageData = await manageCanister.getGroupImage(account, groupId);
+
+      this.group.imageData = new TextDecoder().decode(
+        Uint8Array.from(imageData)
+      );
+    } catch (err) {}
     let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
     if (getGroupInfoRes.Err) {
       throw getGroupInfoRes.Err;
