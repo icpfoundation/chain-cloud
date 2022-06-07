@@ -264,19 +264,19 @@
         <div class="headItemTable">
           <div class="headTableItem tab">
             <span>Branch number</span>
-            <span>102</span>
+            <span>{{ tableData.total }}</span>
           </div>
           <div class="headTableItem">
             <span>Active branch</span>
-            <span>12</span>
+            <span>{{ branch.active }}</span>
           </div>
           <div class="headTableItem">
             <span>Stable branch</span>
-            <span>12</span>
+            <span>{{ branch.stable }}</span>
           </div>
           <div class="headTableItem">
             <span>Last modified</span>
-            <span>12</span>
+            <span>{{ branch.lastModify }}</span>
           </div>
         </div>
       </div>
@@ -336,10 +336,15 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
-
+import moment from "moment";
 export default {
   data() {
     return {
+      branch: {
+        active: 0,
+        stable: 0,
+        lastModify: 0,
+      },
       project: {
         name: "",
         id: 0,
@@ -402,7 +407,7 @@ export default {
           })
           .then(function (response) {
             let ret = response.data;
-
+            console.log("response", ret);
             for (let i = 0; i < ret.length; i++) {
               const element = ret[i];
 
@@ -438,11 +443,24 @@ export default {
           });
       } else {
         let itemss = JSON.parse(retlocal);
-        console.log("itemss");
-        console.log(itemss);
         this.tableData.tableList = itemss;
         this.tableData.total = itemss.length;
       }
+      let currentTime = new Date().getTime();
+      let that = this;
+      this.tableData.tableList.forEach((ele) => {
+        let t = new Date(
+          moment(ele.time, "YYYY-MM-DD'T'HH:mm:SS'Z'")
+        ).getTime();
+        let day = Math.floor((currentTime - t) / 1000 / 3600 / 24);
+        if (day <= 1) {
+          that.branch.lastModify = that.branch.lastModify + 1;
+        } else if (day > 1 && day <= 7) {
+          that.branch.active = that.branch.active + 1;
+        } else {
+          that.branch.stable = that.branch.stable + 1;
+        }
+      });
     },
   },
   computed: {
