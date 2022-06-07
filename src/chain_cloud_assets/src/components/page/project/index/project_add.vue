@@ -538,6 +538,18 @@ export default {
       this.project.create_by = manageCanister.identity;
       this.project.visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
+      this.project.members = [
+        [
+          manageCanister.identity,
+          {
+            join_time: BigInt(new Date().getTime()),
+            name: "manage",
+            authority: { Operational: null },
+            identity: manageCanister.identity,
+            expiration_time: [],
+          },
+        ],
+      ];
 
       let projectType = {};
       if (!this.projectType) {

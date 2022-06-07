@@ -521,12 +521,13 @@ export default {
           getProjectRest.Ok[0].canisters[i]
         );
         if (getCanisterStatusRes.Ok) {
+          console.log("getCanisterStatusRes.Ok", getCanisterStatusRes.Ok);
           this.project.canisters.push({
             id: getProjectRest.Ok[0].canisters[i].toString(),
             cycles: getCanisterStatusRes.Ok[0].cycles,
             memory_size: getCanisterStatusRes.Ok[0].memory_size,
             module_hash: Buffer.from(
-              getCanisterStatusRes.Ok[0].module_hash[0]
+              getCanisterStatusRes.Ok[0].module_hash
             ).toString("hex"),
             status:
               "running" in getCanisterStatusRes.Ok[0].status
