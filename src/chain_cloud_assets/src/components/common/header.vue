@@ -287,10 +287,10 @@ export default {
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
               // that.setICIdentityConfig(principle, identity);
-              // window.localStorage.setItem(
-              //   "principleString",
-              //   principle.toString()
-              // );
+              window.localStorage.setItem(
+                "principleString",
+                principle.toString()
+              );
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );
