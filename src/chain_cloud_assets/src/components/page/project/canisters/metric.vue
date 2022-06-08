@@ -23,12 +23,11 @@
 
 .content {
   display: flex;
-  height: 5.88rem;
   margin-top: 0.2rem;
   justify-content: space-between;
   flex-wrap: wrap;
-  overflow: scroll;
-  overflow-x: hidden;
+  justify-content: center;
+  border-top: 1px solid #6984aa;
 }
 
 .itemBox {
@@ -40,6 +39,9 @@
   color: #333333;
   background: #ffffff;
   border-radius: 0.08rem;
+  border: 1px solid #6984aa;
+  margin-top: 0.2rem;
+  box-shadow: 0 0.375rem 0.75rem rgb(127 150 174 / 13%);
 }
 </style>
 
@@ -112,6 +114,7 @@ export default {
 
       let data = [];
       let canisters = [];
+
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         canisters.push(getProjectRest.Ok[0].canisters[i].toString());
       }
@@ -185,10 +188,10 @@ export default {
           name: "Canister",
           data: data,
           itemStyle: {
-            color: "#78c85d",
+            color: "#6984aa",
           },
           lineStyle: {
-            color: "#78c85d",
+            color: "#6984aa",
           },
         });
 
