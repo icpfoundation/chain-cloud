@@ -184,7 +184,11 @@
             @click="getProjectInfo(item)"
           >
             <div class="grouptype" style="overflow: hidden">
-              <img :src="item.imageData" alt="" />
+              <img
+                :src="item.imageData"
+                alt=""
+                style="width: 100%; height: 100%"
+              />
             </div>
             <div class="groupContent">
               <div class="groupContentTop">
@@ -294,6 +298,7 @@ export default {
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
+      let imageRes = [];
       let currentTime = BigInt(new Date().getTime());
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
         for (
@@ -321,13 +326,16 @@ export default {
             create_time = `create ${duration} s ago`;
           }
           try {
-            let imageData = await manageCanister.getProjectImage(
-              account,
-              getUserInfoRes.Ok.groups[i][1].id,
-              getUserInfoRes.Ok.groups[i][1].projects[j][1].id
+            imageRes.push(
+              (async function (len) {
+                let imageData = await manageCanister.getProjectImage(
+                  account,
+                  getUserInfoRes.Ok.groups[i][1].id,
+                  getUserInfoRes.Ok.groups[i][1].projects[j][1].id
+                );
+                return [imageData, len];
+              })(this.projectList.length)
             );
-
-            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.projectList.push({
               groupId: getUserInfoRes.Ok.groups[i][1].id,
               groupType: "",
@@ -337,7 +345,7 @@ export default {
               info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
               xingNum: 2,
               time: create_time,
-              imageData: imageData,
+              imageData: "",
             });
           } catch (err) {
             this.projectList.push({
@@ -354,6 +362,12 @@ export default {
           }
         }
       }
+      Promise.all(imageRes).then((res) => {
+        for (let i = 0; i < res.length; i++) {
+          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+          this.projectList[res[i][1]].imageData = imageData;
+        }
+      });
     }
   },
 };
