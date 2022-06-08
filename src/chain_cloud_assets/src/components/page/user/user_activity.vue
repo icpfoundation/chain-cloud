@@ -115,7 +115,7 @@
                 <span>{{ item.toname }}</span>
               </div>
               <div class="tableContentInfo">
-                <span>Pushed to branch</span>
+                <span>operation</span>
                 <span class="mergestyle">{{ item.fromaddress }}</span>
                 <span>at</span>
                 <span class="mergestyle">{{ item.toaddress }}</span>
@@ -226,6 +226,7 @@ export default {
               this.activeList.push({
                 name: getLogRes[j][k][0].toString(),
                 toname: "",
+
                 fromaddress: fromaddress,
                 toaddress: "",
                 commitNum: "",
