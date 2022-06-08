@@ -251,24 +251,29 @@ export default {
     });
 
     let groupRes = await manageCanister.visibleProject();
-
+    let imageRes = [];
     for (let i = 0; i < groupRes.length; i++) {
       this.tableData.total = groupRes[i].length;
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
-          let imageData = await manageCanister.getGroupImage(
-            groupRes[i][j][0],
-            groupRes[i][j][1]
+          imageRes.push(
+            (async function (len) {
+              let imageData = await manageCanister.getGroupImage(
+                groupRes[i][j][0],
+                groupRes[i][j][1]
+              );
+              return [imageData, len];
+            })(this.tableData.tableList.length)
           );
 
-          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
           this.tableData.tableList.push({
             name: groupRes[i][j][2].name,
             by: groupRes[i][j][0],
             dec: groupRes[i][j][2].description,
             type: "Recommended",
             groupId: groupRes[i][j][2].id,
-            imageData: imageData,
+            imageData: "",
           });
         } catch (err) {
           this.tableData.tableList.push({
@@ -277,10 +282,17 @@ export default {
             dec: groupRes[i][j][2].description,
             type: "Recommended",
             groupId: groupRes[i][j][2].id,
+            imageData: "",
           });
         }
       }
     }
+    Promise.all(imageRes).then((res) => {
+      for (let i = 0; i < res.length; i++) {
+        let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+        this.tableData.tableList[res[i][1]].imageData = imageData;
+      }
+    });
     topInstance.close();
   },
 };

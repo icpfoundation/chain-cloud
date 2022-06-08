@@ -343,7 +343,6 @@ export default {
           }
         }
         Promise.all(getProjectAll).then((res) => {
-          console.log("get image res", res);
           for (let i = 0; i < res.length; i++) {
             let imageData = new TextDecoder().decode(
               Uint8Array.from(res[i][0])
