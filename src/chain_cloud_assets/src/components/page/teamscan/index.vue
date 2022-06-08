@@ -657,6 +657,8 @@ export default {
     });
     let groupRes = await manageCanister.visibleProject();
     this.tableData.total = groupRes.length;
+    let ImageRes = [];
+
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
@@ -672,12 +674,18 @@ export default {
               projectType.slice(0, 1).toLowerCase() + projectType.slice(1);
           }
           try {
-            let imageData = await manageCanister.getProjectImage(
-              groupRes[i][j][0],
-              groupRes[i][j][1],
-              groupRes[i][j][2].projects[k][1].id
+            ImageRes.push(
+              (async function (len) {
+                let imageData = await manageCanister.getProjectImage(
+                  groupRes[i][j][0],
+                  groupRes[i][j][1],
+                  groupRes[i][j][2].projects[k][1].id
+                );
+                return [imageData, len];
+              })(this.tableData.tableList.length)
             );
-            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+
+            // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.tableData.tableList.push({
               value: groupRes[i][j][2].projects[k][1].name,
               label: label,
@@ -703,17 +711,24 @@ export default {
               groupId: groupRes[i][j][1],
               projectId: groupRes[i][j][2].projects[k][1].id,
               typeId: 2,
+              imageData: "",
             });
           }
         }
       }
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
-          let imageData = await manageCanister.getGroupImage(
-            groupRes[i][j][0],
-            groupRes[i][j][1]
+          ImageRes.push(
+            (async function (len) {
+              let imageData = await manageCanister.getGroupImage(
+                groupRes[i][j][0],
+                groupRes[i][j][1]
+              );
+              return [imageData, len];
+            })(this.tableData.tableList.length)
           );
-          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+
+          //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
 
           this.tableData.tableList.push({
             value: groupRes[i][j][2].name,
@@ -723,7 +738,7 @@ export default {
             dec: groupRes[i][j][2].description,
             type: "Recommended",
             groupId: groupRes[i][j][2].id,
-            imageData: imageData,
+            imageData: "",
             typeId: 1,
           });
         } catch (err) {
@@ -736,11 +751,18 @@ export default {
             type: "Recommended",
             groupId: groupRes[i][j][2].id,
             typeId: 1,
+            imageData: "",
           });
         }
         this.tableData.total = this.tableData.tableList.length;
       }
     }
+    Promise.all(ImageRes).then((res) => {
+      for (let i = 0; i < res.length; i++) {
+        let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+        this.tableData.tableList[res[i][1]].imageData = imageData;
+      }
+    });
     let groupList = [];
     let projectList = [];
     this.tableData.tableList.forEach((element) => {

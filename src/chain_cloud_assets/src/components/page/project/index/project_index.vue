@@ -232,6 +232,7 @@ import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { Loading } from "element-ui";
 import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -291,15 +292,20 @@ export default {
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
         this.tableData.total = groupRes[i][j][2].projects.length;
+        let getProjectAll = [];
+        let that = this;
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
           try {
-            let imageData = await manageCanister.getProjectImage(
-              groupRes[i][j][0],
-              groupRes[i][j][1],
-              groupRes[i][j][2].projects[k][1].id
+            getProjectAll.push(
+              (async function (len) {
+                let imageData = await manageCanister.getProjectImage(
+                  groupRes[i][j][0],
+                  groupRes[i][j][1],
+                  groupRes[i][j][2].projects[k][1].id
+                );
+                return [imageData, len];
+              })(that.tableData.tableList.length)
             );
-
-            imageData = new TextDecoder().decode(Uint8Array.from(imageData));
 
             let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
             let owner = giturl.split("/")[3];
@@ -313,7 +319,7 @@ export default {
               user: groupRes[i][j][0].toString(),
               groupId: groupRes[i][j][1],
               projectId: groupRes[i][j][2].projects[k][1].id,
-              imageData: imageData,
+              imageData: "",
               gitowner: owner,
               gitrepo: repo,
             });
@@ -332,9 +338,19 @@ export default {
               projectId: groupRes[i][j][2].projects[k][1].id,
               gitowner: owner,
               gitrepo: repo,
+              imageData: "",
             });
           }
         }
+        Promise.all(getProjectAll).then((res) => {
+          console.log("get image res", res);
+          for (let i = 0; i < res.length; i++) {
+            let imageData = new TextDecoder().decode(
+              Uint8Array.from(res[i][0])
+            );
+            this.tableData.tableList[res[i][1]].imageData = imageData;
+          }
+        });
       }
     }
 
