@@ -181,7 +181,11 @@
             @click="getGroupInfo(item)"
           >
             <div class="grouptype" style="overflow: hidden">
-              <img :src="item.imageData" alt="" />
+              <img
+                :src="item.imageData"
+                alt=""
+                style="width: 100%; height: 100%"
+              />
             </div>
             <div class="groupContent" :class="{ groupContentInfo: item.info }">
               <span class="groupName">{{ item.name }}</span>
@@ -295,23 +299,29 @@ export default {
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
+      let groupImage = [];
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
         try {
-          let imageData = await manageCanister.getGroupImage(
-            account,
-            getUserInfoRes.Ok.groups[i][1].id
+          groupImage.push(
+            (async function (len) {
+              let imageData = await manageCanister.getGroupImage(
+                account,
+                getUserInfoRes.Ok.groups[i][1].id
+              );
+              return [imageData, len];
+            })(this.projectList.length)
           );
 
-          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
           this.projectList.push({
             groupType: "Z",
             name: getUserInfoRes.Ok.groups[i][1].name,
             id: getUserInfoRes.Ok.groups[i][1].id,
             info: getUserInfoRes.Ok.groups[i][1].description,
-            shuqian: 3,
+            shuqian: 0,
             peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-            xingNum: 2,
-            imageData: imageData,
+            xingNum: 0,
+            imageData: "",
           });
         } catch (err) {
           this.projectList.push({
@@ -319,9 +329,9 @@ export default {
             name: getUserInfoRes.Ok.groups[i][1].name,
             id: getUserInfoRes.Ok.groups[i][1].id,
             info: getUserInfoRes.Ok.groups[i][1].description,
-            shuqian: 3,
+            shuqian: 0,
             peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-            xingNum: 2,
+            xingNum: 0,
             imageData: "",
           });
         }
@@ -336,6 +346,12 @@ export default {
         //   xingNum: 2,
         // });
       }
+      Promise.all(groupImage).then((res) => {
+        for (let i = 0; i < res.length; i++) {
+          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+          this.projectList[res[i][1]].imageData = imageData;
+        }
+      });
     }
   },
 };

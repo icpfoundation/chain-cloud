@@ -193,7 +193,7 @@
                 <span>{{ item.toname }}</span>
               </div>
               <div class="tableContentInfo">
-                <span>Pushed to branch</span>
+                <span>operation</span>
                 <span class="mergestyle">{{ item.fromaddress }}</span>
                 <span>at</span>
                 <span class="mergestyle">{{ item.toaddress }}</span>
@@ -213,7 +213,11 @@
             :key="index"
           >
             <div class="grouptype" style="overflow: hidden">
-              <img :src="item.imageData" alt="" />
+              <img
+                :src="item.imageData"
+                alt=""
+                style="width: 100%; height: 100%"
+              />
             </div>
             <div class="groupContent">
               <div class="groupContentTop">
@@ -342,15 +346,13 @@ export default {
 
     if (getUserInfoRes.Ok) {
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-
+      let imageRes = [];
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
         let getLogRes = await manageCanister.getLog(
           account,
           getUserInfoRes.Ok.groups[i][1].id,
           1
         );
-
-        console.log(getLogRes)
 
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
@@ -417,13 +419,18 @@ export default {
               create_time = `create ${duration} s ago`;
             }
             try {
-              let imageData = await manageCanister.getProjectImage(
-                account,
-                getUserInfoRes.Ok.groups[i][1].id,
-                getUserInfoRes.Ok.groups[i][1].projects[v][1].id
+              imageRes.push(
+                (async function (len) {
+                  let imageData = await manageCanister.getProjectImage(
+                    account,
+                    getUserInfoRes.Ok.groups[i][1].id,
+                    getUserInfoRes.Ok.groups[i][1].projects[v][1].id
+                  );
+                  return [imageData, len];
+                })(this.projectList.length)
               );
 
-              imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+              // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
 
               this.projectList.push({
                 groupType: "",
@@ -431,9 +438,9 @@ export default {
                 id: getUserInfoRes.Ok.groups[i][1].projects[v][1].id,
                 type: "Maintainer",
                 info: getUserInfoRes.Ok.groups[i][1].projects[v][1].description,
-                xingNum: 2,
+                xingNum: 0,
                 time: create_time,
-                imageData: imageData,
+                imageData: "",
               });
             } catch (err) {
               this.projectList.push({
@@ -442,7 +449,7 @@ export default {
                 id: getUserInfoRes.Ok.groups[i][1].projects[v][1].id,
                 type: "Maintainer",
                 info: getUserInfoRes.Ok.groups[i][1].projects[v][1].description,
-                xingNum: 2,
+                xingNum: 0,
                 time: create_time,
                 imageData: "",
               });
@@ -450,6 +457,12 @@ export default {
           }
         }
       }
+      Promise.all(imageRes).then((res) => {
+        for (let i = 0; i < res.length; i++) {
+          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+          this.projectList[res[i][1]].imageData = imageData;
+        }
+      });
     }
   },
 };

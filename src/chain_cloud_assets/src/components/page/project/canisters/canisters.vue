@@ -513,52 +513,67 @@ export default {
     this.project.updateTime = formatTime;
     this.project.name = getProjectRest.Ok[0].name;
     if (getProjectRest.Ok.length > 0) {
+      let canisterRes = [];
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
-        let getCanisterStatusRes = await manage.getCanisterStatus(
-          account,
-          groupId,
-          projectId,
-          getProjectRest.Ok[0].canisters[i]
+        canisterRes.push(
+          (async function () {
+            let getCanisterStatusRes = await manage.getCanisterStatus(
+              account,
+              groupId,
+              projectId,
+              getProjectRest.Ok[0].canisters[i]
+            );
+            return [
+              getCanisterStatusRes,
+              getProjectRest.Ok[0].canisters[i].toString(),
+            ];
+          })()
         );
-        if (getCanisterStatusRes.Ok) {
-          this.project.canisters.push({
-            id: getProjectRest.Ok[0].canisters[i].toString(),
-            cycles: getCanisterStatusRes.Ok[0].cycles,
-            memory_size: getCanisterStatusRes.Ok[0].memory_size,
-            module_hash: Buffer.from(
-              getCanisterStatusRes.Ok[0].module_hash
-            ).toString("hex"),
-            status:
-              "running" in getCanisterStatusRes.Ok[0].status
-                ? "Runing"
-                : "Stop",
-            compute_allocation:
-              getCanisterStatusRes.Ok[0].settings.compute_allocation[0],
-            controllers:
-              getCanisterStatusRes.Ok[0].settings.controllers[0].toString(),
-            freezing_threshold:
-              getCanisterStatusRes.Ok[0].settings.freezing_threshold[0],
-            memory_allocation:
-              getCanisterStatusRes.Ok[0].settings.memory_allocation[0],
-          });
-        } else {
-          let getCanisterInfoRes = await getCanisterInfo(
-            getProjectRest.Ok[0].canisters[i].toString()
-          );
-
-          this.project.canisters.push({
-            id: getProjectRest.Ok[0].canisters[i].toString(),
-            cycles: 0,
-            memory_size: 0,
-            module_hash: getCanisterInfoRes.moduleHash,
-            status: "Runing",
-            compute_allocation: 0,
-            controllers: getCanisterInfoRes.controllerId,
-            freezing_threshold: 0,
-            memory_allocation: 0,
-          });
-        }
       }
+      let that = this;
+      Promise.all(canisterRes).then(async (getCanisterStatusRes) => {
+        for (let i = 0; i < getCanisterStatusRes.length; i++) {
+          if (getCanisterStatusRes[i][0].Ok) {
+            that.project.canisters.push({
+              id: getCanisterStatusRes[i][1],
+              cycles: getCanisterStatusRes[i][0].Ok[0].cycles,
+              memory_size: getCanisterStatusRes[i][0].Ok[0].memory_size,
+              module_hash: Buffer.from(
+                getCanisterStatusRes[i][0].Ok[0].module_hash
+              ).toString("hex"),
+              status:
+                "running" in getCanisterStatusRes[i][0].Ok[0].status
+                  ? "Runing"
+                  : "Stop",
+              compute_allocation:
+                getCanisterStatusRes[i][0].Ok[0].settings.compute_allocation[0],
+              controllers:
+                getCanisterStatusRes[
+                  i
+                ][0].Ok[0].settings.controllers[0].toString(),
+              freezing_threshold:
+                getCanisterStatusRes[i][0].Ok[0].settings.freezing_threshold[0],
+              memory_allocation:
+                getCanisterStatusRes[i][0].Ok[0].settings.memory_allocation[0],
+            });
+          } else {
+            let getCanisterInfoRes = await getCanisterInfo(
+              getProjectRest.Ok[0].canisters[i].toString()
+            );
+            that.project.canisters.push({
+              id: getProjectRest.Ok[0].canisters[i].toString(),
+              cycles: 0,
+              memory_size: 0,
+              module_hash: getCanisterInfoRes.moduleHash,
+              status: "Runing",
+              compute_allocation: 0,
+              controllers: getCanisterInfoRes.controllerId,
+              freezing_threshold: 0,
+              memory_allocation: 0,
+            });
+          }
+        }
+      });
 
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
       let getLogRes = await manage.getLog(account, groupId, 1);
