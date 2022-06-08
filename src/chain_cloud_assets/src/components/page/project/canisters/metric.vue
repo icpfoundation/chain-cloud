@@ -103,10 +103,9 @@ export default {
       groupId,
       projectId
     );
-    let currentTime = new Date(new Date().getTime - 24 * 3600 * 1000);
+    let currentTime = new Date(new Date().getTime() - 24 * 3600 * 1000);
 
     if (getProjectRest.Ok.length > 0) {
-      console.log("getProjectRest", getProjectRest.Ok[0].canisters);
       this.project.name = getProjectRest.Ok[0].name;
       let warnline = Number(
         getProjectRest.Ok[0].canister_cycle_floor / BigInt(100000000)
@@ -118,11 +117,20 @@ export default {
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         canisters.push(getProjectRest.Ok[0].canisters[i].toString());
       }
+      let legend = ["warnline"];
       let series = [];
       let method1 = [];
       let method2 = [];
       let warnlineArr = [];
-
+      if (canisters.length == 0) {
+        warnlineArr.push({
+          name: moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+          value: [
+            moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+            Number(warnline),
+          ],
+        });
+      }
       for (let j = 0; j < canisters.length; j++) {
         let event = await chainCloud.getCanisterEventByTime(
           canisters[j],
@@ -130,19 +138,40 @@ export default {
         );
 
         let map = new Map();
-
+        if (event.length == 0) {
+          data.push({
+            name: moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+            value: [
+              moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+              Number(0),
+            ],
+          });
+          warnlineArr.push({
+            name: moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+            value: [
+              moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+              Number(warnline),
+            ],
+          });
+        }
         for (let i = event.length - 1; i > 0; i--) {
           let logTime = new Date(
             Number(event[i].transaction_time / BigInt(1000000))
           );
-          data.push([
-            moment(logTime).format("HH:mm::SS"),
-            Number(event[i].cycle / BigInt(100000000)),
-          ]);
-          warnlineArr.push([
-            moment(logTime).format("HH:mm::SS"),
-            Number(warnline),
-          ]);
+          data.push({
+            name: moment(logTime).format("YYYY-MM-DD HH:mm:SS"),
+            value: [
+              moment(logTime).format("YYYY-MM-DD HH:mm:SS"),
+              Number(event[i].cycle / BigInt(100000000)),
+            ],
+          });
+          warnlineArr.push({
+            name: moment(logTime).format("YYYY-MM-DD HH:mm:SS"),
+            value: [
+              moment(logTime).format("YYYY-MM-DD HH:mm:SS"),
+              Number(warnline),
+            ],
+          });
           if (!map.get(event[i].method_name)) {
             map.set(event[i].method_name, 1);
             continue;
@@ -182,10 +211,11 @@ export default {
             name: "",
           });
         }
+        legend.push(canisters[j]);
         series.push({
+          name: canisters[j],
           type: "line",
           showSymbol: false,
-          name: "Canister",
           data: data,
           itemStyle: {
             color: "#6984aa",
@@ -194,63 +224,66 @@ export default {
             color: "#6984aa",
           },
         });
-
-        series.push({
-          type: "line",
-          showSymbol: false,
-          name: "WarningLine",
-          data: warnlineArr,
-          itemStyle: {
-            color: "#f49394",
-          },
-          lineStyle: {
-            color: "#f49394",
-          },
-        });
       }
+      series.push({
+        name: "warnline",
+        type: "line",
+        showSymbol: false,
+        data: warnlineArr,
+        itemStyle: {
+          color: "#f49394",
+        },
+        lineStyle: {
+          color: "#f49394",
+        },
+      });
+
       let dateList = data.map(function (item) {
         return item[0];
       });
+
       let option = {
         legend: {
-          data: ["WarningLine", "Canister"],
+          data: legend,
         },
-        visualMap: [
-          {
-            show: false,
-            type: "continuous",
-            seriesIndex: 0,
-            min: 0,
-            max: 400,
-          },
-        ],
-        title: [
-          {
-            left: "center",
-          },
-        ],
         tooltip: {
           trigger: "axis",
-        },
-        xAxis: [
-          {
-            data: dateList,
+          formatter: function (params) {
+            params = params[0];
+            var date = new Date(moment(params.name, "YYYY-MM-DD HH:mm:SS"));
+            return (
+              date.getDate() +
+              "/" +
+              (date.getMonth() + 1) +
+              "/" +
+              date.getFullYear() +
+              " : " +
+              params.value[1]
+            );
           },
-        ],
+          axisPointer: {
+            animation: false,
+          },
+        },
+        xAxis: {
+          type: "time",
+          splitLine: {
+            show: false,
+          },
+        },
         yAxis: {
-          name: "Billion",
-        },
-        grid: [
-          {
-            top: "10%",
+          type: "value",
+          boundaryGap: [0, "100%"],
+          splitLine: {
+            show: false,
           },
-        ],
+        },
         series: series,
       };
       this.lineEachart1 = echarts.init(document.getElementById("line"));
-      // http://localhost:8080/#/project/projectoverview/metric/4evaj-w2syn-bk4gx-3mgbw-akept-4c4za-yimc2-xro4u-cjlrx-kvakc-sae/1/5
+
       this.lineEachart1.setOption(option, true);
-      let yData = ["65md3-jqaaa-aaaan-qaihq-cai"];
+
       let option2 = {
         tooltip: {
           trigger: "axis",
