@@ -73,15 +73,13 @@
 .tableImg {
   width: 60px;
   height: 60px;
-  background: #558678;
+
   border-radius: 8px;
   border: 1px solid #e6e6e6;
   margin-right: 20px;
   margin-top: 4px;
-  background-position: center;
 }
 .tableImg img {
-  width: 100%;
   height: 100%;
 }
 
@@ -176,7 +174,7 @@
           :key="index"
           @click="toGroupFun(item)"
         >
-          <div class="tableImg" style="overflow: hidden">
+          <div class="tableImg">
             <img alt="" :src="item.imageData" />
           </div>
           <div class="tableInfo">
@@ -251,26 +249,31 @@ export default {
     let topInstance = Loading.service({
       target: ".content",
     });
-    
-    let groupRes = await manageCanister.visibleProject();
 
+    let groupRes = await manageCanister.visibleProject();
+    let imageRes = [];
     for (let i = 0; i < groupRes.length; i++) {
       this.tableData.total = groupRes[i].length;
       for (let j = 0; j < groupRes[i].length; j++) {
         try {
-          let imageData = await manageCanister.getGroupImage(
-            groupRes[i][j][0],
-            groupRes[i][j][1]
+          imageRes.push(
+            (async function (len) {
+              let imageData = await manageCanister.getGroupImage(
+                groupRes[i][j][0],
+                groupRes[i][j][1]
+              );
+              return [imageData, len];
+            })(this.tableData.tableList.length)
           );
 
-          imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
           this.tableData.tableList.push({
             name: groupRes[i][j][2].name,
             by: groupRes[i][j][0],
             dec: groupRes[i][j][2].description,
             type: "Recommended",
             groupId: groupRes[i][j][2].id,
-            imageData: imageData,
+            imageData: "",
           });
         } catch (err) {
           this.tableData.tableList.push({
@@ -279,10 +282,17 @@ export default {
             dec: groupRes[i][j][2].description,
             type: "Recommended",
             groupId: groupRes[i][j][2].id,
+            imageData: "",
           });
         }
       }
     }
+    Promise.all(imageRes).then((res) => {
+      for (let i = 0; i < res.length; i++) {
+        let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+        this.tableData.tableList[res[i][1]].imageData = imageData;
+      }
+    });
     topInstance.close();
   },
 };

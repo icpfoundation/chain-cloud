@@ -464,7 +464,7 @@ export default {
           //     data: "",
           //   },
         ],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3,
       },
@@ -526,7 +526,7 @@ export default {
             cycles: getCanisterStatusRes.Ok[0].cycles,
             memory_size: getCanisterStatusRes.Ok[0].memory_size,
             module_hash: Buffer.from(
-              getCanisterStatusRes.Ok[0].module_hash[0]
+              getCanisterStatusRes.Ok[0].module_hash
             ).toString("hex"),
             status:
               "running" in getCanisterStatusRes.Ok[0].status
@@ -545,17 +545,17 @@ export default {
           let getCanisterInfoRes = await getCanisterInfo(
             getProjectRest.Ok[0].canisters[i].toString()
           );
-          console.log("getCanisterInfoRes", getCanisterInfoRes);
+
           this.project.canisters.push({
             id: getProjectRest.Ok[0].canisters[i].toString(),
             cycles: 0,
-            memory_size: "unknown",
+            memory_size: 0,
             module_hash: getCanisterInfoRes.moduleHash,
-            status: "unknown",
-            compute_allocation: "unknown",
+            status: "Runing",
+            compute_allocation: 0,
             controllers: getCanisterInfoRes.controllerId,
-            freezing_threshold: "unknown",
-            memory_allocation: "unknown",
+            freezing_threshold: 0,
+            memory_allocation: 0,
           });
         }
       }
