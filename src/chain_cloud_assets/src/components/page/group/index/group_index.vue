@@ -73,15 +73,13 @@
 .tableImg {
   width: 60px;
   height: 60px;
-  background: #558678;
+
   border-radius: 8px;
   border: 1px solid #e6e6e6;
   margin-right: 20px;
   margin-top: 4px;
-  background-position: center;
 }
 .tableImg img {
-  width: 100%;
   height: 100%;
 }
 
@@ -176,7 +174,7 @@
           :key="index"
           @click="toGroupFun(item)"
         >
-          <div class="tableImg" style="overflow: hidden">
+          <div class="tableImg">
             <img alt="" :src="item.imageData" />
           </div>
           <div class="tableInfo">
@@ -251,7 +249,7 @@ export default {
     let topInstance = Loading.service({
       target: ".content",
     });
-    
+
     let groupRes = await manageCanister.visibleProject();
 
     for (let i = 0; i < groupRes.length; i++) {

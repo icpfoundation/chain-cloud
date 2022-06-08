@@ -42,6 +42,8 @@
 
 .table {
   border-radius: 0.04rem;
+  height: 500px;
+  overflow: scroll;
 }
 
 .tableHead {
@@ -137,14 +139,14 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Activities</div>
-      <span class="titlePath">Project info / Chain-Cloud / Activities</span>
+      <span class="titlePath">{{ project.name }} / Activities</span>
     </div>
     <div class="content">
       <div class="contentTitle">Canister Activities</div>
       <div class="contentBox">
         <div class="table">
           <div class="tableHead">
-            <div class="tableHeadTime">June 2021</div>
+            <div class="tableHeadTime">June 2022</div>
           </div>
           <el-empty
             :image-size="50"
@@ -164,16 +166,20 @@
               alt=""
             />
             <div class="groupName">
-              <span>10th June</span>
+              <span></span>
               <div class="groupNameItem">
-                <span class="groupNameItemtime">{{ item.time }}</span>
-                <span class="groupNameItemTo">{{ item.operation }}</span>
-                <span>{{ item.data }}</span>
-              </div>
-              <div class="groupNameItem">
-                <span class="groupNameItemtime">{{ item.time }}</span>
-                <span class="groupNameItemTo">{{ item.operation }}</span>
-                <span>{{ item.data }}</span>
+                <span class="groupNameItemtime"
+                  ><label style="font-weight: bolder"> Time: </label
+                  >{{ item.time }}</span
+                >
+                <span class="groupNameItemTo"
+                  ><label style="font-weight: bolder"> Canister: </label>
+                  {{ item.operation }}</span
+                >
+                <span
+                  ><label style="font-weight: bolder"> Operation: </label
+                  >{{ item.data }}</span
+                >
               </div>
             </div>
           </div>
@@ -183,10 +189,14 @@
   </div>
 </template>
 <script>
-import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import {
+  manageCanister,
+  chainCloud,
+} from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { formatDate } from "@/chain_cloud_assets/assets/js/util";
 import { mapGetters } from "vuex";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -211,6 +221,9 @@ export default {
           label: "Create time",
         },
       ],
+      project: {
+        name: "",
+      },
       tableData: {
         tableList: [
           // {
@@ -239,7 +252,7 @@ export default {
           //   time: "18 days ago",
           // },
         ],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3,
       },
@@ -268,13 +281,25 @@ export default {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
+
+    let getProjectRest = await manage.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+    if (getProjectRest.Ok) {
+      this.project.name = getProjectRest.Ok[0].name;
+    }
     let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
     let getLogRes = await manage.getLog(account, groupId, 1);
-
-    for (let i = 0; i < getLogRes.length; i++) {
-      for (let j = 0; j < getLogRes[i].length; j++) {
+    for (let j = 0; j < getProjectRest.Ok[0].canisters.length; j++) {
+      let event = await chainCloud.getCanisterEventByTime(
+        getProjectRest.Ok[0].canisters[j].toString(),
+        new Date().getTime() - 24 * 3600 * 1000
+      );
+      for (let i = 0; i < event.length; i++) {
         let duration = parseInt(
-          Number(currentTime - getLogRes[i][j][1] / BigInt(1000000000))
+          Number(currentTime - event[i].transaction_time / BigInt(1000000000))
         );
 
         let create_time = "0 s ago";
@@ -287,28 +312,13 @@ export default {
         } else {
           create_time = `${duration} s ago`;
         }
-
-        let logData =
-          getLogRes[i][j][3][0].length > 30
-            ? getLogRes[i][j][3][0].slice(0, 30) + "..."
-            : getLogRes[i][j][3][0];
-
-        let operation = "";
-        if ("UpdateProjectCanister" in getLogRes[i][j][2]) {
-          if (getLogRes[i][j][2].UpdateProjectCanister[1] != projectId) {
-            continue;
-          }
-          operation = getLogRes[i][j][2].UpdateProjectCanister[2];
-        } else {
-          continue;
-        }
-
+        console.log("event", event[i], create_time);
         this.tableData.tableList.push({
-          name: getLogRes[i][j][0].toString(),
+          name: event[i].method_name,
           time: create_time,
-          project: projectId,
-          operation: operation,
-          data: logData,
+          project: event[i].canister.toString(),
+          operation: event[i].canister.toString(),
+          data: event[i].memo,
         });
       }
     }

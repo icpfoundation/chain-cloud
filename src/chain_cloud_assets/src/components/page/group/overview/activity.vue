@@ -147,7 +147,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Activity</div>
-      <span class="titlePath">Group1 / Project group 001 / Activity</span>
+      <span class="titlePath">{{ group.name }} / Activity</span>
     </div>
     <div class="content">
       <div class="actiontab">
@@ -219,6 +219,7 @@ import {
   TEST_USER,
   TEST_GROUP_ID,
 } from "@/chain_cloud_assets/assets/js/config";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -248,6 +249,9 @@ export default {
           select: false,
         },
       ],
+      group: {
+        name: "",
+      },
       tableData: {
         tableList: [
           // {
@@ -301,7 +305,7 @@ export default {
           //   project: "Group/lotus",
           // },
         ],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3,
       },
@@ -322,10 +326,31 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
   async created() {
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
+    if (getGroupInfoRes.Err) {
+      throw getGroupInfoRes.Err;
+      return;
+    }
+
+    if (getGroupInfoRes.Ok.length > 0) {
+      this.group.name = getGroupInfoRes.Ok[0].name;
+    }
     let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-    let user = Principal.fromText(TEST_USER);
-    let getLogRes = await manageCanister.getLog(user, TEST_GROUP_ID, 1);
+    // let user = Principal.fromText(TEST_USER);
+    let getLogRes = await manage.getLog(account, groupId, 1);
+
     for (let i = 0; i < getLogRes.length; i++) {
       for (let j = 0; j < getLogRes[i].length; j++) {
         let duration = parseInt(
@@ -342,21 +367,52 @@ export default {
         } else {
           create_time = `${duration} s ago`;
         }
-        let logData =
-          getLogRes[i][j][2][2].length > 30
-            ? getLogRes[i][j][2][2].slice(0, 30) + "..."
-            : getLogRes[i][j][2][2];
-        this.tableData.tableList.push({
-          name: getLogRes[i][j][0].toString(),
-          //groupInfo: getLogRes[i][j][2],
-          time: create_time,
-          // toName: "@shanshan",
-          // size: 556565,
-          project: logData,
-          operation: getLogRes[i][j][2][0],
-        });
+
+        if ("UpdateGroup" in getLogRes[i][j][2]) {
+          this.tableData.tableList.push({
+            name: getLogRes[i][j][0].toString(),
+            //groupInfo: getLogRes[i][j][2],
+            time: create_time,
+            // toName: "@shanshan",
+            // size: 556565,
+            project: getLogRes[i][j][2].UpdateGroup[1],
+            operation: getLogRes[i][j][0].toString(),
+          });
+        }
+        if ("UpdateProject" in getLogRes[i][j][2]) {
+          let logData =
+            getLogRes[i][j][2].UpdateProject[2].length > 30
+              ? getLogRes[i][j][2].UpdateProject[2].slice(0, 30) + "..."
+              : getLogRes[i][j][2].UpdateProject[2];
+          this.tableData.tableList.push({
+            name: getLogRes[i][j][0].toString(),
+            //groupInfo: getLogRes[i][j][2],
+            time: create_time,
+            // toName: "@shanshan",
+            // size: 556565,
+            project: logData,
+            operation: getLogRes[i][j][0].toString(),
+          });
+        }
+        if ("UpdateProjectCanister" in getLogRes[i][j][2]) {
+          let logData =
+            getLogRes[i][j][2].UpdateProjectCanister[2].length > 30
+              ? getLogRes[i][j][2].UpdateProjectCanister[2].slice(0, 30) + "..."
+              : getLogRes[i][j][2].UpdateProjectCanister[2];
+          this.tableData.tableList.push({
+            name: getLogRes[i][j][0].toString(),
+            //groupInfo: getLogRes[i][j][2],
+            time: create_time,
+            // toName: "@shanshan",
+            // size: 556565,
+            project: logData,
+            operation: getLogRes[i][j][0].toString(),
+          });
+        }
       }
     }
+
+    this.tableData.total = this.tableData.tableList.length;
   },
 };
 </script>

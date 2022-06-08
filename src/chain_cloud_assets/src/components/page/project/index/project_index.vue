@@ -80,7 +80,7 @@
 .tableImg {
   width: 60px;
   height: 60px;
-  background: #558678;
+
   border-radius: 8px;
   border: 1px solid #e6e6e6;
   margin-right: 20px;
@@ -337,6 +337,7 @@ export default {
         }
       }
     }
+
     topInstance.close();
   },
 };

@@ -120,7 +120,7 @@
       </div>
       <div class="table">
         <div class="tableHead">
-          <span>Frosty_shadow_2438.did</span>
+          <span>content</span>
           <div class="tableHeadRight">
             <span>c24e6435</span>
             <img
@@ -212,6 +212,7 @@ export default {
     return {
       canister: "",
       selectIdx: 0,
+      projectName: "",
       tabList: [
         {
           name: "Candid",
@@ -283,12 +284,13 @@ export default {
       projectId
     );
     if (getProjectRest.Ok.length > 0) {
+      this.projectName = getProjectRest.Ok[0].name;
       let agentOptions = {
         host: "https://ic0.app",
         // host: "http://localhost:8000",
       };
       let agent = new HttpAgent(agentOptions);
-      await agent.fetchRootKey();
+      // await agent.fetchRootKey();
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         //Note: that only the cansiter developed by motoko can be used to obtain data,
         // and the interface of rust development needs to be exposed by the developer
