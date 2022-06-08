@@ -350,7 +350,7 @@ export default {
           1
         );
 
-        console.log(getLogRes)
+        console.log(getLogRes);
 
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
@@ -431,7 +431,7 @@ export default {
                 id: getUserInfoRes.Ok.groups[i][1].projects[v][1].id,
                 type: "Maintainer",
                 info: getUserInfoRes.Ok.groups[i][1].projects[v][1].description,
-                xingNum: 2,
+                xingNum: 0,
                 time: create_time,
                 imageData: imageData,
               });
@@ -442,7 +442,7 @@ export default {
                 id: getUserInfoRes.Ok.groups[i][1].projects[v][1].id,
                 type: "Maintainer",
                 info: getUserInfoRes.Ok.groups[i][1].projects[v][1].description,
-                xingNum: 2,
+                xingNum: 0,
                 time: create_time,
                 imageData: "",
               });

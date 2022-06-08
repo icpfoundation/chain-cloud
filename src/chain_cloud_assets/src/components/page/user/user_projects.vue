@@ -343,7 +343,7 @@ export default {
               id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
               type: "Maintainer",
               info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
-              xingNum: 2,
+              xingNum: 0,
               time: create_time,
               imageData: "",
             });
@@ -355,7 +355,7 @@ export default {
               id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
               type: "Maintainer",
               info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
-              xingNum: 2,
+              xingNum: 0,
               time: create_time,
               imageData: "",
             });

@@ -318,9 +318,9 @@ export default {
             name: getUserInfoRes.Ok.groups[i][1].name,
             id: getUserInfoRes.Ok.groups[i][1].id,
             info: getUserInfoRes.Ok.groups[i][1].description,
-            shuqian: 3,
+            shuqian: 0,
             peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-            xingNum: 2,
+            xingNum: 0,
             imageData: "",
           });
         } catch (err) {
@@ -329,9 +329,9 @@ export default {
             name: getUserInfoRes.Ok.groups[i][1].name,
             id: getUserInfoRes.Ok.groups[i][1].id,
             info: getUserInfoRes.Ok.groups[i][1].description,
-            shuqian: 3,
+            shuqian: 0,
             peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-            xingNum: 2,
+            xingNum: 0,
             imageData: "",
           });
         }
