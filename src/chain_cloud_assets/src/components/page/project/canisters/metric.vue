@@ -117,12 +117,24 @@ export default {
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         canisters.push(getProjectRest.Ok[0].canisters[i].toString());
       }
+
       let legend = ["warnline"];
       let series = [];
       let method1 = [];
       let method2 = [];
       let warnlineArr = [];
       if (canisters.length == 0) {
+        warnlineArr.push({
+          name: moment(new Date().getTime() - 24 * 3600 * 1000).format(
+            "YYYY-MM-DD HH:mm:SS"
+          ),
+          value: [
+            moment(new Date().getTime() - 24 * 3600 * 1000).format(
+              "YYYY-MM-DD HH:mm:SS"
+            ),
+            Number(warnline),
+          ],
+        });
         warnlineArr.push({
           name: moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
           value: [
@@ -146,10 +158,32 @@ export default {
               Number(0),
             ],
           });
+          data.push({
+            name: moment(new Date().getTime() - 24 * 3600 * 1000).format(
+              "YYYY-MM-DD HH:mm:SS"
+            ),
+            value: [
+              moment(new Date().getTime() - 24 * 3600 * 1000).format(
+                "YYYY-MM-DD HH:mm:SS"
+              ),
+              Number(0),
+            ],
+          });
           warnlineArr.push({
             name: moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
             value: [
               moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:SS"),
+              Number(warnline),
+            ],
+          });
+          warnlineArr.push({
+            name: moment(new Date().getTime() - 24 * 3600 * 1000).format(
+              "YYYY-MM-DD HH:mm:SS"
+            ),
+            value: [
+              moment(new Date().getTime() - 24 * 3600 * 1000).format(
+                "YYYY-MM-DD HH:mm:SS"
+              ),
               Number(warnline),
             ],
           });
