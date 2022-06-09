@@ -668,10 +668,10 @@ export default {
   mounted() {},
   async mounted() {
     let topInstance = Loading.service({
-      target: ".rightItem-group",
+      target: ".rightItem-group .table",
     });
     let projectLoading = Loading.service({
-      target: ".rightItem-project",
+      target: ".rightItem-project .table",
     });
     let groupRes = await manageCanister.visibleProject();
     this.tableData.total = groupRes.length;
@@ -691,97 +691,61 @@ export default {
             label =
               projectType.slice(0, 1).toLowerCase() + projectType.slice(1);
           }
-          try {
-            ImageRes.push(
-              (async function (len) {
-                let imageData = await manageCanister.getProjectImage(
-                  groupRes[i][j][0],
-                  groupRes[i][j][1],
-                  groupRes[i][j][2].projects[k][1].id
-                );
-                return [imageData, len];
-              })(this.tableData.tableList.length)
-            );
-            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
-            let owner = giturl.split("/")[3];
-            let repo = giturl.split("/")[4];
 
-            // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
-            this.tableData.tableList.push({
-              value: groupRes[i][j][2].projects[k][1].name,
-              label: label,
-              name: groupRes[i][j][2].projects[k][1].name,
-              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
-              dec: groupRes[i][j][2].projects[k][1].description,
-              type: "Recommended",
-              user: groupRes[i][j][0].toString(),
-              groupId: groupRes[i][j][1],
-              projectId: groupRes[i][j][2].projects[k][1].id,
-              typeId: 2,
-              imageData: imageData,
-              gitowner: owner,
-              gitrepo: repo,
-            });
-          } catch (err) {
-            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
-            let owner = giturl.split("/")[3];
-            let repo = giturl.split("/")[4];
-            this.tableData.tableList.push({
-              value: groupRes[i][j][2].projects[k][1].name,
-              label: label,
-              name: groupRes[i][j][2].projects[k][1].name,
-              by: groupRes[i][j][2].projects[k][1].create_by.toString(),
-              dec: groupRes[i][j][2].projects[k][1].description,
-              type: "Recommended",
-              user: groupRes[i][j][0].toString(),
-              groupId: groupRes[i][j][1],
-              projectId: groupRes[i][j][2].projects[k][1].id,
-              typeId: 2,
-              imageData: "",
-              gitowner: owner,
-              gitrepo: repo,
-            });
-          }
-        }
-      }
-      for (let j = 0; j < groupRes[i].length; j++) {
-        try {
           ImageRes.push(
             (async function (len) {
-              let imageData = await manageCanister.getGroupImage(
+              let imageData = await manageCanister.getProjectImage(
                 groupRes[i][j][0],
-                groupRes[i][j][1]
+                groupRes[i][j][1],
+                groupRes[i][j][2].projects[k][1].id
               );
               return [imageData, len];
             })(this.tableData.tableList.length)
           );
-
-          //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
+          let owner = giturl.split("/")[3];
+          let repo = giturl.split("/")[4];
 
           this.tableData.tableList.push({
-            value: groupRes[i][j][2].name,
-            label: groupRes[i][j][2].name,
-            name: groupRes[i][j][2].name,
-            by: groupRes[i][j][0],
-            dec: groupRes[i][j][2].description,
+            value: groupRes[i][j][2].projects[k][1].name,
+            label: label,
+            name: groupRes[i][j][2].projects[k][1].name,
+            by: groupRes[i][j][2].projects[k][1].create_by.toString(),
+            dec: groupRes[i][j][2].projects[k][1].description,
             type: "Recommended",
-            groupId: groupRes[i][j][2].id,
+            user: groupRes[i][j][0].toString(),
+            groupId: groupRes[i][j][1],
+            projectId: groupRes[i][j][2].projects[k][1].id,
+            typeId: 2,
             imageData: "",
-            typeId: 1,
-          });
-        } catch (err) {
-          this.tableData.tableList.push({
-            value: groupRes[i][j][2].name,
-            label: groupRes[i][j][2].name,
-            name: groupRes[i][j][2].name,
-            by: groupRes[i][j][0],
-            dec: groupRes[i][j][2].description,
-            type: "Recommended",
-            groupId: groupRes[i][j][2].id,
-            typeId: 1,
-            imageData: "",
+            gitowner: owner,
+            gitrepo: repo,
           });
         }
+      }
+      for (let j = 0; j < groupRes[i].length; j++) {
+        ImageRes.push(
+          (async function (len) {
+            let imageData = await manageCanister.getGroupImage(
+              groupRes[i][j][0],
+              groupRes[i][j][1]
+            );
+            return [imageData, len];
+          })(this.tableData.tableList.length)
+        );
+
+        this.tableData.tableList.push({
+          value: groupRes[i][j][2].name,
+          label: groupRes[i][j][2].name,
+          name: groupRes[i][j][2].name,
+          by: groupRes[i][j][0],
+          dec: groupRes[i][j][2].description,
+          type: "Recommended",
+          groupId: groupRes[i][j][2].id,
+          imageData: "",
+          typeId: 1,
+        });
+
         this.tableData.total = this.tableData.tableList.length;
       }
     }

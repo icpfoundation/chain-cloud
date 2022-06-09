@@ -321,7 +321,7 @@
           </div>
           <div
             class="tableItem"
-            v-for="(item, index) in tableData.tableList"
+            v-for="(item, index) in tableData.tableFilter"
             :key="index"
           >
             <div class="itemWidth1 itemCom">
@@ -420,6 +420,7 @@ export default {
       ],
       tableData: {
         tableList: [],
+        tableFilter: [],
         total: 0,
         page: 1,
         pageSize: 3,
@@ -433,6 +434,20 @@ export default {
       });
     },
     chooseFun(item, index) {
+      this.tableData.tableFilter = [];
+      if (item.name == "All public projects") {
+        this.tableData.tableFilter = this.tableData.tableList;
+      } else {
+        let user = this.$route.params.user;
+        this.tableData.tableList.forEach((ele) => {
+          if (ele.createBy == user) {
+            this.tableData.tableFilter.push(ele);
+          }
+        });
+      }
+      this.tableData.total = this.tableData.tableFilter.length;
+      this.tableData.pageSize = this.tableData.total;
+
       this.tabList.forEach((element) => {
         element.select = false;
       });
@@ -547,9 +562,11 @@ export default {
           isLock: false,
           isXing: false,
           isBizoZhi: false,
+          createBy: getGroupInfoRes.Ok[i].projects[j][1].create_by.toString(),
         });
       }
     }
+    this.tableData.tableFilter = this.tableData.tableList;
   },
 };
 </script>
