@@ -30,7 +30,10 @@
 
 .contentbox {
   display: flex;
-  height: 740px;
+
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 .left {
@@ -191,6 +194,9 @@
   height: 1px;
   background: #f1f1f1;
 }
+.demo-spin-icon-load {
+  animation: ani-demo-spin 1s linear infinite;
+}
 </style>
 
 <template>
@@ -199,8 +205,14 @@
       <div class="head">
         <span>New Group</span>
       </div>
+
       <div class="line"></div>
+
       <div class="contentbox">
+        <Spin fix size="large" v-show="loading">
+          <Icon type="ios-loading" size="18" class="demo-spin-icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
         <div class="left">
           <div class="wordStyle">
             Groups allow you to manage and collaborate across multiple projects.
@@ -311,6 +323,7 @@
         </div>
       </div>
     </div>
+
     <div class="lineBottom"></div>
   </div>
 </template>
@@ -318,9 +331,11 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
+      loading: false,
       type: "Public",
       fileName: "No file chosen…",
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
@@ -352,6 +367,7 @@ export default {
       this.group.id = Number(this.group.id);
 
       let account = manageCanister.identity;
+      this.loading = true;
       let addUserRes = await manageCanister.addUser(account.toString(), {
         Public: null,
       });
@@ -387,6 +403,7 @@ export default {
 
       let addGroupRes = await manageCanister.addGroup(account, this.group);
       if (addGroupRes.Err) {
+        this.loading = false;
         let err = "Add failed: " + addGroupRes.Err;
         this.$Notice.info({
           title: err,
@@ -404,6 +421,7 @@ export default {
       if (imageStoreRes.Err) {
         console.log("Picture storage failed", imageStoreRes.Err);
       }
+      this.loading = false;
       this.$Notice.info({
         title: "Successfully added",
         background: true,
