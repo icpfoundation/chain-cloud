@@ -415,6 +415,12 @@ export default {
             v < getUserInfoRes.Ok.groups[i][1].projects.length;
             v++
           ) {
+            if (
+              "Public" in
+              getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
+            ) {
+              continue;
+            }
             let duration = parseInt(
               Number(
                 currentTime -

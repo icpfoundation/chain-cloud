@@ -333,6 +333,11 @@ export default {
           j < getUserInfoRes.Ok.groups[i][1].projects.length;
           j++
         ) {
+          if (
+            "Public" in getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
+          ) {
+            continue;
+          }
           let duration = parseInt(
             Number(
               currentTime -
@@ -362,6 +367,10 @@ export default {
                 );
                 return [imageData, len];
               })(this.projectList.length)
+            );
+            console.log(
+              " getUserInfoRes.Ok.groups[i][1].projects[j][1]",
+              getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
             );
 
             // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
