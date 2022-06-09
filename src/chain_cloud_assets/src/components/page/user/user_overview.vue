@@ -62,6 +62,10 @@
   font-size: 16px;
   font-weight: 500;
   color: #333333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 3rem;
 }
 
 .tableContentInfo {
@@ -84,6 +88,11 @@
 .tableContentBottom {
   font-size: 12px;
   color: #333333;
+  overflow: hidden;
+  table-layout: fixed;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 6rem;
 }
 
 .tableItemTime {
@@ -189,7 +198,7 @@
             />
             <div class="tableContent">
               <div class="tableContentTop">
-                <span class="toname">{{ item.name }}</span>
+                <span class="toname" :title="item.name">{{ item.name }}</span>
                 <span>{{ item.toname }}</span>
               </div>
               <div class="tableContentInfo">
@@ -198,7 +207,7 @@
                 <span>at</span>
                 <span class="mergestyle">{{ item.toaddress }}</span>
               </div>
-              <div class="tableContentBottom">{{ item.commitNum }} update</div>
+              <div class="tableContentBottom">data: {{ item.commitNum }}</div>
             </div>
             <div class="tableItemTime">{{ item.time }}</div>
           </div>
@@ -374,21 +383,28 @@ export default {
               }
 
               let fromaddress = "";
+              let toaddress = "";
+              let commitNum = getLogRes[j][k][3][0];
+
               if ("UpdateGroup" in getLogRes[j][k][2]) {
                 fromaddress = getLogRes[j][k][2].UpdateGroup[1];
+                toaddress = `groupId: ${getLogRes[j][k][2].UpdateGroup[0]}`;
               }
               if ("UpdateProject" in getLogRes[j][k][2]) {
                 fromaddress = getLogRes[j][k][2].UpdateProject[2];
+                toaddress = `groupId: ${getLogRes[j][k][2].UpdateProject[0]}, projectId:${getLogRes[j][k][2].UpdateProject[1]}`;
               }
               if ("UpdateProjectCanister" in getLogRes[j][k][2]) {
                 fromaddress = getLogRes[j][k][2].UpdateProjectCanister[2];
+                toaddress = `groupId: ${getLogRes[j][k][2].UpdateProjectCanister[0]}, projectId:${getLogRes[j][k][2].UpdateProjectCanister[1]}`;
               }
+
               this.activeList.push({
                 name: getLogRes[j][k][0].toString(),
                 toname: "",
                 fromaddress: fromaddress,
-                toaddress: "",
-                commitNum: "",
+                toaddress: toaddress,
+                commitNum: commitNum,
                 time: create_time,
               });
             }

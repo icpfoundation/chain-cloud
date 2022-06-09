@@ -422,7 +422,7 @@ export default {
       ],
       tableData: {
         tableList: [],
-        total: 5,
+        total: 0,
         page: 1,
         pageSize: 3,
       },

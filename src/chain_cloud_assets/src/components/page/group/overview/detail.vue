@@ -397,29 +397,49 @@ export default {
     let totalMemory_size = BigInt(0);
     this.group.name = getGroupInfoRes.Ok[0].name;
     this.group.url = getGroupInfoRes.Ok[0].url;
+
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
-        let memory_size = BigInt(0);
+        let statusRes = [];
+        if (getGroupInfoRes.Ok[0].projects[j][1].canisters.length == 0) {
+          this.group.projects.push({
+            size: `0 KB`,
+            name: getGroupInfoRes.Ok[0].projects[j][1].name,
+          });
+          continue;
+        }
         for (
           let k = 0;
           k < getGroupInfoRes.Ok[0].projects[j][1].canisters.length;
           k++
         ) {
-          let getCanisterStatusRes = await manage.getCanisterStatus(
-            account,
-            groupId,
-            getGroupInfoRes.Ok[0].projects[j][1].id,
-            getGroupInfoRes.Ok[0].projects[j][1].canisters[k]
+          statusRes.push(
+            (async function () {
+              let getCanisterStatusRes = await manage.getCanisterStatus(
+                account,
+                groupId,
+                getGroupInfoRes.Ok[0].projects[j][1].id,
+                getGroupInfoRes.Ok[0].projects[j][1].canisters[k]
+              );
+              return getCanisterStatusRes;
+            })()
           );
-
-          if (getCanisterStatusRes.Ok) {
-            memory_size = memory_size + getCanisterStatusRes.Ok[0].memory_size;
-          }
         }
-        totalMemory_size = totalMemory_size + memory_size;
-        this.group.projects.push({
-          size: `${memory_size / BigInt(1024)} KB`,
-          name: getGroupInfoRes.Ok[0].projects[j][1].name,
+        Promise.all(statusRes).then((getCanisterStatusRes) => {
+          for (let i = 0; i < getCanisterStatusRes.length; i++) {
+            if (getCanisterStatusRes[i].Ok) {
+              totalMemory_size = totalMemory_size + memory_size;
+              this.group.projects.push({
+                size: `${memory_size / BigInt(1024)} KB`,
+                name: getGroupInfoRes.Ok[0].projects[j][1].name,
+              });
+            } else {
+              this.group.projects.push({
+                size: `0 KB`,
+                name: getGroupInfoRes.Ok[0].projects[j][1].name,
+              });
+            }
+          }
         });
       }
       for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
