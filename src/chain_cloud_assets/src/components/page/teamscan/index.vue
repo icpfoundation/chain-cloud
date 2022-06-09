@@ -620,9 +620,20 @@ export default {
         name: "project_index",
       });
     },
-    toProjectItemFun() {
+    toProjectItemFun(item) {
+      // this.$router.push({
+      //   name: "project_index",
+      // });
+      console.log("item", item);
       this.$router.push({
-        name: "project_index",
+        name: "project",
+        params: {
+          user: item.user,
+          groupId: item.groupId,
+          projectId: item.projectId,
+          owner: item.gitowner,
+          repo: item.gitrepo,
+        },
       });
     },
     filterType(item) {
@@ -684,6 +695,9 @@ export default {
                 return [imageData, len];
               })(this.tableData.tableList.length)
             );
+            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
+            let owner = giturl.split("/")[3];
+            let repo = giturl.split("/")[4];
 
             // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.tableData.tableList.push({
@@ -698,8 +712,13 @@ export default {
               projectId: groupRes[i][j][2].projects[k][1].id,
               typeId: 2,
               imageData: imageData,
+              gitowner: owner,
+              gitrepo: repo,
             });
           } catch (err) {
+            let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
+            let owner = giturl.split("/")[3];
+            let repo = giturl.split("/")[4];
             this.tableData.tableList.push({
               value: groupRes[i][j][2].projects[k][1].name,
               label: label,
@@ -712,6 +731,8 @@ export default {
               projectId: groupRes[i][j][2].projects[k][1].id,
               typeId: 2,
               imageData: "",
+              gitowner: owner,
+              gitrepo: repo,
             });
           }
         }

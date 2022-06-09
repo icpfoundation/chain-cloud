@@ -28,7 +28,11 @@ const getCanisterInfo = async (canisterId) => {
         let subnet = cert["cert"].delegation
             ? Principal.fromUint8Array(cert["cert"].delegation.subnet_id).toText()
             : null;
-        let res = subnet.split('-')
+
+        let res = ""
+        if (subnet) {
+            res = subnet.split('-')
+        }
 
         let module_hash = cert.lookup(pathModuleHash);
         let array = new Uint8Array(module_hash);
