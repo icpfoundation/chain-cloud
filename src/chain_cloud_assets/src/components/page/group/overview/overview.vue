@@ -265,9 +265,7 @@
           <div class="headLeftdec">
             <span>group</span>
             <span style="margin-left: 0.05rem; margin-right: 0.05rem">|</span>
-            <span
-              style="color: #1776ff; cursor: pointer"
-              @click="togroupIndexFun"
+            <span style="color: #1776ff; cursor: pointer" @click="leaveGroup"
               >leave group</span
             >
           </div>
@@ -454,10 +452,37 @@ export default {
         duration: 3,
       });
     },
-    togroupIndexFun() {
-      this.$router.push({
-        name: "group_index",
-      });
+    // togroupIndexFun() {
+    //   this.$router.push({
+    //     name: "group_index",
+    //   });
+    // },
+    async leaveGroup() {
+      let account = Principal.fromText(this.$route.params.user);
+      let groupId = BigInt(this.$route.params.groupId);
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let removeRes = await manageCanister.removeGroupMember(
+        account,
+        groupId,
+        manageCanister.identity
+      );
+
+      if ("Ok" in removeRes) {
+        this.$Notice.info({
+          title: "Exit successful",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$Notice.info({
+          title: "Exit failed: " + removeRes.Err,
+          background: true,
+          duration: 3,
+        });
+      }
     },
   },
   computed: {
