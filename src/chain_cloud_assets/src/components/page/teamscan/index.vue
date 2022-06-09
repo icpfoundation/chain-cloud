@@ -143,7 +143,7 @@
 .tableImg {
   width: 60px;
   height: 60px;
-  background: #558678;
+
   border-radius: 8px;
   border: 1px solid #e6e6e6;
   margin-right: 20px;
@@ -405,6 +405,7 @@ import {
   TEST_GROUP_ID,
 } from "@/chain_cloud_assets/assets/js/config";
 import { Loading } from "element-ui";
+
 export default {
   data() {
     return {
@@ -537,21 +538,20 @@ export default {
       this.inputValue = value;
     },
     searchFun() {
-      let groupList = [];
-      let projectList = [];
-
-      this.tableData.tableList.forEach((element) => {
+      this.groupList.splice(0);
+      this.projectList.splice(0);
+      this.projectShow = true;
+      this.groupShow = true;
+      for (let element of this.tableData.tableList) {
         let index = element.name.indexOf(this.inputValue);
         if (index != -1) {
           if (element.typeId === 1) {
-            groupList.push(element);
+            this.groupList.push(element);
           } else {
-            projectList.push(element);
+            this.projectList.push(element);
           }
-          this.groupList = groupList;
-          this.projectList = groupList;
         }
-      });
+      }
     },
     clearFun() {
       let groupList = [];
@@ -605,9 +605,13 @@ export default {
         this.selectList = [1];
       }
     },
-    toGroupItemFun() {
+    toGroupItemFun(item) {
       this.$router.push({
-        name: "group_index",
+        name: "group",
+        params: {
+          user: item.by.toString(),
+          groupId: item.groupId,
+        },
       });
     },
     toGroupFun() {
@@ -621,10 +625,6 @@ export default {
       });
     },
     toProjectItemFun(item) {
-      // this.$router.push({
-      //   name: "project_index",
-      // });
-      console.log("item", item);
       this.$router.push({
         name: "project",
         params: {
@@ -645,6 +645,13 @@ export default {
         case "Project":
           this.projectShow = true;
           this.groupShow = false;
+
+          this.projectList = [];
+          this.tableData.tableList.forEach((element) => {
+            if (element.typeId == 2) {
+              this.projectList.push(element);
+            }
+          });
           break;
         default:
           this.groupShow = false;

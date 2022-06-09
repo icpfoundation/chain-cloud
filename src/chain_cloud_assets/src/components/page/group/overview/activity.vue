@@ -405,6 +405,7 @@ export default {
     }
 
     this.tableData.total = this.tableData.tableList.length;
+    this.tableData.pageSize = this.tableData.tableList.length;
   },
 };
 </script>

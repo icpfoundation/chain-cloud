@@ -489,6 +489,7 @@ export default {
       return;
     }
     this.tableData.total = getGroupInfoRes.Ok[0].projects.length;
+    this.tableData.pageSize = getGroupInfoRes.Ok[0].projects.length;
     if (getGroupInfoRes.Ok.length > 0) {
       this.group.name = getGroupInfoRes.Ok[0].name;
     }
