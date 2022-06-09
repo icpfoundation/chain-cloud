@@ -151,6 +151,9 @@ import {
   initManageCanister,
   initPlug,
 } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import { Actor, HttpAgent, Identity } from "@dfinity/agent";
+import { DelegationIdentity } from "@dfinity/identity";
 export default {
   name: "headerview",
   data() {
@@ -256,28 +259,27 @@ export default {
     doSomething: async function (event) {
       this.tabShow = false;
       if (event) {
-        let manageCansiter = this.getManageCanister();
-        let principle = window.localStorage.getItem("principleString");
-        if (!manageCansiter) {
+        //let identity = window.localStorage.getItem("identity");
+        let manageCanister = this.getManageCanister();
+        if (!manageCanister) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
+            maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
             onSuccess: async () => {
               let identity = this.authClient.getIdentity();
               let manageCanister = initManageCanister(identity);
+              // this.authClient.registerActor("ii", manageCanister);
               this.manageCanisterConfig(manageCanister);
 
               // window.manageCanister = manageCanister;
-              // localStorage.setItem("identity", identity);
+              // window.localStorage.setItem("identity", JSON.stringify(identity));
               let principle = identity.getPrincipal();
               that.principle = principle;
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
-              // that.setICIdentityConfig(principle, identity);
-              // window.localStorage.setItem(
-              //   "principleString",
-              //   principle.toString()
-              // );
+              //that.setICIdentityConfig(principle, identity);
+
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );
@@ -296,9 +298,12 @@ export default {
     },
 
     gohome() {
-      document
-        .getElementsByClassName("is-active")[0]
-        .classList.remove("is-active");
+      if (document.getElementsByClassName("is-active").length > 0) {
+        document
+          .getElementsByClassName("is-active")[0]
+          .classList.remove("is-active");
+      }
+
       if (this.$router.currentRoute.path != "/home") {
         this.$router.push("/home");
       }
@@ -316,10 +321,11 @@ export default {
       this.principleShort = "Login";
       this.leave();
       this.manageCanisterConfig(null);
+      window.localStorage.removeItem("identity");
     },
   },
 
-  mounted() {
+  async mounted() {
     switch (this.$router.currentRoute.path) {
       case "/home":
         this.activeIndex = "1";
@@ -338,14 +344,17 @@ export default {
         break;
     }
 
-    let principle = window.localStorage.getItem("principleString");
-    if (principle) {
-      this.principal = principle.toString();
-      this.principleShort = principle.toString().substring(0, 8) + "...";
-    }
-
     const init = async () => {
       this.authClient = await AuthClient.create();
+      if (this.authClient.getIdentity() instanceof DelegationIdentity) {
+        let identity = this.authClient.getIdentity();
+        let manageCanister = initManageCanister(identity);
+
+        this.manageCanisterConfig(manageCanister);
+        let principle = identity.getPrincipal();
+        this.principle = principle;
+        this.principleShort = principle.toString().substring(0, 8) + "...";
+      }
     };
 
     init();
