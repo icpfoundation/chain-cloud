@@ -98,6 +98,11 @@
 .componentsContent {
   margin-top: 20px;
 }
+#main {
+  width: 80%;
+  margin: 0 auto;
+  height: 200px;
+}
 </style>
 
 <template>
@@ -111,6 +116,7 @@
       <span class="time">Create Time:{{ user.createTime }} </span>
       <span class="headInfo">Internet Identity: {{ user.account }}</span>
     </div>
+
     <div class="content">
       <div class="contentBox">
         <div class="contentTab">
@@ -124,8 +130,9 @@
             {{ item.name }}
           </div>
         </div>
+        <div id="main"></div>
         <div class="components">
-          <span class="compenentsName">Most Recent {{ title }}</span>
+          <!-- <span class="compenentsName">Most Recent {{ title }}</span> -->
           <div class="componentsContent">
             <UserOverview v-if="type === 1"></UserOverview>
             <UserActivity v-if="type === 2"></UserActivity>
@@ -149,6 +156,8 @@ import { Principal } from "@dfinity/principal";
 import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
 
 import { mapGetters } from "vuex";
+import * as echarts from "echarts";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -221,6 +230,7 @@ export default {
   watch: {
     async getmanagecanister(newdata, olddata) {
       await this.userConfig(newdata.identity);
+      await this.diagram();
     },
   },
   methods: {
@@ -248,6 +258,104 @@ export default {
       this.type = item.id;
       this.title = item.name;
     },
+    async diagram() {
+      let chartDom = document.getElementById("main");
+      let myChart = echarts.init(chartDom);
+      let option = {
+        // title: {
+        //   top: 30,
+        //   left: "center",
+        //   text: "Daily Step Count",
+        // },
+        tooltip: {},
+        visualMap: {
+          min: 0,
+          max: 100,
+          type: "piecewise",
+          orient: "horizontal",
+          left: "center",
+          top: 15,
+
+          color: ["#034df0", "#2666f2", "#5989f1", "#89a9ee", "#abc0ed"],
+        },
+        calendar: {
+          monthLabel: {
+            position: "end",
+          },
+          splitLine: false,
+          top: 60,
+          left: 30,
+          right: 30,
+          cellSize: [17],
+          range: "2022",
+          itemStyle: {
+            borderWidth: 3,
+            borderColor: "#ffffff",
+            color: "#e9e9e9",
+          },
+          yearLabel: { show: false },
+        },
+        series: {
+          type: "heatmap",
+          coordinateSystem: "calendar",
+          data: [],
+        },
+      };
+
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
+      let getUserInfoRes = await manageCanister.getUserInfo(account);
+      let logRes = [];
+      if ("Err" in getUserInfoRes) {
+        myChart.setOption(option);
+        throw getUserInfoRes.Err;
+      }
+      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+        logRes.push(
+          (async function () {
+            let getLogRes = await manageCanister.getLog(
+              account,
+              getUserInfoRes.Ok.groups[i][1].id,
+              1
+            );
+            return getLogRes;
+          })()
+        );
+      }
+      if (logRes.length == 0) {
+        myChart.setOption(option);
+        return;
+      }
+      Promise.all(logRes).then((getLogRes) => {
+        let map = new Map();
+        for (let j = 0; j < getLogRes.length; j++) {
+          for (let k = 0; k < getLogRes[j].length; k++) {
+            for (let v = 0; v < getLogRes[j][k].length; v++) {
+              let date = new Date(
+                Number(BigInt(getLogRes[j][k][v][1]) / BigInt(1000000))
+              );
+              date = moment(date).format("YYYY-MM-DD");
+
+              if (!map.get(date)) {
+                map.set(date, 1);
+              } else {
+                let num = map.get(date);
+                map.set(date, num + 1);
+              }
+            }
+          }
+        }
+        let arr = Array.from(map);
+        option.series.data = arr;
+        myChart.setOption(option);
+      });
+    },
+  },
+  async mounted() {
+    this.diagram();
   },
   async created() {
     let canister = this.getManageCanister();
