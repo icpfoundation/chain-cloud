@@ -355,6 +355,7 @@ export default {
 
     if (getUserInfoRes.Ok) {
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
+      let currentTimeProject = BigInt(new Date().getTime());
       let imageRes = [];
       let logRes = [];
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
@@ -381,12 +382,13 @@ export default {
           }
           let duration = parseInt(
             Number(
-              currentTime -
+              currentTimeProject -
                 BigInt(
                   getUserInfoRes.Ok.groups[i][1].projects[j][1].create_time
                 )
             ) / 1000
           );
+
           let create_time = "0 s ago";
           if (duration >= 86400) {
             create_time = `create ${parseInt(duration / 86400)} day ago`;
@@ -433,6 +435,7 @@ export default {
                       BigInt(getLogRes[j][k][v][1]) / BigInt(1000000000)
                   )
                 );
+
                 let create_time = "";
                 if (duration >= 86400) {
                   create_time = ` ${parseInt(duration / 86400)} day ago`;

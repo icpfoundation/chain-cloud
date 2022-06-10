@@ -1,16 +1,17 @@
 <style scoped>
 .userapp {
   width: 100%;
-  margin-top: 100px;
 }
 
 .head {
   width: 100%;
-  height: 2.32rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.2rem;
+  margin-top: 100px;
+
+  position: relative;
 }
 
 .head img {
@@ -103,10 +104,27 @@
   margin: 0 auto;
   height: 200px;
 }
+.head_bg {
+  width: 100%;
+  height: 50%;
+  top: 0;
+  position: absolute;
+}
+.teamscan_top_bg {
+  width: 100%;
+  height: 100%;
+}
 </style>
 
 <template>
   <div class="userapp">
+    <div class="head_bg">
+      <img
+        src="../../../../assets/chain_cloud/teamscan/teamscan_top_bg.png"
+        alt=""
+        class="teamscan_top_bg"
+      />
+    </div>
     <div class="head">
       <img
         src="../../../../assets/chain_cloud/group/pic_avatar01@2x.png"
@@ -131,6 +149,7 @@
           </div>
         </div>
         <div id="main"></div>
+
         <div class="components">
           <!-- <span class="compenentsName">Most Recent {{ title }}</span> -->
           <div class="componentsContent">

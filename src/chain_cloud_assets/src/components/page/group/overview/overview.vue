@@ -556,7 +556,7 @@ export default {
 
         this.tableData.tableList.push({
           name: getGroupInfoRes.Ok[i].projects[j][1].name,
-          group: getGroupInfoRes.Ok[0].description.substring(0, 1),
+          group: getGroupInfoRes.Ok[i].projects[j][1].name.slice(0, 1),
           groupInfo: getGroupInfoRes.Ok[i].projects[j][1].description,
           time: create_time,
           isLock: false,
