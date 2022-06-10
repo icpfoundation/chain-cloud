@@ -132,7 +132,7 @@
         </div>
         <div id="main"></div>
         <div class="components">
-          <span class="compenentsName">Most Recent {{ title }}</span>
+          <!-- <span class="compenentsName">Most Recent {{ title }}</span> -->
           <div class="componentsContent">
             <UserOverview v-if="type === 1"></UserOverview>
             <UserActivity v-if="type === 2"></UserActivity>
@@ -158,7 +158,6 @@ import { dateFormat } from "@/chain_cloud_assets/assets/js/util";
 import { mapGetters } from "vuex";
 import * as echarts from "echarts";
 import moment from "moment";
-import { log } from "util";
 export default {
   data() {
     return {
@@ -276,16 +275,23 @@ export default {
           orient: "horizontal",
           left: "center",
           top: 15,
+
           color: ["#034df0", "#2666f2", "#5989f1", "#89a9ee", "#abc0ed"],
         },
         calendar: {
+          monthLabel: {
+            position: "end",
+          },
+          splitLine: false,
           top: 60,
           left: 30,
           right: 30,
-          cellSize: ["auto", 13],
+          cellSize: [17],
           range: "2022",
           itemStyle: {
-            borderWidth: 0.5,
+            borderWidth: 3,
+            borderColor: "#ffffff",
+            color: "#e9e9e9",
           },
           yearLabel: { show: false },
         },
