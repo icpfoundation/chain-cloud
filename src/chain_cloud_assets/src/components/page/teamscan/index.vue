@@ -297,7 +297,7 @@
             </div>
           </div>
           <div class="line"></div>
-          <div class="typeList">
+          <!-- <div class="typeList">
             <div class="typeTilte">Filters</div>
             <div
               class="typeItem filterItem"
@@ -317,7 +317,7 @@
                 v-else
               />
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="right">
           <div class="rightItem-group" v-if="groupShow">

@@ -167,6 +167,21 @@
 .groupContentInfo {
   justify-items: center;
 }
+
+.delete {
+  width: 0.8rem;
+  height: 0.32rem;
+  background: #dc5050;
+  border-radius: 0.04rem;
+  border: 0.01rem solid #dc5050;
+  text-align: center;
+  line-height: 0.32rem;
+  cursor: pointer;
+  font-size: 0.13rem;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #ffffff;
+}
 </style>
 
 <template>
@@ -206,6 +221,7 @@
                 />
                 <span>{{ item.peoplese }}</span>
               </div>
+
               <div class="tableItemgroupTimeItem">
                 <img
                   src="../../../../assets/chain_cloud/teamscan/icon_private@2x.png"
@@ -226,6 +242,7 @@
                   class="typeImg"
                 />
               </div>
+              <div class="delete" @click.stop="deleteGroup(item)">delete</div>
             </div>
           </div>
         </div>
@@ -288,6 +305,29 @@ export default {
           groupId: item.id,
         },
       });
+    },
+    async deleteGroup(item) {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let removeRes = await manageCanister.removeGroup(
+        manageCanister.identity,
+        item.id
+      );
+      if ("Ok" in removeRes) {
+        this.$Notice.info({
+          title: "Deletion succeeded",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$Notice.info({
+          title: "Delete failed: " + removeRes.Err,
+          background: true,
+          duration: 3,
+        });
+      }
     },
   },
   async created() {

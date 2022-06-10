@@ -49,6 +49,15 @@ interface ManageInterface {
         group_id: bigint,
         member: Principal,
     ): OptGroupRes,
+
+
+    remove_group(account: Principal, group_id: bigint): OptGroupRes,
+
+    remove_project(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+    ): OptGroupRes,
 }
 
 interface ImageStoreInterface {
@@ -177,6 +186,23 @@ class ManageCanister {
         let rmGroupMemberRes = await this.manageActor.remove_group_member(account, group_id, member)
         return rmGroupMemberRes
     }
+
+
+    async removeGroup(
+        account: Principal,
+        group_id: bigint
+    ): Promise<OptGroupRes> {
+        let rmGroupRes = await this.manageActor.remove_group(account, group_id)
+        return rmGroupRes
+
+    }
+
+    async removeProject(account: Principal,
+        group_id: bigint, project_id: bigint): Promise<OptGroupRes> {
+        let rmProjectRes = await this.manageActor.remove_project(account, group_id, project_id)
+        return rmProjectRes
+    }
+
 }
 
 
