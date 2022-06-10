@@ -56,9 +56,9 @@
   color: #333333;
 }
 
-.typeItem:hover {
+/* .typeItem:hover {
   background: #f8f8f8;
-}
+} */
 
 .line {
   width: 100%;
@@ -235,6 +235,9 @@
   padding-left: 10%;
   bottom: 0;
 }
+.itemActive {
+  background: #1776ff;
+}
 </style>
 
 <template>
@@ -291,6 +294,7 @@
               class="typeItem"
               v-for="(typeItem, typeIndex) in item.list"
               :key="typeIndex"
+              :name="typeItem.name"
               @click="filterType(typeItem)"
             >
               {{ typeItem.name }}
@@ -570,6 +574,7 @@ export default {
     },
     getMoreParams(item) {
       this.roleValue = item.value;
+
       let arr = [];
       if (item.typeId === 1) {
         this.projectShow = false;
@@ -637,6 +642,12 @@ export default {
       });
     },
     filterType(item) {
+      let ele = document.getElementsByClassName("itemActive");
+      for (let i = 0; i < ele.length; i++) {
+        ele[i].classList.remove("itemActive");
+      }
+
+      document.getElementsByName(item.name)[0].classList.add("itemActive");
       switch (item.name) {
         case "Group":
           this.projectShow = false;
