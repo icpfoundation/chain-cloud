@@ -245,7 +245,20 @@ export default {
 
       switch (this.activeIndex) {
         case "1":
-          window.open("https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/");
+          let principle = window.localStorage.getItem("principleString");
+          if (principle == undefined || principle == "" || principle == null) {
+            this.$message({
+              showClose: true,
+              message: "Warning, should login first",
+              type: "warning",
+            });
+            return;
+          }
+
+          let targetUrl =
+            "https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/#principal=" +
+            principle;
+          window.open(targetUrl);
           break;
 
         case "2":
@@ -340,8 +353,14 @@ export default {
               that.principle = principle;
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
-              //that.setICIdentityConfig(principle, identity);
-
+                
+              // that.setICIdentityConfig(principle, identity);
+              
+              window.localStorage.setItem(
+                "principleString",
+                principle.toString()
+              );
+              
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );
@@ -423,6 +442,3 @@ export default {
   },
 };
 </script>
-
-
-

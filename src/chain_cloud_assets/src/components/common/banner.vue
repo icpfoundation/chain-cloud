@@ -180,20 +180,20 @@ export default {
   components: {},
   methods: {
     doStart() {
-      window.open("https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/");
-      // let principle = window.localStorage.getItem("principleString");
-      // if (principle == undefined || principle == "" || principle == null) {
-      //   this.$message({
-      //     showClose: true,
-      //     message: "Warning, should login first",
-      //     type: "warning",
-      //   });
-      //   return;
-      // }
+      let principle = window.localStorage.getItem("principleString");
+      if (principle == undefined || principle == "" || principle == null) {
+        this.$message({
+          showClose: true,
+          message: "Warning, should login first",
+          type: "warning",
+        });
+        return;
+      }
 
-      // if (this.$router.path != "/deploy") {
-      //   this.$router.push("/deploy");
-      // }
+      let targetUrl =
+        "https://k4qes-raaaa-aaaan-qah5q-cai.raw.ic0.app/#principal=" +
+        principle;
+      window.open(targetUrl);
     },
   },
 };
