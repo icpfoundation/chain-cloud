@@ -353,7 +353,7 @@
       </div>
     </div>
     <div class="content">
-      <div class="contentTitle">Canister Activities</div>
+      <div class="contentTitle">Project Activities</div>
       <div class="contentBox">
         <div class="table">
           <div class="tableHead">
