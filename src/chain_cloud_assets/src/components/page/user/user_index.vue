@@ -106,7 +106,7 @@
 }
 .head_bg {
   width: 100%;
-  height: 50%;
+  height: 30%;
   top: 0;
   position: absolute;
 }
@@ -149,7 +149,6 @@
           </div>
         </div>
         <div id="main"></div>
-
         <div class="components">
           <!-- <span class="compenentsName">Most Recent {{ title }}</span> -->
           <div class="componentsContent">
