@@ -176,6 +176,20 @@
   align-items: center;
   margin-left: 10px;
 }
+.delete {
+  width: 0.8rem;
+  height: 0.32rem;
+  background: #dc5050;
+  border-radius: 0.04rem;
+  border: 0.01rem solid #dc5050;
+  text-align: center;
+  line-height: 0.32rem;
+  cursor: pointer;
+  font-size: 0.13rem;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #ffffff;
+}
 </style>
 
 <template>
@@ -245,6 +259,7 @@
                 </div>
               </div>
               <span>{{ item.time }}</span>
+              <div class="delete" @click.stop="deleteGroup(item)">delete</div>
             </div>
           </div>
         </div>
@@ -312,6 +327,30 @@ export default {
         },
       });
     },
+    async deleteGroup(item) {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let removeRes = await manageCanister.removeProject(
+        manageCanister.identity,
+        item.groupId,
+        item.id
+      );
+      if ("Ok" in removeRes) {
+        this.$Notice.info({
+          title: "Deletion succeeded",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$Notice.info({
+          title: "Delete failed: " + removeRes.Err,
+          background: true,
+          duration: 3,
+        });
+      }
+    },
   },
   computed: {
     ...mapGetters(["getManageCanister"]),
@@ -367,10 +406,6 @@ export default {
                 );
                 return [imageData, len];
               })(this.projectList.length)
-            );
-            console.log(
-              " getUserInfoRes.Ok.groups[i][1].projects[j][1]",
-              getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
             );
 
             // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
