@@ -324,6 +324,10 @@ export default {
         this.principle = manageCanister.identity;
         this.principleShort =
           manageCanister.identity.toString().substring(0, 8) + "...";
+        window.localStorage.setItem(
+          "principleString",
+          this.principle.toString()
+        );
       } else {
         if (this.$router.path != "/user") {
           this.$router.push("/user");
@@ -353,14 +357,14 @@ export default {
               that.principle = principle;
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
-                
+
               // that.setICIdentityConfig(principle, identity);
-              
+
               window.localStorage.setItem(
                 "principleString",
                 principle.toString()
               );
-              
+
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );
