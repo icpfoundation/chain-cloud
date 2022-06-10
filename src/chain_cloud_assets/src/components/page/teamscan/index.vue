@@ -49,7 +49,7 @@
   cursor: pointer;
   border-radius: 8px;
   padding-left: 20px;
-  line-height: 100%;
+  line-height: 37px;
   font-size: 14px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
