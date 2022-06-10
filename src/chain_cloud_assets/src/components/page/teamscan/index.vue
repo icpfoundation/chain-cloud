@@ -236,7 +236,7 @@
   bottom: 0;
 }
 .itemActive {
-  background: #1776ff;
+  background: rgb(14, 80, 210);
 }
 </style>
 
