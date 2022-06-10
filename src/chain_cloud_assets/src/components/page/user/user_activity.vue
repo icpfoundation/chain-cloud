@@ -186,60 +186,68 @@ export default {
 
     if (getUserInfoRes.Ok) {
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-
+      let logRes = [];
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        let getLogRes = await manageCanister.getLog(
-          account,
-          getUserInfoRes.Ok.groups[i][1].id,
-          1
+        logRes.push(
+          (async function () {
+            let getLogRes = await manageCanister.getLog(
+              account,
+              getUserInfoRes.Ok.groups[i][1].id,
+              1
+            );
+            return getLogRes;
+          })()
         );
-
+      }
+      Promise.all(logRes).then((getLogRes) => {
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
-            if (getLogRes[j][k][0].toString() == account.toString()) {
-              let duration = parseInt(
-                Number(
-                  currentTime - BigInt(getLogRes[j][k][1]) / BigInt(1000000000)
-                )
-              );
-              let create_time = "";
-              if (duration >= 86400) {
-                create_time = ` ${parseInt(duration / 86400)} day ago`;
-              } else if (duration >= 3600) {
-                create_time = `${parseInt(duration / 3600)} hour ago`;
-              } else if (duration >= 60) {
-                create_time = `${parseInt(duration / 60)} min ago`;
-              } else {
-                create_time = `${duration} s ago`;
+            for (let v = 0; v < getLogRes[j][k].length; v++) {
+              if (getLogRes[j][k][v][0].toString() == account.toString()) {
+                let duration = parseInt(
+                  Number(
+                    currentTime -
+                      BigInt(getLogRes[j][k][v][1]) / BigInt(1000000000)
+                  )
+                );
+                let create_time = "";
+                if (duration >= 86400) {
+                  create_time = ` ${parseInt(duration / 86400)} day ago`;
+                } else if (duration >= 3600) {
+                  create_time = `${parseInt(duration / 3600)} hour ago`;
+                } else if (duration >= 60) {
+                  create_time = `${parseInt(duration / 60)} min ago`;
+                } else {
+                  create_time = `${duration} s ago`;
+                }
+                let fromaddress = "";
+                let toaddress = "";
+                let commitNum = getLogRes[j][k][v][3][0];
+                if ("UpdateGroup" in getLogRes[j][k][v][2]) {
+                  fromaddress = getLogRes[j][k][v][2].UpdateGroup[1];
+                  toaddress = `groupId: ${getLogRes[j][k][v][2].UpdateGroup[0]}`;
+                }
+                if ("UpdateProject" in getLogRes[j][k][v][2]) {
+                  fromaddress = getLogRes[j][k][v][2].UpdateProject[2];
+                  toaddress = `groupId: ${getLogRes[j][k][v][2].UpdateProject[0]}, projectId:${getLogRes[j][k][v][2].UpdateProject[1]}`;
+                }
+                if ("UpdateProjectCanister" in getLogRes[j][k][v][2]) {
+                  fromaddress = getLogRes[j][k][v][2].UpdateProjectCanister[2];
+                  toaddress = `groupId: ${getLogRes[j][k][v][2].UpdateProjectCanister[0]}, projectId:${getLogRes[j][k][v][2].UpdateProjectCanister[1]}`;
+                }
+                this.activeList.push({
+                  name: getLogRes[j][k][v][0].toString(),
+                  toname: "",
+                  fromaddress: fromaddress,
+                  toaddress: toaddress,
+                  commitNum: commitNum,
+                  time: create_time,
+                });
               }
-              let fromaddress = "";
-              let toaddress = "";
-              let commitNum = getLogRes[j][k][3][0];
-
-              if ("UpdateGroup" in getLogRes[j][k][2]) {
-                fromaddress = getLogRes[j][k][2].UpdateGroup[1];
-                toaddress = `groupId: ${getLogRes[j][k][2].UpdateGroup[0]}`;
-              }
-              if ("UpdateProject" in getLogRes[j][k][2]) {
-                fromaddress = getLogRes[j][k][2].UpdateProject[2];
-                toaddress = `groupId: ${getLogRes[j][k][2].UpdateProject[0]}, projectId:${getLogRes[j][k][2].UpdateProject[1]}`;
-              }
-              if ("UpdateProjectCanister" in getLogRes[j][k][2]) {
-                fromaddress = getLogRes[j][k][2].UpdateProjectCanister[2];
-                toaddress = `groupId: ${getLogRes[j][k][2].UpdateProjectCanister[0]}, projectId:${getLogRes[j][k][2].UpdateProjectCanister[1]}`;
-              }
-              this.activeList.push({
-                name: getLogRes[j][k][0].toString(),
-                toname: "",
-                fromaddress: fromaddress,
-                toaddress: toaddress,
-                commitNum: commitNum,
-                time: create_time,
-              });
             }
           }
         }
-      }
+      });
     }
   },
 };
