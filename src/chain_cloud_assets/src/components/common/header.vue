@@ -103,10 +103,57 @@
 .menuBox .is-active {
   border-bottom: 1.5px solid #0059ff;
 }
+.ivu-modal-body {
+  display: flex !important;
+
+  justify-content: space-around !important;
+
+  border: 1px solid red;
+}
+.ivu-modal-body span {
+  display: inline-block;
+  flex: 1;
+
+  display: inline-block;
+  width: 35%;
+  height: 130px;
+  margin-left: 10%;
+  cursor: pointer;
+}
+.ivu-modal-body span:hover {
+  border: 1px solid rgb(241, 208, 208);
+  border-radius: 10px;
+  box-shadow: 0 0.375rem 0.75rem rgb(127 150 174 / 13%);
+}
+.ivu-modal {
+  margin-top: 300px !important;
+}
 </style>
 
 <template>
   <div class="headerApp">
+    <Modal
+      v-model="modal"
+      :loading="loading"
+      :closable="closable"
+      :footer-hide="footer"
+      :styles="{ marginTop: '10%' }"
+    >
+      <span @click="plugLogin">
+        <img
+          src="../../../assets/img/home/plug.svg"
+          alt=""
+          class="logo"
+          style="height: 100%; width: 100%"
+      /></span>
+      <span @click="doSomething">
+        <img
+          src="../../../assets/img/home/dfinity.svg"
+          alt=""
+          class="logo"
+          style="height: 100%; width: 100%"
+      /></span>
+    </Modal>
     <img
       src="../../../assets/img/nav_logo@2x.png"
       @click="gohome"
@@ -120,14 +167,13 @@
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
-    <div class="loginviewCol" @mouseleave="leave">
-      <div class="loginview" @mouseenter="enter" @click.self="doSomething">
-        <span @click.self="doSomething"> {{ principleShort }} </span>
+    <div class="loginviewCol" @mouseleave="leave" @click.stop="login">
+      <div class="loginview" @mouseenter="enter">
+        <span> {{ principleShort }} </span>
         <img
           class="dfxlogo"
           src="../../../assets/img/logo_difinity@2x.png"
           alt="dfinity logo"
-          @click.self="doSomething"
         />
       </div>
       <div class="tab" v-if="tabShow && principleShort != 'Login'">
@@ -158,6 +204,11 @@ export default {
   name: "headerview",
   data() {
     return {
+      modal: false,
+      loading: true,
+      closable: false,
+      footer: true,
+
       options: [
         {
           value: "English",
@@ -240,8 +291,18 @@ export default {
       // let loginview = document.getElementsByClassName("loginviewCol");
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
-
+    login() {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        this.modal = true;
+      } else {
+        if (this.$router.path != "/user") {
+          this.$router.push("/user");
+        }
+      }
+    },
     async plugLogin() {
+      this.modal = false;
       let manageCansiter = this.getManageCanister();
       if (!manageCansiter) {
         let manageCanister = await initPlug();
@@ -257,6 +318,7 @@ export default {
       }
     },
     doSomething: async function (event) {
+      this.modal = false;
       this.tabShow = false;
       if (event) {
         //let identity = window.localStorage.getItem("identity");
