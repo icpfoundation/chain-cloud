@@ -197,6 +197,7 @@ import { Principal } from "@dfinity/principal";
 import { formatDate } from "@/chain_cloud_assets/assets/js/util";
 import { mapGetters } from "vuex";
 import { Loading } from "element-ui";
+
 export default {
   data() {
     return {
@@ -270,7 +271,7 @@ export default {
       });
     },
   },
-  async created() {
+  async mounted() {
     let url = window.location.href;
     console.log(url);
     let canister = this.getManageCanister();
@@ -281,7 +282,9 @@ export default {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
-
+    let topInstance = Loading.service({
+      target: ".table",
+    });
     let getProjectRest = await manage.getProjectInfo(
       account,
       groupId,
@@ -312,7 +315,7 @@ export default {
         } else {
           create_time = `${duration} s ago`;
         }
-        console.log("event", event[i], create_time);
+
         this.tableData.tableList.push({
           name: event[i].method_name,
           time: create_time,
@@ -322,6 +325,7 @@ export default {
         });
       }
     }
+    topInstance.close();
   },
 };
 </script>

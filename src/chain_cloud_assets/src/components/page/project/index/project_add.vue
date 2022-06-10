@@ -30,7 +30,9 @@
 
 .contentbox {
   display: flex;
-  height:1100px;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 .left {
@@ -172,6 +174,7 @@
 
 .saveButton {
   margin-top: 60px;
+  margin-bottom: 10px;
   width: 108px;
   height: 32px;
   background: #1776ff;
@@ -191,6 +194,9 @@
   height: 1px;
   background: #f1f1f1;
 }
+.demo-spin-icon-load {
+  animation: ani-demo-spin 1s linear infinite;
+}
 </style>
 
 <template>
@@ -199,8 +205,14 @@
       <div class="head">
         <span>New project</span>
       </div>
+
       <div class="line"></div>
+
       <div class="contentbox">
+        <Spin fix size="large" v-show="loading">
+          <Icon type="ios-loading" size="18" class="demo-spin-icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
         <div class="left">
           <div class="wordStyle">
             Projects allow you to manage and collaborate across multiple
@@ -272,7 +284,11 @@
           </div>
           <div class="description">
             <span>Projects type</span>
-            <Select v-model="projectType" style="width: 100%">
+            <Select
+              v-model="projectType"
+              style="width: 100%"
+              v-if="projectTypeList.length > 0"
+            >
               <Option
                 v-for="(item, index) in projectTypeList"
                 :value="item.value"
@@ -370,11 +386,14 @@ import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { TEST_CANISTER } from "@/chain_cloud_assets/assets/js/config";
 import { mapGetters } from "vuex";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
+      vLoading: [],
       toAccount: "",
       canisters: "",
+      loading: false,
       project: {
         id: 0,
         members: [],
@@ -389,7 +408,7 @@ export default {
         in_group: 0,
         function: {},
       },
-      groupId: {},
+      groupId: [],
       group: [],
       projectTypeList: [
         {
@@ -507,7 +526,7 @@ export default {
         });
         return;
       }
-
+      this.loading = true;
       if (this.toAccount == "") {
         this.toAccount = manageCanister.identity.toString();
       } else {
@@ -516,6 +535,7 @@ export default {
           this.toAccount = this.toAccount.toString();
         } catch (err) {
           console.log("invalid to account");
+          this.loading = false;
           return;
         }
       }
@@ -527,6 +547,7 @@ export default {
           try {
             this.project.canisters.push(Principal.fromText(canisterRes[i]));
           } catch (err) {
+            this.loading = false;
             throw "Invalid canister id";
           }
         }
@@ -553,6 +574,7 @@ export default {
 
       let projectType = {};
       if (!this.projectType) {
+        this.loading = false;
         throw "select Projects type";
       }
       if (this.projectType == "NFT") {
@@ -584,6 +606,7 @@ export default {
       } else {
         info = "Add failed: " + addProjectRes.Err;
       }
+      this.loading = false;
       this.$Notice.info({
         title: info,
         background: true,
@@ -605,7 +628,7 @@ export default {
       }
     },
   },
-  async created() {
+  async mounted() {
     let manageCanister = this.getManageCanister();
     if (!manageCanister) {
       this.$Notice.info({

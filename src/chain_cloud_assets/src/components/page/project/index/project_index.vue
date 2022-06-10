@@ -270,8 +270,6 @@ export default {
       }
     },
     toProjectFun(item) {
-      console.log(item);
-
       this.$router.push({
         name: "project",
         params: {
@@ -291,7 +289,10 @@ export default {
     let groupRes = await manageCanister.visibleProject();
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
-        this.tableData.total = groupRes[i][j][2].projects.length;
+        this.tableData.total =
+          this.tableData.total + groupRes[i][j][2].projects.length;
+        this.tableData.pageSize =
+          this.tableData.pageSize + groupRes[i][j][2].projects.length;
         let getProjectAll = [];
         let that = this;
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {

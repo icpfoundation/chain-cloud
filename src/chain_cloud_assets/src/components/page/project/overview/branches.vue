@@ -189,7 +189,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Branches</div>
-      <span class="titlePath">Project info / Chain-Cloud / Branches</span>
+      <span class="titlePath">{{ project.name }} / Branches</span>
     </div>
     <div class="content">
       <div class="actiontab">
@@ -299,11 +299,17 @@
   </div>
 </template>
 <script>
+import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       activeBoolean: true,
       stableBoolean: true,
+      project: {
+        name: "",
+      },
       tabList: [
         {
           name: "All",
@@ -365,7 +371,10 @@ export default {
       });
     },
   },
-  created() {
+  computed: {
+    ...mapGetters(["getManageCanister"]),
+  },
+  async created() {
     let url = window.location.href;
     console.log(url);
 
@@ -382,6 +391,28 @@ export default {
       console.log(itemss);
       this.tableData.tableList = itemss;
       this.tableData.total = itemss.length;
+    }
+
+    let canister = this.getManageCanister();
+    let manage = manageCanister;
+    if (canister) {
+      manage = canister;
+    }
+
+    let account = Principal.fromText(this.$route.params.user);
+    let groupId = BigInt(this.$route.params.groupId);
+    let projectId = BigInt(this.$route.params.projectId);
+    let getProjectRest = await manage.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+    if (getProjectRest.Err) {
+      throw getProjectRest.Err;
+    }
+
+    if (getProjectRest.Ok.length > 0) {
+      this.project.name = getProjectRest.Ok[0].name;
     }
   },
 };

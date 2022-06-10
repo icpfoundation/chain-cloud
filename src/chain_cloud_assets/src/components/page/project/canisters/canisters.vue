@@ -282,88 +282,91 @@
     </div>
     <div class="head">
       <div class="headItemTitle">All canister info</div>
-
-      <el-empty
-        :image-size="50"
-        description="No data"
-        v-if="project.canisters.length == 0"
-      >
-      </el-empty>
-      <div
-        v-else
-        class="headBox"
-        v-for="(item, index) in project.canisters"
-        :key="index"
-      >
-        <div class="headItem headLeft">
-          <div class="headItemLog">
-            <img
-              src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
-              alt=""
-            />
-            <div class="headItemLogCloud">
-              <div class="headItemLogCloudTop">
-                <span>{{ project.name }}</span>
-                <div class="headItemLogCloudRunning">Running</div>
+      <div class="canisterLoading">
+        <el-empty
+          :image-size="50"
+          description="No data"
+          v-if="project.canisters.length == 0"
+        >
+        </el-empty>
+        <div
+          v-else
+          class="headBox"
+          v-for="(item, index) in project.canisters"
+          :key="index"
+        >
+          <div class="headItem headLeft">
+            <div class="headItemLog">
+              <img
+                src="../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"
+                alt=""
+              />
+              <div class="headItemLogCloud">
+                <div class="headItemLogCloudTop">
+                  <span>{{ project.name }}</span>
+                  <div class="headItemLogCloudRunning">Running</div>
+                </div>
+                <span class="headItemLogCloudid">ID:{{ item.id }}</span>
               </div>
-              <span class="headItemLogCloudid">ID:{{ item.id }}</span>
+            </div>
+            <div class="line"></div>
+            <div class="idInfo">
+              <div class="idInfoTitle">Created time</div>
+              <span>{{ project.createdTime }}</span>
+            </div>
+            <div class="idInfo">
+              <div class="idInfoTitle">Update time</div>
+              <span>{{ project.updateTime }}</span>
             </div>
           </div>
-          <div class="line"></div>
-          <div class="idInfo">
-            <div class="idInfoTitle">Created time</div>
-            <span>{{ project.createdTime }}</span>
-          </div>
-          <div class="idInfo">
-            <div class="idInfoTitle">Update time</div>
-            <span>{{ project.updateTime }}</span>
-          </div>
-        </div>
-        <div class="headItem headRight">
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Module hash</div>
-            <span>{{ item.module_hash }} </span>
-          </div>
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Controller</div>
-            <span> {{ item.controllers }}</span>
-          </div>
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Memory allocation</div>
-            <span>{{ item.memory_allocation }}</span>
-          </div>
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Compute allocation</div>
-            <span>{{ item.compute_allocation }}</span>
-          </div>
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Memory Size</div>
-            <span>{{ item.memory_size }}</span>
-          </div>
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Freezing threshold</div>
-            <span>{{ item.freezing_threshold }}</span>
-          </div>
-          <div class="headRightItem">
-            <div class="headRightItemtitle">Balance</div>
-            <span>{{ item.cycles }} Cycles</span>
+          <div class="headItem headRight">
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Module hash</div>
+              <span>{{ item.module_hash }} </span>
+            </div>
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Controller</div>
+              <span> {{ item.controllers }}</span>
+            </div>
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Memory allocation</div>
+              <span>{{ item.memory_allocation }}</span>
+            </div>
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Compute allocation</div>
+              <span>{{ item.compute_allocation }}</span>
+            </div>
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Memory Size</div>
+              <span>{{ item.memory_size }}</span>
+            </div>
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Freezing threshold</div>
+              <span>{{ item.freezing_threshold }}</span>
+            </div>
+            <div class="headRightItem">
+              <div class="headRightItemtitle">Balance</div>
+              <span>{{ item.cycles }} Cycles</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="content">
-      <div class="contentTitle">Canister Activities</div>
+      <div class="contentTitle">Project Activities</div>
       <div class="contentBox">
         <div class="table">
           <div class="tableHead">
             <div class="tableHeadTime">June 2022</div>
           </div>
+
           <el-empty
             :image-size="50"
             description="No data"
-            v-if="project.canisters.length == 0"
+            v-if="tableData.tableList.length == 0"
           >
           </el-empty>
+
           <div
             v-else
             class="tableItem"
@@ -395,6 +398,7 @@ import { Principal } from "@dfinity/principal";
 import { formatDate } from "@/chain_cloud_assets/assets/js/util";
 import { getCanisterInfo } from "@/chain_cloud_assets/assets/js/agent";
 import { mapGetters } from "vuex";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -405,6 +409,7 @@ export default {
         name: "",
         canisters: [],
       },
+
       tabList: [
         {
           name: "All public projects",
@@ -482,7 +487,7 @@ export default {
   computed: {
     ...mapGetters(["getManageCanister"]),
   },
-  async created() {
+  async mounted() {
     let url = window.location.href;
     if (!this.$route.params) {
       throw "params  not found";
@@ -495,6 +500,12 @@ export default {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
+    let topInstance = Loading.service({
+      target: ".canisterLoading",
+    });
+    let activeInstance = Loading.service({
+      target: ".contentBox",
+    });
     let getProjectRest = await manage.getProjectInfo(
       account,
       groupId,
@@ -512,8 +523,10 @@ export default {
     this.project.createdTime = formatTime;
     this.project.updateTime = formatTime;
     this.project.name = getProjectRest.Ok[0].name;
+
     if (getProjectRest.Ok.length > 0) {
       let canisterRes = [];
+
       for (let i = 0; i < getProjectRest.Ok[0].canisters.length; i++) {
         canisterRes.push(
           (async function () {
@@ -531,7 +544,11 @@ export default {
         );
       }
       let that = this;
-      Promise.all(canisterRes).then(async (getCanisterStatusRes) => {
+      let httpReq = [];
+      if (canisterRes.length == 0) {
+        topInstance.close();
+      }
+      Promise.all(canisterRes).then((getCanisterStatusRes) => {
         for (let i = 0; i < getCanisterStatusRes.length; i++) {
           if (getCanisterStatusRes[i][0].Ok) {
             that.project.canisters.push({
@@ -557,22 +574,33 @@ export default {
                 getCanisterStatusRes[i][0].Ok[0].settings.memory_allocation[0],
             });
           } else {
-            let getCanisterInfoRes = await getCanisterInfo(
-              getProjectRest.Ok[0].canisters[i].toString()
+            httpReq.push(
+              (async function (canis) {
+                let getCanisterInfoRes = await getCanisterInfo(canis);
+                return [getCanisterInfoRes, canis];
+              })(getCanisterStatusRes[i][1])
             );
+          }
+        }
+        if (httpReq.length == 0) {
+          topInstance.close();
+        }
+        Promise.all(httpReq).then((res) => {
+          for (let i = 0; i < res.length; i++) {
             that.project.canisters.push({
-              id: getProjectRest.Ok[0].canisters[i].toString(),
+              id: res[i][1],
               cycles: 0,
               memory_size: 0,
-              module_hash: getCanisterInfoRes.moduleHash,
+              module_hash: res[i][0].moduleHash,
               status: "Runing",
               compute_allocation: 0,
-              controllers: getCanisterInfoRes.controllerId,
+              controllers: res[i][0].controllerId,
               freezing_threshold: 0,
               memory_allocation: 0,
             });
           }
-        }
+          topInstance.close();
+        });
       });
 
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
@@ -625,6 +653,7 @@ export default {
           }
         }
       }
+      activeInstance.close();
     }
   },
 };

@@ -103,10 +103,57 @@
 .menuBox .is-active {
   border-bottom: 1.5px solid #0059ff;
 }
+.ivu-modal-body {
+  display: flex !important;
+
+  justify-content: space-around !important;
+
+  border: 1px solid red;
+}
+.ivu-modal-body span {
+  display: inline-block;
+  flex: 1;
+
+  display: inline-block;
+  width: 35%;
+  height: 130px;
+  margin-left: 10%;
+  cursor: pointer;
+}
+.ivu-modal-body span:hover {
+  border: 1px solid rgb(241, 208, 208);
+  border-radius: 10px;
+  box-shadow: 0 0.375rem 0.75rem rgb(127 150 174 / 13%);
+}
+.ivu-modal {
+  margin-top: 300px !important;
+}
 </style>
 
 <template>
   <div class="headerApp">
+    <Modal
+      v-model="modal"
+      :loading="loading"
+      :closable="closable"
+      :footer-hide="footer"
+      :styles="{ marginTop: '10%' }"
+    >
+      <span @click="plugLogin">
+        <img
+          src="../../../assets/img/home/plug.svg"
+          alt=""
+          class="logo"
+          style="height: 100%; width: 100%"
+      /></span>
+      <span @click="doSomething">
+        <img
+          src="../../../assets/img/home/dfinity.svg"
+          alt=""
+          class="logo"
+          style="height: 100%; width: 100%"
+      /></span>
+    </Modal>
     <img
       src="../../../assets/img/nav_logo@2x.png"
       @click="gohome"
@@ -120,14 +167,13 @@
         <el-menu-item index="3">ABOUT US</el-menu-item>
       </el-menu>
     </div>
-    <div class="loginviewCol" @mouseleave="leave">
-      <div class="loginview" @mouseenter="enter" @click.self="doSomething">
-        <span @click.self="doSomething"> {{ principleShort }} </span>
+    <div class="loginviewCol" @mouseleave="leave" @click.stop="login">
+      <div class="loginview" @mouseenter="enter">
+        <span> {{ principleShort }} </span>
         <img
           class="dfxlogo"
           src="../../../assets/img/logo_difinity@2x.png"
           alt="dfinity logo"
-          @click.self="doSomething"
         />
       </div>
       <div class="tab" v-if="tabShow && principleShort != 'Login'">
@@ -151,10 +197,18 @@ import {
   initManageCanister,
   initPlug,
 } from "@/chain_cloud_assets/assets/js/actor";
+import { Principal } from "@dfinity/principal";
+import { Actor, HttpAgent, Identity } from "@dfinity/agent";
+import { DelegationIdentity } from "@dfinity/identity";
 export default {
   name: "headerview",
   data() {
     return {
+      modal: false,
+      loading: true,
+      closable: false,
+      footer: true,
+
       options: [
         {
           value: "English",
@@ -250,8 +304,18 @@ export default {
       // let loginview = document.getElementsByClassName("loginviewCol");
       // loginview[0].setAttribute("class", "loginviewCol hide");
     },
-
+    login() {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        this.modal = true;
+      } else {
+        if (this.$router.path != "/user") {
+          this.$router.push("/user");
+        }
+      }
+    },
     async plugLogin() {
+      this.modal = false;
       let manageCansiter = this.getManageCanister();
       if (!manageCansiter) {
         let manageCanister = await initPlug();
@@ -267,30 +331,36 @@ export default {
       }
     },
     doSomething: async function (event) {
+      this.modal = false;
       this.tabShow = false;
       if (event) {
-        let manageCansiter = this.getManageCanister();
-        let principle = window.localStorage.getItem("principleString");
-        if (!manageCansiter) {
+        //let identity = window.localStorage.getItem("identity");
+        let manageCanister = this.getManageCanister();
+        if (!manageCanister) {
           let that = this;
           this.authClient.login({
             identityProvider: this.IDENTITY_URL,
+            maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
             onSuccess: async () => {
               let identity = this.authClient.getIdentity();
               let manageCanister = initManageCanister(identity);
+              // this.authClient.registerActor("ii", manageCanister);
               this.manageCanisterConfig(manageCanister);
 
               // window.manageCanister = manageCanister;
-              // localStorage.setItem("identity", identity);
+              // window.localStorage.setItem("identity", JSON.stringify(identity));
               let principle = identity.getPrincipal();
               that.principle = principle;
               that.principleShort =
                 principle.toString().substring(0, 8) + "...";
+                
               // that.setICIdentityConfig(principle, identity);
+              
               window.localStorage.setItem(
                 "principleString",
                 principle.toString()
               );
+              
               console.log(
                 "Logged in with II principle: " + principle.toString()
               );
@@ -309,9 +379,12 @@ export default {
     },
 
     gohome() {
-      document
-        .getElementsByClassName("is-active")[0]
-        .classList.remove("is-active");
+      if (document.getElementsByClassName("is-active").length > 0) {
+        document
+          .getElementsByClassName("is-active")[0]
+          .classList.remove("is-active");
+      }
+
       if (this.$router.currentRoute.path != "/home") {
         this.$router.push("/home");
       }
@@ -329,10 +402,11 @@ export default {
       this.principleShort = "Login";
       this.leave();
       this.manageCanisterConfig(null);
+      window.localStorage.removeItem("identity");
     },
   },
 
-  mounted() {
+  async mounted() {
     switch (this.$router.currentRoute.path) {
       case "/home":
         this.activeIndex = "1";
@@ -351,14 +425,17 @@ export default {
         break;
     }
 
-    let principle = window.localStorage.getItem("principleString");
-    if (principle) {
-      this.principal = principle.toString();
-      this.principleShort = principle.toString().substring(0, 8) + "...";
-    }
-
     const init = async () => {
       this.authClient = await AuthClient.create();
+      if (this.authClient.getIdentity() instanceof DelegationIdentity) {
+        let identity = this.authClient.getIdentity();
+        let manageCanister = initManageCanister(identity);
+
+        this.manageCanisterConfig(manageCanister);
+        let principle = identity.getPrincipal();
+        this.principle = principle;
+        this.principleShort = principle.toString().substring(0, 8) + "...";
+      }
     };
 
     init();

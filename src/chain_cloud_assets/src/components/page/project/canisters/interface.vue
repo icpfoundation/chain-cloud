@@ -104,7 +104,9 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Interface</div>
-      <span class="titlePath">{{ this.canister }} / Interface</span>
+      <span class="titlePath"
+        >{{ this.projectName }}/ Canister / Interface</span
+      >
     </div>
     <div class="content">
       <div class="actiontab">
@@ -122,7 +124,7 @@
         <div class="tableHead">
           <span>content</span>
           <div class="tableHeadRight">
-            <span>c24e6435</span>
+            <span></span>
             <img
               src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x (1).png"
               alt=""
@@ -207,6 +209,7 @@ import { mapGetters } from "vuex";
 
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 const didc = import("didc");
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -269,7 +272,7 @@ export default {
   computed: {
     ...mapGetters(["getManageCanister"]),
   },
-  async created() {
+  async mounted() {
     let canister = this.getManageCanister();
     let manage = manageCanister;
     if (canister) {
@@ -278,6 +281,9 @@ export default {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = BigInt(this.$route.params.groupId);
     let projectId = BigInt(this.$route.params.projectId);
+    let topInstance = Loading.service({
+      target: ".tableBox",
+    });
     let getProjectRest = await manage.getProjectInfo(
       account,
       groupId,
@@ -317,6 +323,7 @@ export default {
         break;
       }
     }
+    topInstance.close();
   },
 };
 </script>

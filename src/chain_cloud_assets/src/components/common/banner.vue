@@ -28,7 +28,7 @@
   font-weight: 600;
   color: #252b3a;
   margin-top: 43px;
-  height: 160px;
+  height: auto;
   width: 720px;
   line-height: 80px;
 }

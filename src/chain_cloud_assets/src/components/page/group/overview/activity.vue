@@ -135,11 +135,17 @@
   font-size: 12px;
   font-weight: 400;
   color: #333333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .pageStyle {
   display: flex;
   justify-content: center;
   margin-top: 0.2rem;
+}
+.groupName {
+  width: 100%;
 }
 </style>
 
@@ -187,9 +193,9 @@
                   <span>{{ item.operation }}</span>
                   <span class="groupNameInfoColor">{{ item.branch }}</span>
                   <span>at</span>
-                  <span class="groupNameInfoColor">{{ item.project }}</span>
+                  <span class="groupNameInfoColor">{{ item.info }}</span>
                 </div>
-                <div class="groupTime">{{ item.size }} update</div>
+                <div class="groupTime">{{ item.data }}</div>
               </div>
             </div>
             <div class="itemWidth2">{{ item.time }}</div>
@@ -348,7 +354,7 @@ export default {
       this.group.name = getGroupInfoRes.Ok[0].name;
     }
     let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
-    // let user = Principal.fromText(TEST_USER);
+
     let getLogRes = await manage.getLog(account, groupId, 1);
 
     for (let i = 0; i < getLogRes.length; i++) {
@@ -367,52 +373,39 @@ export default {
         } else {
           create_time = `${duration} s ago`;
         }
+        // let data = getLogRes[j][k][3][0];
+        let logData = getLogRes[i][j][3];
+        let operation = "";
+        let info = "";
 
         if ("UpdateGroup" in getLogRes[i][j][2]) {
-          this.tableData.tableList.push({
-            name: getLogRes[i][j][0].toString(),
-            //groupInfo: getLogRes[i][j][2],
-            time: create_time,
-            // toName: "@shanshan",
-            // size: 556565,
-            project: getLogRes[i][j][2].UpdateGroup[1],
-            operation: getLogRes[i][j][0].toString(),
-          });
+          operation = getLogRes[i][j][2].UpdateGroup[1];
+          info = `groupId: ${getLogRes[i][j][2].UpdateGroup[0]}`;
         }
         if ("UpdateProject" in getLogRes[i][j][2]) {
-          let logData =
-            getLogRes[i][j][2].UpdateProject[2].length > 30
-              ? getLogRes[i][j][2].UpdateProject[2].slice(0, 30) + "..."
-              : getLogRes[i][j][2].UpdateProject[2];
-          this.tableData.tableList.push({
-            name: getLogRes[i][j][0].toString(),
-            //groupInfo: getLogRes[i][j][2],
-            time: create_time,
-            // toName: "@shanshan",
-            // size: 556565,
-            project: logData,
-            operation: getLogRes[i][j][0].toString(),
-          });
+          operation = getLogRes[i][j][2].UpdateProject[2];
+          info = `groupId: ${getLogRes[i][j][2].UpdateProject[0]},projectId:${getLogRes[i][j][2].UpdateProject[1]}`;
         }
+
         if ("UpdateProjectCanister" in getLogRes[i][j][2]) {
-          let logData =
-            getLogRes[i][j][2].UpdateProjectCanister[2].length > 30
-              ? getLogRes[i][j][2].UpdateProjectCanister[2].slice(0, 30) + "..."
-              : getLogRes[i][j][2].UpdateProjectCanister[2];
-          this.tableData.tableList.push({
-            name: getLogRes[i][j][0].toString(),
-            //groupInfo: getLogRes[i][j][2],
-            time: create_time,
-            // toName: "@shanshan",
-            // size: 556565,
-            project: logData,
-            operation: getLogRes[i][j][0].toString(),
-          });
+          operation = getLogRes[i][j][2].UpdateProjectCanister[2];
+          info = `groupId: ${getLogRes[i][j][2].UpdateProjectCanister[0]},projectId:${getLogRes[i][j][2].UpdateProjectCanister[1]}`;
         }
+        this.tableData.tableList.push({
+          name: getLogRes[i][j][0].toString(),
+          //groupInfo: getLogRes[i][j][2],
+          time: create_time,
+          // toName: "@shanshan",
+          // size: 556565,
+          data: logData,
+          info: info,
+          operation: operation,
+        });
       }
     }
 
     this.tableData.total = this.tableData.tableList.length;
+    this.tableData.pageSize = this.tableData.tableList.length;
   },
 };
 </script>

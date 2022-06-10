@@ -317,7 +317,7 @@ export default {
       this.lineEachart1 = echarts.init(document.getElementById("line"));
 
       this.lineEachart1.setOption(option, true);
-
+      let show = canisters.length > 0;
       let option2 = {
         tooltip: {
           trigger: "axis",
@@ -341,6 +341,7 @@ export default {
           type: "category",
           data: canisters,
           axisLabel: {},
+          show: show,
         },
         series: [
           {

@@ -265,9 +265,7 @@
           <div class="headLeftdec">
             <span>group</span>
             <span style="margin-left: 0.05rem; margin-right: 0.05rem">|</span>
-            <span
-              style="color: #1776ff; cursor: pointer"
-              @click="togroupIndexFun"
+            <span style="color: #1776ff; cursor: pointer" @click="leaveGroup"
               >leave group</span
             >
           </div>
@@ -323,7 +321,7 @@
           </div>
           <div
             class="tableItem"
-            v-for="(item, index) in tableData.tableList"
+            v-for="(item, index) in tableData.tableFilter"
             :key="index"
           >
             <div class="itemWidth1 itemCom">
@@ -422,7 +420,8 @@ export default {
       ],
       tableData: {
         tableList: [],
-        total: 5,
+        tableFilter: [],
+        total: 0,
         page: 1,
         pageSize: 3,
       },
@@ -435,6 +434,20 @@ export default {
       });
     },
     chooseFun(item, index) {
+      this.tableData.tableFilter = [];
+      if (item.name == "All public projects") {
+        this.tableData.tableFilter = this.tableData.tableList;
+      } else {
+        let user = this.$route.params.user;
+        this.tableData.tableList.forEach((ele) => {
+          if (ele.createBy == user) {
+            this.tableData.tableFilter.push(ele);
+          }
+        });
+      }
+      this.tableData.total = this.tableData.tableFilter.length;
+      this.tableData.pageSize = this.tableData.total;
+
       this.tabList.forEach((element) => {
         element.select = false;
       });
@@ -454,10 +467,37 @@ export default {
         duration: 3,
       });
     },
-    togroupIndexFun() {
-      this.$router.push({
-        name: "group_index",
-      });
+    // togroupIndexFun() {
+    //   this.$router.push({
+    //     name: "group_index",
+    //   });
+    // },
+    async leaveGroup() {
+      let account = Principal.fromText(this.$route.params.user);
+      let groupId = BigInt(this.$route.params.groupId);
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let removeRes = await manageCanister.removeGroupMember(
+        account,
+        groupId,
+        manageCanister.identity
+      );
+
+      if ("Ok" in removeRes) {
+        this.$Notice.info({
+          title: "Exit successful",
+          background: true,
+          duration: 3,
+        });
+      } else {
+        this.$Notice.info({
+          title: "Exit failed: " + removeRes.Err,
+          background: true,
+          duration: 3,
+        });
+      }
     },
   },
   computed: {
@@ -489,6 +529,7 @@ export default {
       return;
     }
     this.tableData.total = getGroupInfoRes.Ok[0].projects.length;
+    this.tableData.pageSize = getGroupInfoRes.Ok[0].projects.length;
     if (getGroupInfoRes.Ok.length > 0) {
       this.group.name = getGroupInfoRes.Ok[0].name;
     }
@@ -521,9 +562,11 @@ export default {
           isLock: false,
           isXing: false,
           isBizoZhi: false,
+          createBy: getGroupInfoRes.Ok[i].projects[j][1].create_by.toString(),
         });
       }
     }
+    this.tableData.tableFilter = this.tableData.tableList;
   },
 };
 </script>

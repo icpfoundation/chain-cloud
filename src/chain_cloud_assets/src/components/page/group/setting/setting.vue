@@ -183,6 +183,10 @@
   font-weight: 400;
   color: #333333;
 }
+
+.demo-spin-icon-load {
+  animation: ani-demo-spin 1s linear infinite;
+}
 </style>
 
 <template>
@@ -192,6 +196,10 @@
       <span class="titlePath">{{ group.name }} / Setting</span>
     </div>
     <div class="content">
+      <Spin fix size="large" v-show="loading">
+        <Icon type="ios-loading" size="18" class="demo-spin-icon-load"></Icon>
+        <div>Loading</div>
+      </Spin>
       <div class="leftBoxName">Naming, visibility</div>
       <div class="contentInfo">
         Update your group name, description, avatar, and visibility.
@@ -298,6 +306,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      loading: false,
       group: {
         id: 0,
         name: "",
@@ -320,7 +329,7 @@ export default {
       if (!manageCanister) {
         throw "No login account";
       }
-
+      this.loading = true;
       let updateGroupRes =
         await manageCanister.updateGroupNameAndDescriptionAndVisibility(
           account,
@@ -330,6 +339,7 @@ export default {
           visibility
         );
       if (updateGroupRes.Err) {
+        this.loading = false;
         throw updateGroupRes.Err;
       }
 
@@ -340,9 +350,11 @@ export default {
         Array.from(enc.encode(this.imgurl))
       );
       if (imageStoreRes.Err) {
+        this.loading = false;
         throw imageStoreRes.Err;
         return;
       }
+      this.loading = false;
       this.$Notice.info({
         title: "Modified successfully",
         background: true,

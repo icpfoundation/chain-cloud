@@ -62,6 +62,10 @@
   font-size: 16px;
   font-weight: 500;
   color: #333333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 3rem;
 }
 
 .tableContentInfo {
@@ -84,6 +88,11 @@
 .tableContentBottom {
   font-size: 12px;
   color: #333333;
+  overflow: hidden;
+  table-layout: fixed;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 6rem;
 }
 
 .tableItemTime {
@@ -189,7 +198,7 @@
             />
             <div class="tableContent">
               <div class="tableContentTop">
-                <span class="toname">{{ item.name }}</span>
+                <span class="toname" :title="item.name">{{ item.name }}</span>
                 <span>{{ item.toname }}</span>
               </div>
               <div class="tableContentInfo">
@@ -198,7 +207,7 @@
                 <span>at</span>
                 <span class="mergestyle">{{ item.toaddress }}</span>
               </div>
-              <div class="tableContentBottom">{{ item.commitNum }} update</div>
+              <div class="tableContentBottom">data: {{ item.commitNum }}</div>
             </div>
             <div class="tableItemTime">{{ item.time }}</div>
           </div>
@@ -347,116 +356,121 @@ export default {
     if (getUserInfoRes.Ok) {
       let currentTime = BigInt(new Date().getTime()) / BigInt(1000);
       let imageRes = [];
+      let logRes = [];
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        let getLogRes = await manageCanister.getLog(
-          account,
-          getUserInfoRes.Ok.groups[i][1].id,
-          1
+        logRes.push(
+          (async function () {
+            let getLogRes = await manageCanister.getLog(
+              account,
+              getUserInfoRes.Ok.groups[i][1].id,
+              1
+            );
+            return getLogRes;
+          })()
         );
 
-        for (let j = 0; j < getLogRes.length; j++) {
-          for (let k = 0; k < getLogRes[j].length; k++) {
-            if (getLogRes[j][k][0].toString() == account.toString()) {
-              let duration = parseInt(
-                Number(
-                  currentTime - BigInt(getLogRes[j][k][1]) / BigInt(1000000000)
+        for (
+          let j = 0;
+          j < getUserInfoRes.Ok.groups[i][1].projects.length;
+          j++
+        ) {
+          if (
+            "Public" in getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
+          ) {
+            continue;
+          }
+          let duration = parseInt(
+            Number(
+              currentTime -
+                BigInt(
+                  getUserInfoRes.Ok.groups[i][1].projects[j][1].create_time
                 )
-              );
-              let create_time = "";
-              if (duration >= 86400) {
-                create_time = ` ${parseInt(duration / 86400)} day ago`;
-              } else if (duration >= 3600) {
-                create_time = `${parseInt(duration / 3600)} hour ago`;
-              } else if (duration >= 60) {
-                create_time = `${parseInt(duration / 60)} min ago`;
-              } else {
-                create_time = `${duration} s ago`;
-              }
-
-              let fromaddress = "";
-              if ("UpdateGroup" in getLogRes[j][k][2]) {
-                fromaddress = getLogRes[j][k][2].UpdateGroup[1];
-              }
-              if ("UpdateProject" in getLogRes[j][k][2]) {
-                fromaddress = getLogRes[j][k][2].UpdateProject[2];
-              }
-              if ("UpdateProjectCanister" in getLogRes[j][k][2]) {
-                fromaddress = getLogRes[j][k][2].UpdateProjectCanister[2];
-              }
-              this.activeList.push({
-                name: getLogRes[j][k][0].toString(),
-                toname: "",
-                fromaddress: fromaddress,
-                toaddress: "",
-                commitNum: "",
-                time: create_time,
-              });
-            }
+            ) / 1000
+          );
+          let create_time = "0 s ago";
+          if (duration >= 86400) {
+            create_time = `create ${parseInt(duration / 86400)} day ago`;
+          } else if (duration >= 3600) {
+            create_time = `create ${parseInt(duration / 3600)} hour ago`;
+          } else if (duration >= 60) {
+            create_time = `create ${parseInt(duration / 60)} min ago`;
+          } else {
+            create_time = `create ${duration} s ago`;
           }
 
-          for (
-            let v = 0;
-            v < getUserInfoRes.Ok.groups[i][1].projects.length;
-            v++
-          ) {
-            let duration = parseInt(
-              Number(
-                currentTime -
-                  BigInt(
-                    getUserInfoRes.Ok.groups[i][1].projects[v][1].create_time
-                  )
-              ) / 1000
-            );
-
-            let create_time = "0 s ago";
-            if (duration >= 86400) {
-              create_time = `create ${parseInt(duration / 86400)} day ago`;
-            } else if (duration >= 3600) {
-              create_time = `create ${parseInt(duration / 3600)} hour ago`;
-            } else if (duration >= 60) {
-              create_time = `create ${parseInt(duration / 60)} min ago`;
-            } else {
-              create_time = `create ${duration} s ago`;
-            }
-            try {
-              imageRes.push(
-                (async function (len) {
-                  let imageData = await manageCanister.getProjectImage(
-                    account,
-                    getUserInfoRes.Ok.groups[i][1].id,
-                    getUserInfoRes.Ok.groups[i][1].projects[v][1].id
-                  );
-                  return [imageData, len];
-                })(this.projectList.length)
+          imageRes.push(
+            (async function (len) {
+              let imageData = await manageCanister.getProjectImage(
+                account,
+                getUserInfoRes.Ok.groups[i][1].id,
+                getUserInfoRes.Ok.groups[i][1].projects[j][1].id
               );
+              return [imageData, len];
+            })(this.projectList.length)
+          );
 
-              // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+          this.projectList.push({
+            groupType: "",
+            name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+            id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+            type: "Maintainer",
+            info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+            xingNum: 0,
+            time: create_time,
+            imageData: "",
+          });
+        }
+      }
 
-              this.projectList.push({
-                groupType: "",
-                name: getUserInfoRes.Ok.groups[i][1].projects[v][1].name,
-                id: getUserInfoRes.Ok.groups[i][1].projects[v][1].id,
-                type: "Maintainer",
-                info: getUserInfoRes.Ok.groups[i][1].projects[v][1].description,
-                xingNum: 0,
-                time: create_time,
-                imageData: "",
-              });
-            } catch (err) {
-              this.projectList.push({
-                groupType: "",
-                name: getUserInfoRes.Ok.groups[i][1].projects[v][1].name,
-                id: getUserInfoRes.Ok.groups[i][1].projects[v][1].id,
-                type: "Maintainer",
-                info: getUserInfoRes.Ok.groups[i][1].projects[v][1].description,
-                xingNum: 0,
-                time: create_time,
-                imageData: "",
-              });
+      Promise.all(logRes).then((getLogRes) => {
+        for (let j = 0; j < getLogRes.length; j++) {
+          for (let k = 0; k < getLogRes[j].length; k++) {
+            for (let v = 0; v < getLogRes[j][k].length; v++) {
+              if (getLogRes[j][k][v][0].toString() == account.toString()) {
+                let duration = parseInt(
+                  Number(
+                    currentTime -
+                      BigInt(getLogRes[j][k][v][1]) / BigInt(1000000000)
+                  )
+                );
+                let create_time = "";
+                if (duration >= 86400) {
+                  create_time = ` ${parseInt(duration / 86400)} day ago`;
+                } else if (duration >= 3600) {
+                  create_time = `${parseInt(duration / 3600)} hour ago`;
+                } else if (duration >= 60) {
+                  create_time = `${parseInt(duration / 60)} min ago`;
+                } else {
+                  create_time = `${duration} s ago`;
+                }
+                let fromaddress = "";
+                let toaddress = "";
+                let commitNum = getLogRes[j][k][v][3][0];
+                if ("UpdateGroup" in getLogRes[j][k][v][2]) {
+                  fromaddress = getLogRes[j][k][v][2].UpdateGroup[1];
+                  toaddress = `groupId: ${getLogRes[j][k][v][2].UpdateGroup[0]}`;
+                }
+                if ("UpdateProject" in getLogRes[j][k][v][2]) {
+                  fromaddress = getLogRes[j][k][v][2].UpdateProject[2];
+                  toaddress = `groupId: ${getLogRes[j][k][v][2].UpdateProject[0]}, projectId:${getLogRes[j][k][v][2].UpdateProject[1]}`;
+                }
+                if ("UpdateProjectCanister" in getLogRes[j][k][v][2]) {
+                  fromaddress = getLogRes[j][k][v][2].UpdateProjectCanister[2];
+                  toaddress = `groupId: ${getLogRes[j][k][v][2].UpdateProjectCanister[0]}, projectId:${getLogRes[j][k][v][2].UpdateProjectCanister[1]}`;
+                }
+                this.activeList.push({
+                  name: getLogRes[j][k][v][0].toString(),
+                  toname: "",
+                  fromaddress: fromaddress,
+                  toaddress: toaddress,
+                  commitNum: commitNum,
+                  time: create_time,
+                });
+              }
             }
           }
         }
-      }
+      });
       Promise.all(imageRes).then((res) => {
         for (let i = 0; i < res.length; i++) {
           let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
