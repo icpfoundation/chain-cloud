@@ -30,7 +30,7 @@
 
 .tableItem {
   width: 100%;
-  height: 80px;
+  height: 100px;
   padding: 20px;
   border-bottom: 1px solid #ebebeb;
   display: flex;
