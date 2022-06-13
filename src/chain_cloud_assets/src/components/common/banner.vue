@@ -162,8 +162,7 @@
           />
           <span>Easy to Use</span>
           <span class="tabarItemInfo"
-            >Familiar SQL operators, IPLD data model supports nested data
-            structures</span
+            >One click compilation and deployment for scalable project</span
           >
         </div>
       </div>
