@@ -556,7 +556,7 @@ export default {
               cycles: getCanisterStatusRes[i][0].Ok[0].cycles,
               memory_size: getCanisterStatusRes[i][0].Ok[0].memory_size,
               module_hash: Buffer.from(
-                getCanisterStatusRes[i][0].Ok[0].module_hash
+                getCanisterStatusRes[i][0].Ok[0].module_hash[0]
               ).toString("hex"),
               status:
                 "running" in getCanisterStatusRes[i][0].Ok[0].status

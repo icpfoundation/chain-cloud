@@ -128,6 +128,9 @@
 .ivu-modal {
   margin-top: 300px !important;
 }
+.el-menu {
+  border-right: none;
+}
 </style>
 
 <template>

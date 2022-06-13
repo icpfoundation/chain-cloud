@@ -327,6 +327,97 @@ export default {
         },
       });
     },
+    async projectInfo() {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
+      let getUserInfoRes = await manageCanister.getUserInfo(account);
+
+      if (getUserInfoRes.Ok) {
+        let currentTime = BigInt(new Date().getTime());
+        let imageRes = [];
+        for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+          for (
+            let j = 0;
+            j < getUserInfoRes.Ok.groups[i][1].projects.length;
+            j++
+          ) {
+            if (
+              "Public" in
+              getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
+            ) {
+              continue;
+            }
+            let duration = parseInt(
+              Number(
+                currentTime -
+                  BigInt(
+                    getUserInfoRes.Ok.groups[i][1].projects[j][1].create_time
+                  )
+              ) / 1000
+            );
+
+            let create_time = "0 s ago";
+            if (duration >= 86400) {
+              create_time = `create ${parseInt(duration / 86400)} day ago`;
+            } else if (duration >= 3600) {
+              create_time = `create ${parseInt(duration / 3600)} hour ago`;
+            } else if (duration >= 60) {
+              create_time = `create ${parseInt(duration / 60)} min ago`;
+            } else {
+              create_time = `create ${duration} s ago`;
+            }
+            try {
+              imageRes.push(
+                (async function (len) {
+                  let imageData = await manageCanister.getProjectImage(
+                    account,
+                    getUserInfoRes.Ok.groups[i][1].id,
+                    getUserInfoRes.Ok.groups[i][1].projects[j][1].id
+                  );
+                  return [imageData, len];
+                })(this.projectList.length)
+              );
+
+              // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+              this.projectList.push({
+                groupId: getUserInfoRes.Ok.groups[i][1].id,
+                groupType: "",
+                name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+                id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+                type: "Maintainer",
+                info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+                xingNum: 0,
+                time: create_time,
+                imageData: "",
+              });
+            } catch (err) {
+              this.projectList.push({
+                groupId: getUserInfoRes.Ok.groups[i][1].id,
+                groupType: "",
+                name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
+                id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
+                type: "Maintainer",
+                info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
+                xingNum: 0,
+                time: create_time,
+                imageData: "",
+              });
+            }
+          }
+        }
+        Promise.all(imageRes).then((res) => {
+          for (let i = 0; i < res.length; i++) {
+            let imageData = new TextDecoder().decode(
+              Uint8Array.from(res[i][0])
+            );
+            this.projectList[res[i][1]].imageData = imageData;
+          }
+        });
+      }
+    },
     async deleteGroup(item) {
       let manageCanister = this.getManageCanister();
       if (!manageCanister) {
@@ -343,6 +434,11 @@ export default {
           background: true,
           duration: 3,
         });
+        for (let i = 0; i < this.projectList.length; i++) {
+          if (this.projectList[i].id == item.id) {
+            this.projectList.splice(i, 1);
+          }
+        }
       } else {
         this.$Notice.info({
           title: "Delete failed: " + removeRes.Err,
@@ -356,92 +452,7 @@ export default {
     ...mapGetters(["getManageCanister"]),
   },
   async created() {
-    let manageCanister = this.getManageCanister();
-    if (!manageCanister) {
-      throw "No login account";
-    }
-    let account = manageCanister.identity;
-    let getUserInfoRes = await manageCanister.getUserInfo(account);
-
-    if (getUserInfoRes.Ok) {
-      let currentTime = BigInt(new Date().getTime());
-      let imageRes = [];
-      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        for (
-          let j = 0;
-          j < getUserInfoRes.Ok.groups[i][1].projects.length;
-          j++
-        ) {
-          if (
-            "Public" in getUserInfoRes.Ok.groups[i][1].projects[j][1].visibility
-          ) {
-            continue;
-          }
-          let duration = parseInt(
-            Number(
-              currentTime -
-                BigInt(
-                  getUserInfoRes.Ok.groups[i][1].projects[j][1].create_time
-                )
-            ) / 1000
-          );
-
-          let create_time = "0 s ago";
-          if (duration >= 86400) {
-            create_time = `create ${parseInt(duration / 86400)} day ago`;
-          } else if (duration >= 3600) {
-            create_time = `create ${parseInt(duration / 3600)} hour ago`;
-          } else if (duration >= 60) {
-            create_time = `create ${parseInt(duration / 60)} min ago`;
-          } else {
-            create_time = `create ${duration} s ago`;
-          }
-          try {
-            imageRes.push(
-              (async function (len) {
-                let imageData = await manageCanister.getProjectImage(
-                  account,
-                  getUserInfoRes.Ok.groups[i][1].id,
-                  getUserInfoRes.Ok.groups[i][1].projects[j][1].id
-                );
-                return [imageData, len];
-              })(this.projectList.length)
-            );
-
-            // imageData = new TextDecoder().decode(Uint8Array.from(imageData));
-            this.projectList.push({
-              groupId: getUserInfoRes.Ok.groups[i][1].id,
-              groupType: "",
-              name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
-              id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
-              type: "Maintainer",
-              info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
-              xingNum: 0,
-              time: create_time,
-              imageData: "",
-            });
-          } catch (err) {
-            this.projectList.push({
-              groupId: getUserInfoRes.Ok.groups[i][1].id,
-              groupType: "",
-              name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
-              id: getUserInfoRes.Ok.groups[i][1].projects[j][1].id,
-              type: "Maintainer",
-              info: getUserInfoRes.Ok.groups[i][1].projects[j][1].description,
-              xingNum: 0,
-              time: create_time,
-              imageData: "",
-            });
-          }
-        }
-      }
-      Promise.all(imageRes).then((res) => {
-        for (let i = 0; i < res.length; i++) {
-          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
-          this.projectList[res[i][1]].imageData = imageData;
-        }
-      });
-    }
+    await this.projectInfo();
   },
 };
 </script>

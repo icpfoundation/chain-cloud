@@ -187,6 +187,10 @@
 .demo-spin-icon-load {
   animation: ani-demo-spin 1s linear infinite;
 }
+
+.savaButtonDisable {
+  background: #a0a0a0;
+}
 </style>
 
 <template>
@@ -211,6 +215,7 @@
             placeholder="Production group"
             style="width: 3.2rem; margin-top: 0.1rem"
             :clearable="true"
+            :disabled="disabled"
             v-model="group['name']"
           />
         </div>
@@ -231,13 +236,14 @@
           type="textarea"
           style="width: 100%; margin-top: 0.1rem"
           placeholder="Multiline input"
+          :disabled="disabled"
           v-model="group['description']"
         />
       </div>
       <div class="description">
         <span>Group avatar</span>
         <div class="fileBox">
-          <img :src="imgurl" alt="" />
+          <img :src="group['imageData']" alt="" />
           <div class="fileButtonBox">
             <div class="fileTop">
               <div class="upFileButton" style="margin-top: 0">
@@ -290,7 +296,12 @@
           </Radio-group>
         </div>
       </div>
-      <div class="saveButton" @click="saveFun">Save change</div>
+      <div
+        :class="disabled ? 'saveButton savaButtonDisable' : 'saveButton'"
+        @click="saveFun"
+      >
+        Save change
+      </div>
     </div>
   </div>
 </template>
@@ -307,12 +318,15 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      disabled: true,
       loading: false,
       group: {
         id: 0,
         name: "",
         description: "",
+        imageData: "",
       },
+      imageOp: false,
       type: "Public",
       fileName: "No file chosen…",
       imgurl: require("../../../../../assets/chain_cloud/menu/pic_group_avatar@2x.png"),
@@ -323,6 +337,9 @@ export default {
   },
   methods: {
     async saveFun() {
+      if (this.disabled) {
+        return;
+      }
       let account = Principal.fromText(this.$route.params.user);
       let visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
@@ -331,6 +348,24 @@ export default {
         throw "No login account";
       }
       this.loading = true;
+
+      let enc = new TextEncoder();
+      let imageStoreRes = await manageCanister.groupImageStore(
+        account,
+        BigInt(this.group.id),
+        Array.from(enc.encode(this.group.imageData))
+      );
+      console.log("imageStoreRes.Err", imageStoreRes.Err);
+      if (imageStoreRes.Err) {
+        this.loading = false;
+        this.$Notice.info({
+          title: "Modification failed:" + imageStoreRes.Err,
+          background: true,
+          duration: 3,
+        });
+        throw imageStoreRes.Err;
+      }
+
       let updateGroupRes =
         await manageCanister.updateGroupNameAndDescriptionAndVisibility(
           account,
@@ -341,19 +376,12 @@ export default {
         );
       if (updateGroupRes.Err) {
         this.loading = false;
+        this.$Notice.info({
+          title: "Modification failed:" + updateGroupRes.Err,
+          background: true,
+          duration: 3,
+        });
         throw updateGroupRes.Err;
-      }
-
-      let enc = new TextEncoder();
-      let imageStoreRes = await manageCanister.groupImageStore(
-        account,
-        BigInt(this.group.id),
-        Array.from(enc.encode(this.imgurl))
-      );
-      if (imageStoreRes.Err) {
-        this.loading = false;
-        throw imageStoreRes.Err;
-        return;
       }
       this.loading = false;
       this.$Notice.info({
@@ -372,7 +400,12 @@ export default {
         reader.readAsDataURL(files); // 关键一步，在这里转换的
         reader.onloadend = function () {
           that.imgurl = this.result; //赋值
+          let enc = new TextEncoder();
+          that.group.imageData = new TextDecoder().decode(
+            Uint8Array.from(enc.encode(this.result))
+          );
         };
+
         this.fileName = dt.files[i].name;
       }
     },
@@ -393,9 +426,29 @@ export default {
       return;
     }
 
+    let imageData = await manageCanister.getGroupImage(account, groupId);
+
+    this.group.imageData = new TextDecoder().decode(Uint8Array.from(imageData));
     if (getGroupInfoRes.Ok.length > 0) {
       this.group.name = getGroupInfoRes.Ok[0].name;
       this.group.description = getGroupInfoRes.Ok[0].description;
+      for (let i = 0; i < getGroupInfoRes.Ok[0].members.length; i++) {
+        let opt = false;
+        if ("Operational" in getGroupInfoRes.Ok[0].members[i][1].authority) {
+          opt = true;
+        }
+        if ("Write" in getGroupInfoRes.Ok[0].members[i][1].authority) {
+          opt = true;
+        }
+        if (
+          manage.identity &&
+          manage.identity.toString() ==
+            getGroupInfoRes.Ok[0].members[i][0].toString() &&
+          opt
+        ) {
+          this.disabled = false;
+        }
+      }
     }
   },
 };

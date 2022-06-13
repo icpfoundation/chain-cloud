@@ -306,6 +306,72 @@ export default {
         },
       });
     },
+    async groupInfo() {
+      let manageCanister = this.getManageCanister();
+      if (!manageCanister) {
+        throw "No login account";
+      }
+      let account = manageCanister.identity;
+      let getUserInfoRes = await manageCanister.getUserInfo(account);
+
+      if (getUserInfoRes.Ok) {
+        let groupImage = [];
+        for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
+          try {
+            groupImage.push(
+              (async function (len) {
+                let imageData = await manageCanister.getGroupImage(
+                  account,
+                  getUserInfoRes.Ok.groups[i][1].id
+                );
+                return [imageData, len];
+              })(this.projectList.length)
+            );
+
+            //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+            this.projectList.push({
+              groupType: "Z",
+              name: getUserInfoRes.Ok.groups[i][1].name,
+              id: getUserInfoRes.Ok.groups[i][1].id,
+              info: getUserInfoRes.Ok.groups[i][1].description,
+              shuqian: 0,
+              peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+              xingNum: 0,
+              imageData: "",
+            });
+          } catch (err) {
+            this.projectList.push({
+              groupType: "Z",
+              name: getUserInfoRes.Ok.groups[i][1].name,
+              id: getUserInfoRes.Ok.groups[i][1].id,
+              info: getUserInfoRes.Ok.groups[i][1].description,
+              shuqian: 0,
+              peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+              xingNum: 0,
+              imageData: "",
+            });
+          }
+
+          // this.projectList.push({
+          //   groupType: "Z",
+          //   name: getUserInfoRes.Ok.groups[i][1].name,
+          //   id: getUserInfoRes.Ok.groups[i][1].id,
+          //   info: getUserInfoRes.Ok.groups[i][1].description,
+          //   shuqian: 3,
+          //   peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
+          //   xingNum: 2,
+          // });
+        }
+        Promise.all(groupImage).then((res) => {
+          for (let i = 0; i < res.length; i++) {
+            let imageData = new TextDecoder().decode(
+              Uint8Array.from(res[i][0])
+            );
+            this.projectList[res[i][1]].imageData = imageData;
+          }
+        });
+      }
+    },
     async deleteGroup(item) {
       let manageCanister = this.getManageCanister();
       if (!manageCanister) {
@@ -321,6 +387,11 @@ export default {
           background: true,
           duration: 3,
         });
+        for (let i = 0; i < this.projectList.length; i++) {
+          if (this.projectList[i].id == item.id) {
+            this.projectList.splice(i, 1);
+          }
+        }
       } else {
         this.$Notice.info({
           title: "Delete failed: " + removeRes.Err,
@@ -331,68 +402,7 @@ export default {
     },
   },
   async created() {
-    let manageCanister = this.getManageCanister();
-    if (!manageCanister) {
-      throw "No login account";
-    }
-    let account = manageCanister.identity;
-    let getUserInfoRes = await manageCanister.getUserInfo(account);
-
-    if (getUserInfoRes.Ok) {
-      let groupImage = [];
-      for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
-        try {
-          groupImage.push(
-            (async function (len) {
-              let imageData = await manageCanister.getGroupImage(
-                account,
-                getUserInfoRes.Ok.groups[i][1].id
-              );
-              return [imageData, len];
-            })(this.projectList.length)
-          );
-
-          //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
-          this.projectList.push({
-            groupType: "Z",
-            name: getUserInfoRes.Ok.groups[i][1].name,
-            id: getUserInfoRes.Ok.groups[i][1].id,
-            info: getUserInfoRes.Ok.groups[i][1].description,
-            shuqian: 0,
-            peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-            xingNum: 0,
-            imageData: "",
-          });
-        } catch (err) {
-          this.projectList.push({
-            groupType: "Z",
-            name: getUserInfoRes.Ok.groups[i][1].name,
-            id: getUserInfoRes.Ok.groups[i][1].id,
-            info: getUserInfoRes.Ok.groups[i][1].description,
-            shuqian: 0,
-            peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-            xingNum: 0,
-            imageData: "",
-          });
-        }
-
-        // this.projectList.push({
-        //   groupType: "Z",
-        //   name: getUserInfoRes.Ok.groups[i][1].name,
-        //   id: getUserInfoRes.Ok.groups[i][1].id,
-        //   info: getUserInfoRes.Ok.groups[i][1].description,
-        //   shuqian: 3,
-        //   peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
-        //   xingNum: 2,
-        // });
-      }
-      Promise.all(groupImage).then((res) => {
-        for (let i = 0; i < res.length; i++) {
-          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
-          this.projectList[res[i][1]].imageData = imageData;
-        }
-      });
-    }
+    await this.groupInfo();
   },
 };
 </script>

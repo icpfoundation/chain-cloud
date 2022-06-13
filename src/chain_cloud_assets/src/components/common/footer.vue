@@ -8,7 +8,11 @@
       <div class="row">
         <img class="iconsize" src="../../../assets/img/wechat@2x.png" alt="" />
         <img class="iconsize" src="../../../assets/img/twitter@2x.png" alt="" />
-        <img class="iconsize" src="../../../assets/img/facebook@2x.png" alt="" />
+        <img
+          class="iconsize"
+          src="../../../assets/img/facebook@2x.png"
+          alt=""
+        />
       </div>
     </div>
   </div>
@@ -20,7 +24,6 @@ export default {
   data() {
     return {};
   },
-
 };
 </script>
 

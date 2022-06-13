@@ -401,6 +401,7 @@ export default {
     for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
       for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
         let statusRes = [];
+
         if (getGroupInfoRes.Ok[0].projects[j][1].canisters.length == 0) {
           this.group.projects.push({
             size: `0 KB`,
@@ -425,21 +426,27 @@ export default {
             })()
           );
         }
+        let that = this;
         Promise.all(statusRes).then((getCanisterStatusRes) => {
           for (let i = 0; i < getCanisterStatusRes.length; i++) {
             if (getCanisterStatusRes[i].Ok) {
-              totalMemory_size = totalMemory_size + memory_size;
-              this.group.projects.push({
-                size: `${memory_size / BigInt(1024)} KB`,
+              totalMemory_size =
+                totalMemory_size +
+                BigInt(getCanisterStatusRes[i].Ok[0].memory_size);
+              that.group.projects.push({
+                size: `${
+                  getCanisterStatusRes[i].Ok[0].memory_size / BigInt(1024)
+                } KB`,
                 name: getGroupInfoRes.Ok[0].projects[j][1].name,
               });
             } else {
-              this.group.projects.push({
+              that.group.projects.push({
                 size: `0 KB`,
                 name: getGroupInfoRes.Ok[0].projects[j][1].name,
               });
             }
           }
+          that.storageSize = `${totalMemory_size / BigInt(1024)} KB`;
         });
       }
       for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
