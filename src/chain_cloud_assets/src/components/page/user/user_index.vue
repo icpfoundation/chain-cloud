@@ -71,6 +71,7 @@
   color: #333333;
   cursor: pointer;
   margin-right: 0.1rem;
+  z-index: 100;
 }
 
 .contentItem:last-child {
@@ -319,6 +320,7 @@ export default {
           data: [],
         },
       };
+      myChart.setOption(option);
 
       let manageCanister = this.getManageCanister();
       if (!manageCanister) {
@@ -343,10 +345,10 @@ export default {
           })()
         );
       }
-      if (logRes.length == 0) {
-        myChart.setOption(option);
-        return;
-      }
+      // if (logRes.length == 0) {
+      //   myChart.setOption(option);
+      //   return;
+      // }
       Promise.all(logRes).then((getLogRes) => {
         let map = new Map();
         for (let j = 0; j < getLogRes.length; j++) {

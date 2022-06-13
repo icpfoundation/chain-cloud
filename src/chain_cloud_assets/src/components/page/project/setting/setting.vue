@@ -193,7 +193,7 @@
   <div class="app">
     <div class="title">
       <div class="titleName">Setting</div>
-      <span class="titlePath">{{ group.name }} / Setting</span>
+      <span class="titlePath">{{ project.name }} / Setting</span>
     </div>
     <div class="content">
       <Spin fix size="large" v-show="loading">
@@ -202,36 +202,36 @@
       </Spin>
       <div class="leftBoxName">Naming, visibility</div>
       <div class="contentInfo">
-        Update your group name, description, avatar, and visibility.
+        Update your project name, description, avatar, and visibility.
       </div>
       <div class="contentName">
         <div class="nameItem">
-          <span>Group name</span>
+          <span>Project name</span>
           <Input
             placeholder="Production group"
             style="width: 3.2rem; margin-top: 0.1rem"
             :clearable="true"
-            v-model="group['name']"
+            v-model="project['name']"
           />
         </div>
         <div class="nameItem">
-          <span>Group ID</span>
+          <span>Project ID</span>
           <Input
             placeholder="Group ID"
             style="width: 3.2rem; margin-top: 0.1rem"
             :clearable="true"
             disabled
-            v-model="group['id']"
+            v-model="project['id']"
           />
         </div>
       </div>
       <div class="description">
-        <span>Group description (optional)</span>
+        <span>Project description (optional)</span>
         <Input
           type="textarea"
           style="width: 100%; margin-top: 0.1rem"
           placeholder="Multiline input"
-          v-model="group['description']"
+          v-model="project['description']"
         />
       </div>
       <div class="description">
@@ -308,10 +308,11 @@ export default {
   data() {
     return {
       loading: false,
-      group: {
+      project: {
         id: 0,
         name: "",
         description: "",
+        byGroupId: 0,
       },
       type: "Public",
       fileName: "No file chosen…",
@@ -331,23 +332,25 @@ export default {
         throw "No login account";
       }
       this.loading = true;
-      let updateGroupRes =
-        await manageCanister.updateGroupNameAndDescriptionAndVisibility(
+      let updateProjectRes =
+        await manageCanister.updateProjectNameAndDescriptionAndVisibility(
           account,
-          BigInt(this.group.id),
-          this.group.name,
-          this.group.description,
+          BigInt(this.project.byGroupId),
+          BigInt(this.project.id),
+          this.project.name,
+          this.project.description,
           visibility
         );
-      if (updateGroupRes.Err) {
+      if (updateProjectRes.Err) {
         this.loading = false;
-        throw updateGroupRes.Err;
+        throw updateProjectRes.Err;
       }
 
       let enc = new TextEncoder();
-      let imageStoreRes = await manageCanister.groupImageStore(
+      let imageStoreRes = await manageCanister.projectImageStore(
         account,
-        BigInt(this.group.id),
+        BigInt(this.project.byGroupId),
+        BigInt(this.project.id),
         Array.from(enc.encode(this.imgurl))
       );
       if (imageStoreRes.Err) {
@@ -380,22 +383,27 @@ export default {
   async created() {
     let account = Principal.fromText(this.$route.params.user);
     let groupId = Number(this.$route.params.groupId);
-    this.group.id = groupId;
+    let projectId = Number(this.$route.params.projectId);
+    this.project.byGroupId = groupId;
+    this.project.id = projectId;
     let canister = this.getManageCanister();
     let manage = manageCanister;
     if (canister) {
       manage = canister;
     }
 
-    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
-    if (getGroupInfoRes.Err) {
-      throw getGroupInfoRes.Err;
-      return;
+    let getProjectRes = await manage.getProjectInfo(
+      account,
+      groupId,
+      projectId
+    );
+    console.log("getProjectRest", getProjectRes);
+    if (getProjectRes.Err) {
+      throw getProjectRes.Err;
     }
-
-    if (getGroupInfoRes.Ok.length > 0) {
-      this.group.name = getGroupInfoRes.Ok[0].name;
-      this.group.description = getGroupInfoRes.Ok[0].description;
+    if (getProjectRes.Ok.length > 0) {
+      this.project.name = getProjectRes.Ok[0].name;
+      this.project.description = getProjectRes.Ok[0].description;
     }
   },
 };

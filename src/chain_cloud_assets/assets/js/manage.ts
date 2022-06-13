@@ -58,6 +58,15 @@ interface ManageInterface {
         group_id: bigint,
         project_id: bigint,
     ): OptGroupRes,
+
+    update_project_name_and_description_and_visibility(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+        name: string,
+        description: string,
+        visibility: Profile,
+    ): OptGroupRes,
 }
 
 interface ImageStoreInterface {
@@ -203,6 +212,17 @@ class ManageCanister {
         return rmProjectRes
     }
 
+    async updateProjectNameAndDescriptionAndVisibility(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+        name: string,
+        description: string,
+        visibility: Profile,
+    ): Promise<OptGroupRes> {
+        let updateProjectRes = await this.manageActor.update_project_name_and_description_and_visibility(account, group_id, project_id, name, description, visibility)
+        return updateProjectRes
+    }
 }
 
 
