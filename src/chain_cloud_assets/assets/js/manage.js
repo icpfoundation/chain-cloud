@@ -277,6 +277,19 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
+    ManageCanister.prototype.updateProjectNameAndDescriptionAndVisibility = function (account, group_id, project_id, name, description, visibility) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateProjectRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.manageActor.update_project_name_and_description_and_visibility(account, group_id, project_id, name, description, visibility)];
+                    case 1:
+                        updateProjectRes = _a.sent();
+                        return [2 /*return*/, updateProjectRes];
+                }
+            });
+        });
+    };
     return ManageCanister;
 }());
 exports["default"] = ManageCanister;

@@ -270,6 +270,31 @@ export default {
           isSon: true,
           select: false,
         },
+        {
+          menuName: "Setting",
+          norUrl: require("../../../assets/chain_cloud/menu/icon_overview_nor@2x.png"),
+          selUrl: require("../../../assets/chain_cloud/menu/icon_overview_sel@2x.png"),
+          href: "projectsetting",
+          children: [
+            // {
+            //   menuName: "Interface",
+            //   href: "interface",
+            //   select: false,
+            // },
+            // {
+            //   menuName: "Activities",
+            //   href: "activities",
+            //   select: false,
+            // },
+            // {
+            //   menuName: "Metric",
+            //   href: "metric",
+            //   select: false,
+            // },
+          ],
+          isSon: true,
+          select: false,
+        },
       ],
     };
   },

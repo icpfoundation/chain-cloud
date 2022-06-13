@@ -41,6 +41,7 @@ const projectcanisters = r => require.ensure([], () => r(require('../components/
 const projectinterface = r => require.ensure([], () => r(require('../components/page/project/canisters/interface.vue'), 'interface'))
 const activities = r => require.ensure([], () => r(require('../components/page/project/canisters/activities.vue'), 'activities'))
 const metric = r => require.ensure([], () => r(require('../components/page/project/canisters/metric.vue'), 'metric'))
+const projectsetting = r => require.ensure([], () => r(require('../components/page/project/setting/setting.vue'), 'projectsetting'))
 Vue.use(Router);
 
 
@@ -215,6 +216,15 @@ let router = new Router({
       component: projectcanisters,
       meta: {
         title: 'projectcanisters',
+        keepAlive: false
+      },
+    },
+    {
+      path: 'projectsetting/:user/:groupId/:projectId',
+      name: 'projectsetting',
+      component: projectsetting,
+      meta: {
+        title: 'projectsetting',
         keepAlive: false
       },
     },

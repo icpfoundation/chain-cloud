@@ -220,6 +220,14 @@ export interface _SERVICE {
       arg_3: Principal,
       arg_4: Authority,
     ) => Promise<OptGroupRes>,
+  'update_project_name_and_description_and_visibility' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: bigint,
+      arg_3: string,
+      arg_4: string,
+      arg_5: Profile,
+    ) => Promise<OptGroupRes>,
   'update_project_visibility' : (
       arg_0: Principal,
       arg_1: bigint,
