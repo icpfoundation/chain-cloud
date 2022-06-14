@@ -472,7 +472,11 @@ export default {
       this.project.url = getProjectRes.Ok[0].git_repo_url;
       this.project.cycleFloor = getProjectRes.Ok[0].canister_cycle_floor;
       this.project.description = getProjectRes.Ok[0].description;
-      this.project.canisters = JSON.stringify(getProjectRes.Ok[0].canisters);
+      let arr = [];
+      for (let i = 0; i < getProjectRes.Ok[0].canisters.length; i++) {
+        arr.push(getProjectRes.Ok[0].canisters[i].toString());
+      }
+      this.project.canister = JSON.stringify(arr);
     }
     for (let i = 0; i < getProjectRes.Ok[0].members.length; i++) {
       let opt = false;
