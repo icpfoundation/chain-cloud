@@ -129,12 +129,9 @@
           product impact, to build a product environment that actively benefits
           for research.
         </div>
-        <div class="contentRightInfo">
-          Start working with JiaoziDB that bring rust and integrity into the
-          data life cycle by providing end-to-end cryptographically verifiable
-          tracking and provenance for all artifacts, actions, and dependencies,
-          at scale.
-        </div>
+        <div class="contentRightInfo">Our goal is to create a research environment rich in opportunities for product impact, to build a product environment that actively benefits from research.</div>
+        <div class="contentRightInfo">Start working with Chain-Cloud that bring cloud computation into the data lifecycle by providing end-to-end cryptographically verifiable tracking and provenance for all artifacts,
+          actions, and dependencies, at scale.</div>
       </div>
     </div>
   </div>
