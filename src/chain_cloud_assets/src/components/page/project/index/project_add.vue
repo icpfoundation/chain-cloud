@@ -237,7 +237,7 @@
             />
           </div> -->
           <div class="nameItem">
-            <span>Projects name</span>
+            <span>Project name</span>
             <Input
               placeholder="Project name"
               style="width: 320px; margin-top: 10px"
@@ -247,7 +247,7 @@
           </div>
 
           <div class="nameItem">
-            <span>Projects URL</span>
+            <span>Project URL</span>
             <Input
               placeholder="my-awesome-project"
               style="width: 720px; margin-top: 10px"
@@ -274,7 +274,7 @@
             </Select>
           </div>
           <div class="description">
-            <span>Projects description (optional)</span>
+            <span>Project description (optional)</span>
             <Input
               type="textarea"
               style="width: 100%; margin-top: 10px"
@@ -283,7 +283,7 @@
             />
           </div>
           <div class="description">
-            <span>Projects type</span>
+            <span>Project type</span>
             <Select
               v-model="projectType"
               style="width: 100%"
@@ -298,7 +298,7 @@
               >
             </Select>
           </div>
-          <div class="nameItem">
+          <!-- <div class="nameItem">
             <span
               >To Account Identity: (If you want to create a project under
               another account, fill in the address of the target account
@@ -310,7 +310,7 @@
               :clearable="true"
               v-model="toAccount"
             />
-          </div>
+          </div> -->
           <div class="nameItem">
             <span>Project Canisters</span>
             <Input
@@ -321,7 +321,7 @@
             />
           </div>
           <div class="description">
-            <span>Projects avatar</span>
+            <span>Project avatar</span>
             <div class="fileBox">
               <img :src="imgurl" alt="" />
               <div class="fileButtonBox">
@@ -354,7 +354,8 @@
                     />
                     <span class="radioSel">Private</span>
                     <span class="radioDec"
-                      >projects can only be viewed by mambers.</span
+                      >This project can only be viewed by members in the same
+                      group</span
                     >
                   </Radio>
                 </div>
@@ -367,7 +368,8 @@
                     />
                     <span class="radioSel">Public</span>
                     <span class="radioDec">
-                      projects can be viewed without any authentication.</span
+                      This project can be viewed without any
+                      authentication.</span
                     >
                   </Radio>
                 </div>

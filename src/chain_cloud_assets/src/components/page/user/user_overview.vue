@@ -176,6 +176,7 @@
 
 .tableItemgroupTimeTop img {
   width: 16px;
+
   height: 16px;
 }
 </style>

@@ -203,7 +203,7 @@
   <div class="app">
     <div class="content">
       <div class="head">
-        <span>New Group</span>
+        <span>New group</span>
       </div>
 
       <div class="line"></div>

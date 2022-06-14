@@ -1,7 +1,7 @@
 <style scoped>
 .aboutusApp {
   width: 100%;
-  background: #F8FBFF;
+  background: #f8fbff;
   height: 569px;
   display: flex;
   justify-content: center;
@@ -109,34 +109,41 @@
 <template>
   <div class="aboutusApp">
     <div class="content">
-      <img src="../../../assets/img/home/aboutus.png" alt="" class="aboutusImg">
+      <img
+        src="../../../assets/img/home/aboutus.png"
+        alt=""
+        class="aboutusImg"
+      />
       <div class="contentRight">
         <div class="contentRightHead">
-          <img src="../../../assets/img/home/icon_tab_blue_r@2x.png" alt="">
+          <img src="../../../assets/img/home/icon_tab_blue_r@2x.png" alt="" />
           <span>About us</span>
         </div>
         <div class="contentRightContent">
           <span>Delivering the industry’s</span>
           <span class="wordSp">Trustless Cloud</span>
-          <span> of Web3.</span>
+          <span> of Web3</span>
         </div>
-        <div class="contentRightInfo">Our goal is to create a research environment rich in opportunities for product impact, to build a product environment that actively benefits from research.</div>
-        <div class="contentRightInfo">Start working with JiaoziDB that bring rust and integrity into the data life cycle by providing end-to-end cryptographically verifiable tracking and provenance for all artifacts,
-          actions, and dependencies, at scale.</div>
+        <div class="contentRightInfo">
+          Our goal is to create a research environment rich in opportunities for
+          product impact, to build a product environment that actively benefits
+          for research.
+        </div>
+        <div class="contentRightInfo">
+          Start working with JiaoziDB that bring rust and integrity into the
+          data life cycle by providing end-to-end cryptographically verifiable
+          tracking and provenance for all artifacts, actions, and dependencies,
+          at scale.
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
-
 export default {
   data() {
-    return {
-
-    };
+    return {};
   },
-
 };
 </script>

@@ -23,7 +23,7 @@
 
 .content {
   background: white;
-  height: 7.8rem;
+  height: 10.5rem;
   background: #ffffff;
   border-radius: 0.08rem;
   padding: 0.2rem;
@@ -186,6 +186,9 @@
   font-weight: 400;
   color: #333333;
 }
+.ivu-spin-fix {
+  height: 130%;
+}
 
 .demo-spin-icon-load {
   animation: ani-demo-spin 1s linear infinite;
@@ -237,6 +240,27 @@
           placeholder="Multiline input"
           :disabled="disabled"
           v-model="project['description']"
+        />
+      </div>
+      <div class="description">
+        <span>Project git url (optional)</span>
+        <Input
+          type="textarea"
+          style="width: 100%; margin-top: 0.1rem"
+          placeholder="Multiline input"
+          :disabled="disabled"
+          v-model="project['url']"
+        />
+      </div>
+
+      <div class="description">
+        <span>Project Canister (optional)</span>
+        <Input
+          type="textarea"
+          style="width: 100%; margin-top: 0.1rem"
+          placeholder=""
+          :disabled="disabled"
+          v-model="project['canister']"
         />
       </div>
       <div class="description">
@@ -325,6 +349,9 @@ export default {
         description: "",
         byGroupId: 0,
         imageData: "",
+        url: "",
+        canister: "",
+        cycleFloor: 0,
       },
       type: "Public",
       fileName: "No file chosen…",
@@ -347,15 +374,29 @@ export default {
         throw "No login account";
       }
       this.loading = true;
-      let updateProjectRes =
-        await manageCanister.updateProjectNameAndDescriptionAndVisibility(
-          account,
-          BigInt(this.project.byGroupId),
-          BigInt(this.project.id),
-          this.project.name,
-          this.project.description,
-          visibility
-        );
+      let canister = [];
+      if (this.project.canister != "") {
+        let canisterRes = JSON.parse(this.project.canister);
+        for (let i = 0; i < canisterRes.length; i++) {
+          try {
+            canister.push(Principal.fromText(canisterRes[i]));
+          } catch (err) {
+            this.loading = false;
+            throw "Invalid canister id";
+          }
+        }
+      }
+      let updateProjectRes = await manageCanister.updateProjectBasicInformation(
+        account,
+        BigInt(this.project.byGroupId),
+        BigInt(this.project.id),
+        this.project.name,
+        this.project.description,
+        visibility,
+        this.project.url,
+        this.project.cycleFloor,
+        canister
+      );
       if (updateProjectRes.Err) {
         this.loading = false;
         this.$Notice.info({
@@ -428,6 +469,10 @@ export default {
     if (getProjectRes.Ok.length > 0) {
       this.project.name = getProjectRes.Ok[0].name;
       this.project.description = getProjectRes.Ok[0].description;
+      this.project.url = getProjectRes.Ok[0].git_repo_url;
+      this.project.cycleFloor = getProjectRes.Ok[0].canister_cycle_floor;
+      this.project.description = getProjectRes.Ok[0].description;
+      this.project.canisters = JSON.stringify(getProjectRes.Ok[0].canisters);
     }
     for (let i = 0; i < getProjectRes.Ok[0].members.length; i++) {
       let opt = false;

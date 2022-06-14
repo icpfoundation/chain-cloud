@@ -181,7 +181,7 @@
       </div>
       <div class="tab" v-if="tabShow && principleShort != 'Login'">
         <div @click.stop="doSomething" class="tabItem">Your profile</div>
-        <div @click.stop="logoutAction" class="tabItem">Sign out</div>
+        <div @click.stop="logoutAction" class="tabItem">Logout</div>
       </div>
       <!-- <span
         class="name"

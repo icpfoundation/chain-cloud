@@ -201,17 +201,32 @@ export const idlFactory = ({ IDL }) => {
         [OptGroupRes],
         [],
       ),
+    'update_group_basic_information' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, IDL.Text, IDL.Text, Profile, IDL.Text],
+        [OptGroupRes],
+        [],
+      ),
     'update_group_member_authority' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Principal, Authority],
         [OptGroupRes],
         [],
       ),
-    'update_group_name_and_description_and_visibility' : IDL.Func(
-        [IDL.Principal, IDL.Nat64, IDL.Text, IDL.Text, Profile],
+    'update_log_canister' : IDL.Func([IDL.Principal], [], []),
+    'update_project_basic_information' : IDL.Func(
+        [
+          IDL.Principal,
+          IDL.Nat64,
+          IDL.Nat64,
+          IDL.Text,
+          IDL.Text,
+          Profile,
+          IDL.Text,
+          IDL.Nat,
+          IDL.Vec(IDL.Principal),
+        ],
         [OptGroupRes],
         [],
       ),
-    'update_log_canister' : IDL.Func([IDL.Principal], [], []),
     'update_project_description' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Nat64, IDL.Text],
         [OptGroupRes],
@@ -224,11 +239,6 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_project_member_authority' : IDL.Func(
         [IDL.Principal, IDL.Nat64, IDL.Nat64, IDL.Principal, Authority],
-        [OptGroupRes],
-        [],
-      ),
-    'update_project_name_and_description_and_visibility' : IDL.Func(
-        [IDL.Principal, IDL.Nat64, IDL.Nat64, IDL.Text, IDL.Text, Profile],
         [OptGroupRes],
         [],
       ),

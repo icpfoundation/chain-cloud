@@ -241,6 +241,16 @@
         />
       </div>
       <div class="description">
+        <span>Git url </span>
+        <Input
+          type="textarea"
+          style="width: 100%; margin-top: 0.1rem"
+          placeholder="Multiline input"
+          :disabled="disabled"
+          v-model="group['url']"
+        />
+      </div>
+      <div class="description">
         <span>Group avatar</span>
         <div class="fileBox">
           <img :src="group['imageData']" alt="" />
@@ -325,6 +335,7 @@ export default {
         name: "",
         description: "",
         imageData: "",
+        url: "",
       },
       imageOp: false,
       type: "Public",
@@ -355,7 +366,6 @@ export default {
         BigInt(this.group.id),
         Array.from(enc.encode(this.group.imageData))
       );
-      console.log("imageStoreRes.Err", imageStoreRes.Err);
       if (imageStoreRes.Err) {
         this.loading = false;
         this.$Notice.info({
@@ -366,14 +376,14 @@ export default {
         throw imageStoreRes.Err;
       }
 
-      let updateGroupRes =
-        await manageCanister.updateGroupNameAndDescriptionAndVisibility(
-          account,
-          BigInt(this.group.id),
-          this.group.name,
-          this.group.description,
-          visibility
-        );
+      let updateGroupRes = await manageCanister.updateGroupBasicInformation(
+        account,
+        BigInt(this.group.id),
+        this.group.name,
+        this.group.description,
+        visibility,
+        this.group.url
+      );
       if (updateGroupRes.Err) {
         this.loading = false;
         this.$Notice.info({
@@ -432,6 +442,7 @@ export default {
     if (getGroupInfoRes.Ok.length > 0) {
       this.group.name = getGroupInfoRes.Ok[0].name;
       this.group.description = getGroupInfoRes.Ok[0].description;
+      this.group.url = getGroupInfoRes.Ok[0].url;
       for (let i = 0; i < getGroupInfoRes.Ok[0].members.length; i++) {
         let opt = false;
         if ("Operational" in getGroupInfoRes.Ok[0].members[i][1].authority) {
