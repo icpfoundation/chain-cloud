@@ -178,7 +178,11 @@
               alt=""
               class="imgboxImg"
             />
-            <div class="imgBoxInfo">GitHub</div>
+            <div class="imgBoxInfo">
+              <a href="https://github.com/icpfoundation" target="_blank"
+                >GitHub</a
+              >
+            </div>
           </div>
           <div class="imgBox">
             <img
@@ -186,7 +190,11 @@
               alt=""
               class="imgboxImg"
             />
-            <div class="imgBoxInfo">Twitter</div>
+            <div class="imgBoxInfo">
+              <a href="https://twitter.com/ICP_ChainCloud" target="_blank"
+                >Twitter</a
+              >
+            </div>
           </div>
           <div class="imgBox">
             <img
@@ -194,7 +202,13 @@
               alt=""
               class="imgboxImg"
             />
-            <div class="imgBoxInfo">YouTube</div>
+            <div class="imgBoxInfo">
+              <a
+                href="https://www.youtube.com/channel/UC5upoHevUM_ztfqu884odow"
+                target="_blank"
+                >YouTube</a
+              >
+            </div>
           </div>
         </div>
       </div>

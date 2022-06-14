@@ -12,12 +12,13 @@ interface ManageInterface {
     add_group(account: Principal, group: Group): OptGroupRes
     visible_project(): Array<Array<[Principal, bigint, Group]>>
     get_group_info(user: Principal, group_id: bigint): GroupInfoRes,
-    update_group_name_and_description_and_visibility(
-        accout: Principal,
+    update_group_basic_information(
+        account: Principal,
         group_id: bigint,
         name: string,
         description: string,
         visibility: Profile,
+        url: string,
     ): OptGroupRes,
 
     get_canister_status(
@@ -59,13 +60,16 @@ interface ManageInterface {
         project_id: bigint,
     ): OptGroupRes,
 
-    update_project_name_and_description_and_visibility(
+    update_project_basic_information(
         account: Principal,
         group_id: bigint,
         project_id: bigint,
         name: string,
         description: string,
         visibility: Profile,
+        git: string,
+        canister_cycle_floor: bigint,
+        canisters: Array<Principal>,
     ): OptGroupRes,
 }
 
@@ -140,13 +144,14 @@ class ManageCanister {
         return getLogRes
     }
 
-    async updateGroupNameAndDescriptionAndVisibility(accout: Principal,
+    async updateGroupBasicInformation(account: Principal,
         group_id: bigint,
         name: string,
         description: string,
-        visibility: Profile): Promise<OptGroupRes> {
-        let updateGroupInfoRes = await this.manageActor.update_group_name_and_description_and_visibility(accout, group_id, name, description, visibility)
-        return updateGroupInfoRes
+        visibility: Profile,
+        url: string): Promise<OptGroupRes> {
+        let updateRes = await this.manageActor.update_group_basic_information(account, group_id, name, description, visibility, url)
+        return updateRes
     }
 
     async getCanisterStatus(
@@ -212,16 +217,18 @@ class ManageCanister {
         return rmProjectRes
     }
 
-    async updateProjectNameAndDescriptionAndVisibility(
+    async updateProjectBasicInformation(
         account: Principal,
         group_id: bigint,
         project_id: bigint,
         name: string,
         description: string,
         visibility: Profile,
-    ): Promise<OptGroupRes> {
-        let updateProjectRes = await this.manageActor.update_project_name_and_description_and_visibility(account, group_id, project_id, name, description, visibility)
-        return updateProjectRes
+        git: string,
+        canister_cycle_floor: bigint,
+        canisters: Array<Principal>): Promise<OptGroupRes> {
+        let updateRes = await this.manageActor.update_project_basic_information(account, group_id, project_id, name, description, visibility, git, canister_cycle_floor, canisters)
+        return updateRes
     }
 }
 

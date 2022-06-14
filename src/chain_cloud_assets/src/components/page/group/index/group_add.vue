@@ -203,7 +203,7 @@
   <div class="app">
     <div class="content">
       <div class="head">
-        <span>New Group</span>
+        <span>New group</span>
       </div>
 
       <div class="line"></div>
@@ -298,7 +298,7 @@
                     <span class="radioSel">Private</span>
                     <span class="radioDec"
                       >The group and its projects can only be viewed by
-                      mambers.</span
+                      members.</span
                     >
                   </Radio>
                 </div>

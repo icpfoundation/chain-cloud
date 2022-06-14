@@ -23,7 +23,7 @@
 
 .content {
   background: white;
-  height: 7.8rem;
+  height: 10.5rem;
   background: #ffffff;
   border-radius: 0.08rem;
   padding: 0.2rem;
@@ -146,6 +146,9 @@
   cursor: pointer;
 }
 
+.savaButtonDisable {
+  background: #a0a0a0;
+}
 .upFileButton {
   width: 1.15rem;
   height: 0.32rem;
@@ -183,6 +186,9 @@
   font-weight: 400;
   color: #333333;
 }
+.ivu-spin-fix {
+  height: 130%;
+}
 
 .demo-spin-icon-load {
   animation: ani-demo-spin 1s linear infinite;
@@ -200,10 +206,10 @@
         <Icon type="ios-loading" size="18" class="demo-spin-icon-load"></Icon>
         <div>Loading</div>
       </Spin>
-      <div class="leftBoxName">Naming, visibility</div>
+      <!-- <div class="leftBoxName">Naming, visibility</div>
       <div class="contentInfo">
         Update your project name, description, avatar, and visibility.
-      </div>
+      </div> -->
       <div class="contentName">
         <div class="nameItem">
           <span>Project name</span>
@@ -211,6 +217,7 @@
             placeholder="Production group"
             style="width: 3.2rem; margin-top: 0.1rem"
             :clearable="true"
+            :disabled="disabled"
             v-model="project['name']"
           />
         </div>
@@ -231,13 +238,35 @@
           type="textarea"
           style="width: 100%; margin-top: 0.1rem"
           placeholder="Multiline input"
+          :disabled="disabled"
           v-model="project['description']"
+        />
+      </div>
+      <div class="description">
+        <span>Project git url (optional)</span>
+        <Input
+          type="textarea"
+          style="width: 100%; margin-top: 0.1rem"
+          placeholder="Multiline input"
+          :disabled="disabled"
+          v-model="project['url']"
+        />
+      </div>
+
+      <div class="description">
+        <span>Project Canister (optional)</span>
+        <Input
+          type="textarea"
+          style="width: 100%; margin-top: 0.1rem"
+          placeholder=""
+          :disabled="disabled"
+          v-model="project['canister']"
         />
       </div>
       <div class="description">
         <span>Group avatar</span>
         <div class="fileBox">
-          <img :src="imgurl" alt="" />
+          <img :src="project['imageData']" alt="" />
           <div class="fileButtonBox">
             <div class="fileTop">
               <div class="upFileButton" style="margin-top: 0">
@@ -290,7 +319,12 @@
           </Radio-group>
         </div>
       </div>
-      <div class="saveButton" @click="saveFun">Save change</div>
+      <div
+        :class="disabled ? 'saveButton savaButtonDisable' : 'saveButton '"
+        @click="saveFun"
+      >
+        Save change
+      </div>
     </div>
   </div>
 </template>
@@ -308,11 +342,16 @@ export default {
   data() {
     return {
       loading: false,
+      disabled: true,
       project: {
         id: 0,
         name: "",
         description: "",
         byGroupId: 0,
+        imageData: "",
+        url: "",
+        canister: "",
+        cycleFloor: 0,
       },
       type: "Public",
       fileName: "No file chosen…",
@@ -324,6 +363,9 @@ export default {
   },
   methods: {
     async saveFun() {
+      if (this.disabled) {
+        return;
+      }
       let account = Principal.fromText(this.$route.params.user);
       let visibility =
         this.type == "Public" ? { Public: null } : { Private: null };
@@ -332,17 +374,36 @@ export default {
         throw "No login account";
       }
       this.loading = true;
-      let updateProjectRes =
-        await manageCanister.updateProjectNameAndDescriptionAndVisibility(
-          account,
-          BigInt(this.project.byGroupId),
-          BigInt(this.project.id),
-          this.project.name,
-          this.project.description,
-          visibility
-        );
+      let canister = [];
+      if (this.project.canister != "") {
+        let canisterRes = JSON.parse(this.project.canister);
+        for (let i = 0; i < canisterRes.length; i++) {
+          try {
+            canister.push(Principal.fromText(canisterRes[i]));
+          } catch (err) {
+            this.loading = false;
+            throw "Invalid canister id";
+          }
+        }
+      }
+      let updateProjectRes = await manageCanister.updateProjectBasicInformation(
+        account,
+        BigInt(this.project.byGroupId),
+        BigInt(this.project.id),
+        this.project.name,
+        this.project.description,
+        visibility,
+        this.project.url,
+        this.project.cycleFloor,
+        canister
+      );
       if (updateProjectRes.Err) {
         this.loading = false;
+        this.$Notice.info({
+          title: "Modification failed:" + updateProjectRes.Err,
+          background: true,
+          duration: 3,
+        });
         throw updateProjectRes.Err;
       }
 
@@ -351,7 +412,7 @@ export default {
         account,
         BigInt(this.project.byGroupId),
         BigInt(this.project.id),
-        Array.from(enc.encode(this.imgurl))
+        Array.from(enc.encode(this.project.imageData))
       );
       if (imageStoreRes.Err) {
         this.loading = false;
@@ -375,6 +436,10 @@ export default {
         reader.readAsDataURL(files); // 关键一步，在这里转换的
         reader.onloadend = function () {
           that.imgurl = this.result; //赋值
+          let enc = new TextEncoder();
+          that.project.imageData = new TextDecoder().decode(
+            Uint8Array.from(enc.encode(this.result))
+          );
         };
         this.fileName = dt.files[i].name;
       }
@@ -397,14 +462,43 @@ export default {
       groupId,
       projectId
     );
-    console.log("getProjectRest", getProjectRes);
+
     if (getProjectRes.Err) {
       throw getProjectRes.Err;
     }
     if (getProjectRes.Ok.length > 0) {
       this.project.name = getProjectRes.Ok[0].name;
       this.project.description = getProjectRes.Ok[0].description;
+      this.project.url = getProjectRes.Ok[0].git_repo_url;
+      this.project.cycleFloor = getProjectRes.Ok[0].canister_cycle_floor;
+      this.project.description = getProjectRes.Ok[0].description;
+      this.project.canisters = JSON.stringify(getProjectRes.Ok[0].canisters);
     }
+    for (let i = 0; i < getProjectRes.Ok[0].members.length; i++) {
+      let opt = false;
+      if ("Operational" in getProjectRes.Ok[0].members[i][1].authority) {
+        opt = true;
+      }
+      if ("Write" in getProjectRes.Ok[0].members[i][1].authority) {
+        opt = true;
+      }
+      if (
+        manage.identity &&
+        manage.identity.toString() ==
+          getProjectRes.Ok[0].members[i][0].toString() &&
+        opt
+      ) {
+        this.disabled = false;
+      }
+    }
+    let imageData = await manageCanister.getProjectImage(
+      account,
+      groupId,
+      projectId
+    );
+    this.project.imageData = new TextDecoder().decode(
+      Uint8Array.from(imageData)
+    );
   },
 };
 </script>

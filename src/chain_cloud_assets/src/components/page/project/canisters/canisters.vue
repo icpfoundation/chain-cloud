@@ -33,6 +33,7 @@
   display: flex;
   margin-top: 0.2rem;
   align-items: center;
+  position: relative;
 }
 
 .headItem {
@@ -45,11 +46,13 @@
   width: 4.4rem;
   margin-right: 0.2rem;
   height: 100%;
+  position: absolute;
 }
 
 .headRight {
   flex: 1;
   height: 100%;
+  margin-left: 4.6rem;
 }
 
 .headRightItem {
@@ -281,7 +284,7 @@
       <span class="titlePath">{{ project.name }} / Canisters</span>
     </div>
     <div class="head">
-      <div class="headItemTitle">All canister info</div>
+      <div class="headItemTitle">Canister State</div>
       <div class="canisterLoading">
         <el-empty
           :image-size="50"
@@ -337,7 +340,7 @@
               <span>{{ item.compute_allocation }}</span>
             </div>
             <div class="headRightItem">
-              <div class="headRightItemtitle">Memory Size</div>
+              <div class="headRightItemtitle">Memory size</div>
               <span>{{ item.memory_size }}</span>
             </div>
             <div class="headRightItem">
@@ -353,7 +356,7 @@
       </div>
     </div>
     <div class="content">
-      <div class="contentTitle">Project Activities</div>
+      <div class="contentTitle">Canister Activities</div>
       <div class="contentBox">
         <div class="table">
           <div class="tableHead">
@@ -556,7 +559,7 @@ export default {
               cycles: getCanisterStatusRes[i][0].Ok[0].cycles,
               memory_size: getCanisterStatusRes[i][0].Ok[0].memory_size,
               module_hash: Buffer.from(
-                getCanisterStatusRes[i][0].Ok[0].module_hash
+                getCanisterStatusRes[i][0].Ok[0].module_hash[0]
               ).toString("hex"),
               status:
                 "running" in getCanisterStatusRes[i][0].Ok[0].status

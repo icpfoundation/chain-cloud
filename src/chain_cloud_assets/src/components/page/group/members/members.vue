@@ -274,13 +274,13 @@
         <span class="headLeftName"></span>
       </div>
       <div class="headRight">
-        <div class="cel buttonCom">Cancel</div>
+        <!-- <div class="cel buttonCom">Cancel</div> -->
         <div class="add buttonCom" @click="addGroupMember">Add to group</div>
       </div>
     </div>
     <div class="search">
       <div class="searchItem">
-        <span>user identity</span>
+        <span>User Identity</span>
         <Input
           placeholder="Search for members by name, username, or email"
           suffix="ios-search"
@@ -296,7 +296,7 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>user name</span>
+        <span>User Name</span>
         <Input
           placeholder="Search for members by name, username, or email"
           suffix="ios-search"
@@ -312,7 +312,7 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>Select a authority</span>
+        <span>Select a Authority</span>
         <Select v-model="roleValue" style="width: 3.4rem; margin: 0.1rem 0">
           <Option
             v-for="(item, index) in roleList"
@@ -328,7 +328,7 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>expiration time</span>
+        <span>Expiration Time</span>
         <DatePicker
           :clearable="false"
           format="yyyy-MM-dd"
@@ -415,7 +415,7 @@
                 :class="{ leaveStop: item.isMe }"
                 @click="removeGroupMember(item)"
               >
-                leave
+                Leave
               </div>
             </div>
           </div>
@@ -577,11 +577,11 @@ export default {
       });
     },
     onChanage(date, dateString) {
-      let expir =
-        BigInt(new Date(moment(date, "yyyy-MM-dd")).getTime()) *
-        BigInt(1000000);
+      let expir = BigInt(new Date(date).getTime()) * BigInt(1000000);
+
       this.memeber.expiration_time = [expir];
     },
+
     async addGroupMember() {
       switch (this.roleValue) {
         case "1":
@@ -614,6 +614,8 @@ export default {
           background: true,
           duration: 3,
         });
+        this.tableData.tableList = [];
+        await this.getMember();
       } else {
         this.$Notice.info({
           title: "Add failed" + addGroupMemberRes.Err,
@@ -621,6 +623,73 @@ export default {
           duration: 3,
         });
       }
+    },
+    async getMember() {
+      let canister = this.getManageCanister();
+      let manage = manageCanister;
+      if (canister) {
+        manage = canister;
+      }
+      let account = Principal.fromText(this.$route.params.user);
+      let groupId = BigInt(this.$route.params.groupId);
+
+      let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
+      if (getGroupInfoRes.Err) {
+        throw getGroupInfoRes.Err;
+        return;
+      }
+      this.group.name = getGroupInfoRes.Ok[0].name;
+      let currentTime = BigInt(new Date().getTime());
+      for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
+        this.tableData.total = getGroupInfoRes.Ok[0].members.length;
+        for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
+          let auth = "Reporter";
+          if ("Read" in getGroupInfoRes.Ok[0].members[k][1].authority) {
+          } else if ("Write" in getGroupInfoRes.Ok[0].members[k][1].authority) {
+            auth = "Developer";
+          } else {
+            auth = "Maintainer";
+          }
+          let duration = parseInt(
+            Number(
+              currentTime -
+                BigInt(getGroupInfoRes.Ok[0].members[k][1].join_time)
+            ) / 1000
+          );
+          let create_time = "";
+          if (duration >= 86400) {
+            create_time = `Given access ${parseInt(duration / 86400)} day ago`;
+          } else if (duration >= 3600) {
+            create_time = `Given access ${parseInt(duration / 3600)} hour ago`;
+          } else if (duration >= 60) {
+            create_time = `Given access ${parseInt(duration / 60)} min ago`;
+          } else {
+            create_time = `Given access ${duration} s ago`;
+          }
+
+          let expires = "";
+          if (getGroupInfoRes.Ok[0].members[k][1].expiration_time.length == 0) {
+            expires = "forever";
+          } else {
+            expires = moment(
+              new Date(
+                Number(
+                  getGroupInfoRes.Ok[0].members[k][1].expiration_time[0] /
+                    BigInt(1000000)
+                )
+              )
+            ).format("yyyy-MM-DD");
+          }
+          this.tableData.tableList.push({
+            name: getGroupInfoRes.Ok[0].members[k][1].name,
+            time: create_time,
+            expires: expires,
+            identity: getGroupInfoRes.Ok[0].members[k][1].identity,
+            authority: auth,
+          });
+        }
+      }
+      this.searchRes = this.tableData.tableList;
     },
     async removeGroupMember(item) {
       let canister = this.getManageCanister();
@@ -642,6 +711,8 @@ export default {
           background: true,
           duration: 3,
         });
+        this.tableData.tableList = [];
+        await this.getMember();
       } else {
         this.$Notice.info({
           title: "Remove failed",
@@ -655,61 +726,7 @@ export default {
     ...mapGetters(["getManageCanister"]),
   },
   async created() {
-    let canister = this.getManageCanister();
-    let manage = manageCanister;
-    if (canister) {
-      manage = canister;
-    }
-    let account = Principal.fromText(this.$route.params.user);
-    let groupId = BigInt(this.$route.params.groupId);
-
-    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
-    if (getGroupInfoRes.Err) {
-      throw getGroupInfoRes.Err;
-      return;
-    }
-    this.group.name = getGroupInfoRes.Ok[0].name;
-    let currentTime = BigInt(new Date().getTime());
-    for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
-      this.tableData.total = getGroupInfoRes.Ok[0].members.length;
-      for (let k = 0; k < getGroupInfoRes.Ok[0].members.length; k++) {
-        console.log(
-          "getGroupInfoRes.Ok[0].members",
-          getGroupInfoRes.Ok[0].members[k][1].authority
-        );
-        let auth = "Reporter";
-        if ("Read" in getGroupInfoRes.Ok[0].members[k][1].authority) {
-        } else if ("Write" in getGroupInfoRes.Ok[0].members[k][1].authority) {
-          auth = "Developer";
-        } else {
-          auth = "Maintainer";
-        }
-        let duration = parseInt(
-          Number(
-            currentTime - BigInt(getGroupInfoRes.Ok[0].members[k][1].join_time)
-          ) / 1000
-        );
-        let create_time = "";
-        if (duration >= 86400) {
-          create_time = `Given access ${parseInt(duration / 86400)} day ago`;
-        } else if (duration >= 3600) {
-          create_time = `Given access ${parseInt(duration / 3600)} hour ago`;
-        } else if (duration >= 60) {
-          create_time = `Given access ${parseInt(duration / 60)} min ago`;
-        } else {
-          create_time = `Given access ${duration} s ago`;
-        }
-
-        this.tableData.tableList.push({
-          name: getGroupInfoRes.Ok[0].members[k][1].name,
-          time: create_time,
-          expires: "forever",
-          identity: getGroupInfoRes.Ok[0].members[k][1].identity,
-          authority: auth,
-        });
-      }
-    }
-    this.searchRes = this.tableData.tableList;
+    await this.getMember();
   },
 };
 </script>

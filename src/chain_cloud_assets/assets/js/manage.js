@@ -160,15 +160,15 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.updateGroupNameAndDescriptionAndVisibility = function (accout, group_id, name, description, visibility) {
+    ManageCanister.prototype.updateGroupBasicInformation = function (account, group_id, name, description, visibility, url) {
         return __awaiter(this, void 0, void 0, function () {
-            var updateGroupInfoRes;
+            var updateRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.manageActor.update_group_name_and_description_and_visibility(accout, group_id, name, description, visibility)];
+                    case 0: return [4 /*yield*/, this.manageActor.update_group_basic_information(account, group_id, name, description, visibility, url)];
                     case 1:
-                        updateGroupInfoRes = _a.sent();
-                        return [2 /*return*/, updateGroupInfoRes];
+                        updateRes = _a.sent();
+                        return [2 /*return*/, updateRes];
                 }
             });
         });
@@ -277,15 +277,15 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
-    ManageCanister.prototype.updateProjectNameAndDescriptionAndVisibility = function (account, group_id, project_id, name, description, visibility) {
+    ManageCanister.prototype.updateProjectBasicInformation = function (account, group_id, project_id, name, description, visibility, git, canister_cycle_floor, canisters) {
         return __awaiter(this, void 0, void 0, function () {
-            var updateProjectRes;
+            var updateRes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.manageActor.update_project_name_and_description_and_visibility(account, group_id, project_id, name, description, visibility)];
+                    case 0: return [4 /*yield*/, this.manageActor.update_project_basic_information(account, group_id, project_id, name, description, visibility, git, canister_cycle_floor, canisters)];
                     case 1:
-                        updateProjectRes = _a.sent();
-                        return [2 /*return*/, updateProjectRes];
+                        updateRes = _a.sent();
+                        return [2 /*return*/, updateRes];
                 }
             });
         });

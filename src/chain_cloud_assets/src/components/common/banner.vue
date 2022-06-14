@@ -112,7 +112,7 @@
         <div>Cloud platform development on Web3.0</div>
       </div>
       <div class="bannerInfo">
-        Enjoy the new generation of Internet technology, Get the dividends of
+        Enjoy the new generation of Internet technology. Get the dividends of
         innovation
       </div>
       <div class="startbtn" @click="doStart">

@@ -170,7 +170,7 @@ service :{
     update_canister_cycle_floor:(principal,nat64,nat64,nat) -> (OptGroupRes);
     visible_project:() -> (vec vec record{principal;nat64;Group}) query;
     get_group_member_info:(principal,nat64,principal) -> (GetGroupMemberInfoRes) query;
-    update_group_name_and_description_and_visibility:(principal,nat64,text,text,Profile) -> (OptGroupRes);
-    update_project_name_and_description_and_visibility:(principal,nat64,nat64,text,text,Profile) -> (OptGroupRes);
+    update_group_basic_information:(principal,nat64,text,text,Profile,text) -> (OptGroupRes);
+    update_project_basic_information:(principal,nat64,nat64,text,text,Profile,text,nat,vec principal) -> (OptGroupRes);
     update_log_canister:(principal) ->();
 }

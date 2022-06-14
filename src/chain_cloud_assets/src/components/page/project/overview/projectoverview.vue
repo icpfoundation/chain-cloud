@@ -177,6 +177,7 @@
   position: absolute;
   right: 0;
   top: 0;
+  cursor: pointer;
 }
 
 .item3Sub img {
@@ -308,7 +309,7 @@
             </div>
             <div class="item3">
               <span>{{ item.commit }}</span>
-              <div class="item3Sub">
+              <div class="item3Sub" @click="copydata(item.commit)">
                 <img
                   src="../../../../../assets/chain_cloud/teamscan/icon_copy_white@2x.png"
                   alt=""
@@ -380,6 +381,9 @@ export default {
     };
   },
   methods: {
+    copydata(data) {
+      navigator.clipboard.writeText(data);
+    },
     headPageFun(value) {
       this.$Notice.info({
         title: "暂无后台数据",
