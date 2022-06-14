@@ -44,12 +44,12 @@
 
 .typeItem {
   width: 100%;
-  height: 50px;
+  height: 37px;
   margin-bottom: 4px;
   cursor: pointer;
   border-radius: 8px;
   padding-left: 20px;
-  line-height: 50px;
+  line-height: 37px;
   font-size: 14px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
