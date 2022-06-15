@@ -283,7 +283,7 @@
       </div>
     </div>
     <div class="content">
-      <div class="contentTitle">Commits</div>
+      <div class="contentTitle">Branches</div>
       <div class="contentBox">
         <div class="table">
           <div
