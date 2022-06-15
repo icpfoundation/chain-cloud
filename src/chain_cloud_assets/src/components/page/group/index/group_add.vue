@@ -246,7 +246,7 @@
             />
           </div>
           <div class="nameItem">
-            <span>Group URL</span>
+            <span>Group url (optional)</span>
             <Input
               placeholder="my-awesome-group"
               style="width: 720px; margin-top: 10px"

@@ -311,6 +311,8 @@ export default {
           user: account.toString(),
           groupId: item.groupId,
           projectId: item.id,
+          owner: item.gitowner == undefined ? "undefined" : item.gitowner,
+          repo: item.gitrepo == undefined ? "undefined" : item.gitrepo,
         },
       });
     },
@@ -361,6 +363,10 @@ export default {
                   return [imageData, len];
                 })(this.projectList.length)
               );
+              let giturl =
+                getUserInfoRes.Ok.groups[i][1].projects[j][1].git_repo_url;
+              let owner = giturl.split("/")[3];
+              let repo = giturl.split("/")[4];
               this.projectList.push({
                 groupId: getUserInfoRes.Ok.groups[i][1].id,
                 groupType: "",
@@ -371,8 +377,14 @@ export default {
                 xingNum: 0,
                 time: create_time,
                 imageData: "",
+                gitowner: owner,
+                gitrepo: repo,
               });
             } catch (err) {
+              let giturl =
+                getUserInfoRes.Ok.groups[i][1].projects[j][1].git_repo_url;
+              let owner = giturl.split("/")[3];
+              let repo = giturl.split("/")[4];
               this.projectList.push({
                 groupId: getUserInfoRes.Ok.groups[i][1].id,
                 groupType: "",
