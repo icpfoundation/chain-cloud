@@ -220,7 +220,7 @@
           />
         </div>
         <div class="nameItem">
-          <span>Group ID</span>
+          <span>Group id</span>
           <Input
             placeholder="Group ID"
             style="width: 3.2rem; margin-top: 0.1rem"
@@ -241,7 +241,7 @@
         />
       </div>
       <div class="description">
-        <span>Group URL </span>
+        <span>Group url </span>
         <Input
           type="textarea"
           style="width: 100%; margin-top: 0.1rem"

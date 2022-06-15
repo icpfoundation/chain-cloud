@@ -211,7 +211,7 @@
           <div class="leftBoxLine"></div>
           <div class="leftContent">
             <div class="leftContentItem">
-              <span>Group URL</span>
+              <span>Group url</span>
               <span class="leftContentItemDec">{{ group.url }}</span>
             </div>
             <div class="leftContentItem">
