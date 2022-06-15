@@ -280,7 +280,7 @@
     </div>
     <div class="search">
       <div class="searchItem">
-        <span>User Identity</span>
+        <span>User identity</span>
         <Input
           placeholder="Search for members by name, username, or email"
           suffix="ios-search"
@@ -296,7 +296,7 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>User Name</span>
+        <span>User name</span>
         <Input
           placeholder="Search for members by name, username, or email"
           suffix="ios-search"
@@ -312,7 +312,7 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>Select a Authority</span>
+        <span>Select an authority</span>
         <Select v-model="roleValue" style="width: 3.4rem; margin: 0.1rem 0">
           <Option
             v-for="(item, index) in roleList"
@@ -328,7 +328,7 @@
         </div>
       </div>
       <div class="searchItem">
-        <span>Expiration Time</span>
+        <span>Expiration time</span>
         <DatePicker
           :clearable="false"
           format="yyyy-MM-dd"
