@@ -277,11 +277,11 @@
           placeholder="please select"
         >
           <Option
-            v-for="(item, index) in tableData.tableList"
+            v-for="(item, index) in labels"
             @click.native="getMoreParams(item)"
-            :value="item.value"
+            :value="item"
             :key="index"
-            >{{ item.label }}</Option
+            >{{ item }}</Option
           >
         </Select>
         <Button @click="searchFun" type="primary">search</Button>
@@ -415,6 +415,7 @@ export default {
     return {
       roleValue: null,
       keyword: "",
+      labels: [],
       typeList: [
         {
           name: "Types",
@@ -573,27 +574,26 @@ export default {
       this.groupShow = true;
     },
     getMoreParams(item) {
-      this.roleValue = item.value;
+      this.roleValue = item;
+      this.projectList = [];
 
-      let arr = [];
       if (item.typeId === 1) {
         this.projectShow = false;
         this.groupShow = true;
-        this.tableData.tableList.forEach((element) => {
-          if (element.name === item.name) {
-            arr.push(element);
+        for (let i = 0; i < this.tableData.tableList.length; i++) {
+          if (this.tableData.tableList[i].name === item) {
+            this.groupList.push(this.tableData.tableList[i]);
           }
-        });
-        this.groupList = arr;
+        }
       } else {
         this.projectShow = true;
         this.groupShow = false;
-        this.tableData.tableList.forEach((element) => {
-          if (element.name === item.name) {
-            arr.push(element);
+
+        for (let i = 0; i < this.tableData.tableList.length; i++) {
+          if (this.tableData.tableList[i].label === item) {
+            this.projectList.push(this.tableData.tableList[i]);
           }
-        });
-        this.projectList = arr;
+        }
       }
     },
     chooseFun(item) {
@@ -687,7 +687,7 @@ export default {
     let groupRes = await manageCanister.visibleProject();
     this.tableData.total = groupRes.length;
     let ImageRes = [];
-
+    let set = new Set();
     for (let i = 0; i < groupRes.length; i++) {
       for (let j = 0; j < groupRes[i].length; j++) {
         for (let k = 0; k < groupRes[i][j][2].projects.length; k++) {
@@ -705,18 +705,22 @@ export default {
 
           ImageRes.push(
             (async function (len) {
-              let imageData = await manageCanister.getProjectImage(
-                groupRes[i][j][0],
-                groupRes[i][j][1],
-                groupRes[i][j][2].projects[k][1].id
-              );
-              return [imageData, len];
+              try {
+                let imageData = await manageCanister.getProjectImage(
+                  groupRes[i][j][0],
+                  groupRes[i][j][1],
+                  groupRes[i][j][2].projects[k][1].id
+                );
+                return [imageData, len];
+              } catch (err) {
+                return [];
+              }
             })(this.tableData.tableList.length)
           );
           let giturl = groupRes[i][j][2].projects[k][1].git_repo_url;
           let owner = giturl.split("/")[3];
           let repo = giturl.split("/")[4];
-
+          set.add(label);
           this.tableData.tableList.push({
             value: groupRes[i][j][2].projects[k][1].name,
             label: label,
@@ -737,11 +741,15 @@ export default {
       for (let j = 0; j < groupRes[i].length; j++) {
         ImageRes.push(
           (async function (len) {
-            let imageData = await manageCanister.getGroupImage(
-              groupRes[i][j][0],
-              groupRes[i][j][1]
-            );
-            return [imageData, len];
+            try {
+              let imageData = await manageCanister.getGroupImage(
+                groupRes[i][j][0],
+                groupRes[i][j][1]
+              );
+              return [imageData, len];
+            } catch (err) {
+              return [];
+            }
           })(this.tableData.tableList.length)
         );
 
@@ -760,10 +768,14 @@ export default {
         this.tableData.total = this.tableData.tableList.length;
       }
     }
+    let arr = Array.from(set);
+    this.labels = arr;
     Promise.all(ImageRes).then((res) => {
       for (let i = 0; i < res.length; i++) {
-        let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
-        this.tableData.tableList[res[i][1]].imageData = imageData;
+        if (res[i].length > 0) {
+          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+          this.tableData.tableList[res[i][1]].imageData = imageData;
+        }
       }
     });
     let groupList = [];

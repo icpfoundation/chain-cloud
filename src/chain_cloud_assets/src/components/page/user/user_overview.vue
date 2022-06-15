@@ -179,6 +179,17 @@
 
   height: 16px;
 }
+.projectdescription {
+  width: 60%;
+  height: 40%;
+  overflow: hidden;
+  bottom: 10%;
+  position: absolute;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 </style>
 
 <template>
@@ -252,7 +263,7 @@
                 />
                 <div class="type">{{ item.type }}</div>
               </div>
-              <span>{{ item.info }}</span>
+              <span class="projectdescription">{{ item.info }}</span>
             </div>
             <div class="tableItemgroupTime">
               <div class="tableItemgroupTimeTop">

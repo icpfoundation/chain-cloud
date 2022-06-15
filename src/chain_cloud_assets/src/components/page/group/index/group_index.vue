@@ -215,19 +215,20 @@ export default {
     return {
       tableData: {
         tableList: [],
+        tableListtotal: [],
         total: 0,
         page: 1,
-        pageSize: 3,
+        pageSize: 6,
       },
     };
   },
   methods: {
     headPageFun(value) {
-      this.$Notice.info({
-        title: "暂无后台数据",
-        background: true,
-        duration: 3,
-      });
+      // this.$Notice.info({
+      //   title: "暂无后台数据",
+      //   background: true,
+      //   duration: 3,
+      // });
     },
     addFun() {
       this.$router.push({
@@ -252,17 +253,22 @@ export default {
 
     let groupRes = await manageCanister.visibleProject();
     let imageRes = [];
+
     for (let i = 0; i < groupRes.length; i++) {
-      this.tableData.total = groupRes[i].length;
       for (let j = 0; j < groupRes[i].length; j++) {
+        this.tableData.total = this.tableData.total + 1;
         try {
           imageRes.push(
             (async function (len) {
-              let imageData = await manageCanister.getGroupImage(
-                groupRes[i][j][0],
-                groupRes[i][j][1]
-              );
-              return [imageData, len];
+              try {
+                let imageData = await manageCanister.getGroupImage(
+                  groupRes[i][j][0],
+                  groupRes[i][j][1]
+                );
+                return [imageData, len];
+              } catch (err) {
+                return [];
+              }
             })(this.tableData.tableList.length)
           );
 
@@ -287,10 +293,14 @@ export default {
         }
       }
     }
+    this.tableData.pageSize = this.tableData.tableList.length;
+
     Promise.all(imageRes).then((res) => {
       for (let i = 0; i < res.length; i++) {
-        let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
-        this.tableData.tableList[res[i][1]].imageData = imageData;
+        if (res[i].length > 0) {
+          let imageData = new TextDecoder().decode(Uint8Array.from(res[i][0]));
+          this.tableData.tableList[res[i][1]].imageData = imageData;
+        }
       }
     });
     topInstance.close();

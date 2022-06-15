@@ -299,12 +299,16 @@ export default {
           try {
             getProjectAll.push(
               (async function (len) {
-                let imageData = await manageCanister.getProjectImage(
-                  groupRes[i][j][0],
-                  groupRes[i][j][1],
-                  groupRes[i][j][2].projects[k][1].id
-                );
-                return [imageData, len];
+                try {
+                  let imageData = await manageCanister.getProjectImage(
+                    groupRes[i][j][0],
+                    groupRes[i][j][1],
+                    groupRes[i][j][2].projects[k][1].id
+                  );
+                  return [imageData, len];
+                } catch (err) {
+                  return [];
+                }
               })(that.tableData.tableList.length)
             );
 
@@ -345,10 +349,12 @@ export default {
         }
         Promise.all(getProjectAll).then((res) => {
           for (let i = 0; i < res.length; i++) {
-            let imageData = new TextDecoder().decode(
-              Uint8Array.from(res[i][0])
-            );
-            this.tableData.tableList[res[i][1]].imageData = imageData;
+            if (res[i].length > 0) {
+              let imageData = new TextDecoder().decode(
+                Uint8Array.from(res[i][0])
+              );
+              this.tableData.tableList[res[i][1]].imageData = imageData;
+            }
           }
         });
       }
