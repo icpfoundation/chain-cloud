@@ -4,10 +4,21 @@ type imageStoreRes = variant{
     Ok:null;
     Err:text;
 };
+
+type Image = record{
+     size: nat64;
+     ptr: nat64;
+     max_size: nat64;
+};
+
 service:(principal) -> {
     group_image_store:(principal,nat64, blob) ->(imageStoreRes);
     project_image_store:(principal,nat64,nat64, blob) ->(imageStoreRes);
     get_group_image:(principal,nat64) -> (blob) query;
     get_project_image:(principal,nat64,nat64) -> (blob) query;
     update_manage_canister:(principal) -> ();
+    get_group_image_basic_info:(principal,nat64) -> (opt Image) query;
+    get_project_image_basic_info:(principal,nat64,nat64)->(opt Image) query;
+    remove_group_image:(principal,nat64) ->(imageStoreRes);
+    remove_project_image:(principal,nat64,nat64)->(imageStoreRes);
 }
