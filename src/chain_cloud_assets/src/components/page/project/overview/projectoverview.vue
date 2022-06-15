@@ -261,7 +261,7 @@
         </div>
       </div>
       <div class="headItem">
-        <div class="headItemTitle">Branchs info</div>
+        <div class="headItemTitle">Branches summary</div>
         <div class="headItemTable">
           <div class="headTableItem tab">
             <span>Branch number</span>
