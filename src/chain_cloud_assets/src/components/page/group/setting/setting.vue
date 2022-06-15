@@ -204,10 +204,10 @@
         <Icon type="ios-loading" size="18" class="demo-spin-icon-load"></Icon>
         <div>Loading</div>
       </Spin>
-      <div class="leftBoxName">Naming, visibility</div>
+      <!-- <div class="leftBoxName">Naming, visibility</div>
       <div class="contentInfo">
         Update your group name, description, avatar, and visibility.
-      </div>
+      </div> -->
       <div class="contentName">
         <div class="nameItem">
           <span>Group name</span>

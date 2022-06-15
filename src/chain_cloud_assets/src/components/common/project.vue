@@ -247,8 +247,8 @@ export default {
         },
         {
           menuName: "Canisters",
-          norUrl: require("../../../assets/chain_cloud/menu/icon_overview_nor@2x.png"),
-          selUrl: require("../../../assets/chain_cloud/menu/icon_overview_sel@2x.png"),
+          norUrl: require("../../../assets/chain_cloud/menu/icon_canister_nor@3x.png"),
+          selUrl: require("../../../assets/chain_cloud/menu/icon_canister_nor@3x.png"),
           href: "projectcanisters",
           children: [
             {
@@ -272,8 +272,8 @@ export default {
         },
         {
           menuName: "Setting",
-          norUrl: require("../../../assets/chain_cloud/menu/icon_overview_nor@2x.png"),
-          selUrl: require("../../../assets/chain_cloud/menu/icon_overview_sel@2x.png"),
+          norUrl: require("../../../assets/chain_cloud/menu/icon_setting_nor@2x.png"),
+          selUrl: require("../../../assets/chain_cloud/menu/icon_setting_nor@2x.png"),
           href: "projectsetting",
           children: [
             // {
