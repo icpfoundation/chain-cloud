@@ -457,8 +457,9 @@ export default {
           moment(ele.time, "YYYY-MM-DD'T'HH:mm:SS'Z'")
         ).getTime();
         let day = Math.floor((currentTime - t) / 1000 / 3600 / 24);
+        that.branch.lastModify = that.branch.lastModify + 1;
+        
         if (day <= 1) {
-          that.branch.lastModify = that.branch.lastModify + 1;
         } else if (day > 1 && day <= 7) {
           that.branch.active = that.branch.active + 1;
         } else {
