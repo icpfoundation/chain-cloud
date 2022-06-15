@@ -302,7 +302,7 @@ export default {
     return {
       description: "This is a wonderful and beautiful team.",
       createdTime: "Apr 16,2019 7:54am",
-      visibility: "Public",
+      visibility: "",
       storageSize: "0 KB",
       group: {
         projects: [

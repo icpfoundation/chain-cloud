@@ -111,7 +111,7 @@
   padding: 0.2rem;
   border-radius: 0.04rem;
   background: white;
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
 }
 
 .contentTitle {
@@ -119,6 +119,7 @@
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
   color: #333333;
+  margin-top: 0.2rem;
 }
 
 .table {
@@ -259,6 +260,10 @@
           <div class="idInfoTitle">Link</div>
           <span>{{ project.gitURl }}</span>
         </div>
+        <div class="idInfo">
+          <div class="idInfoTitle">Visibility Level</div>
+          <span>{{ project.visibility }}</span>
+        </div>
       </div>
       <div class="headItem">
         <div class="headItemTitle">Branches summary</div>
@@ -350,6 +355,7 @@ export default {
         name: "",
         id: 0,
         gitURl: "",
+        visibility: "",
       },
       tabList: [
         {
@@ -506,6 +512,11 @@ export default {
     }
 
     if (getProjectRest.Ok.length > 0) {
+      if ("Public" in getProjectRest.Ok[0].visibility) {
+        this.project.visibility = "Public";
+      } else {
+        this.project.visibility = "Private";
+      }
       this.project.name = getProjectRest.Ok[0].name;
       this.project.id = getProjectRest.Ok[0].id;
       this.project.gitURl = getProjectRest.Ok[0].git_repo_url;

@@ -256,7 +256,7 @@
             />
           </div>
           <div class="nameItem">
-            <span>Select Group</span>
+            <span>Select a group</span>
             <!-- <Input
               placeholder="group id"
               style="width: 720px; margin-top: 10px"
@@ -312,7 +312,7 @@
             />
           </div> -->
           <div class="nameItem">
-            <span>Project Canisters</span>
+            <span>Project Canisters (eg ["xxx","xxx"])</span>
             <Input
               placeholder="to account identity"
               style="width: 320px; margin-top: 10px"
