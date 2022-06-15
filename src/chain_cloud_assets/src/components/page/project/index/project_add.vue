@@ -240,14 +240,14 @@
             <span>Project name</span>
             <Input
               placeholder="Project name"
-              style="width: 320px; margin-top: 10px"
+              style="width: 720px; margin-top: 10px"
               :clearable="true"
               v-model="project['name']"
             />
           </div>
 
           <div class="nameItem">
-            <span>Project URL</span>
+            <span>Project url</span>
             <Input
               placeholder="my-awesome-project"
               style="width: 720px; margin-top: 10px"
@@ -263,7 +263,7 @@
               :clearable="true"
               v-model="project['in_group']"
             /> -->
-            <Select v-model="groupId" style="width: 100%">
+            <Select v-model="groupId" style="width: 720px">
               <Option
                 v-for="(item, index) in group"
                 :value="item"
@@ -277,7 +277,7 @@
             <span>Project description (optional)</span>
             <Input
               type="textarea"
-              style="width: 100%; margin-top: 10px"
+              style="width: 720px; margin-top: 10px"
               placeholder="Multiline input"
               v-model="project['description']"
             />
@@ -286,7 +286,7 @@
             <span>Project type</span>
             <Select
               v-model="projectType"
-              style="width: 100%"
+              style="width: 720px"
               v-if="projectTypeList.length > 0"
             >
               <Option
@@ -312,10 +312,10 @@
             />
           </div> -->
           <div class="nameItem">
-            <span>Project Canisters (eg ["xxx","xxx"])</span>
+            <span>Project canisters (eg ["xxx","xxx"])</span>
             <Input
               placeholder="to account identity"
-              style="width: 320px; margin-top: 10px"
+              style="width: 720px; margin-top: 10px"
               :clearable="true"
               v-model="canisters"
             />
