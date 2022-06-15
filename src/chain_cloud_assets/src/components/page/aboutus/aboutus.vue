@@ -410,7 +410,7 @@
           Since we don't have a data center node running the ICP blockchain, we
           can't get some data. This makes us have to find another way to let
           users upload some data by referring to our buried hook in their
-          canister, which actually causes a certain amount of damage to users.
+          canister, which actually causes a certain amount of damage to users,
           level of inconvenience, although we will only collect non-sensitive
           data.
         </div>
