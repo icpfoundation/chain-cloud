@@ -82,6 +82,15 @@ interface ImageStoreInterface {
         group_id: bigint,
         project_id: bigint,
     ): Array<number>,
+
+    remove_group_image(account: Principal, group_id: bigint):
+        imageStoreRes
+
+    remove_project_image(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+    ): imageStoreRes,
 }
 interface CanisterLogInterface {
     get_log(user: Principal, group_id: bigint, page: bigint): [] | [Array<[Principal, bigint, Action, Array<string>]>]
@@ -229,6 +238,22 @@ class ManageCanister {
         canisters: Array<Principal>): Promise<OptGroupRes> {
         let updateRes = await this.manageActor.update_project_basic_information(account, group_id, project_id, name, description, visibility, git, canister_cycle_floor, canisters)
         return updateRes
+    }
+
+
+    async removeGroupImage(account: Principal, group_id: bigint):
+        Promise<imageStoreRes> {
+        let rmRes = await this.imageActor.remove_group_image(account, group_id)
+        return rmRes
+    }
+
+    async removeProjectImage(
+        account: Principal,
+        group_id: bigint,
+        project_id: bigint,
+    ): Promise<imageStoreRes> {
+        let rmRes = await this.imageActor.remove_project_image(account, group_id, project_id)
+        return rmRes
     }
 }
 

@@ -290,6 +290,32 @@ var ManageCanister = /** @class */ (function () {
             });
         });
     };
+    ManageCanister.prototype.removeGroupImage = function (account, group_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var rmRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.imageActor.remove_group_image(account, group_id)];
+                    case 1:
+                        rmRes = _a.sent();
+                        return [2 /*return*/, rmRes];
+                }
+            });
+        });
+    };
+    ManageCanister.prototype.removeProjectImage = function (account, group_id, project_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var rmRes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.imageActor.remove_project_image(account, group_id, project_id)];
+                    case 1:
+                        rmRes = _a.sent();
+                        return [2 /*return*/, rmRes];
+                }
+            });
+        });
+    };
     return ManageCanister;
 }());
 exports["default"] = ManageCanister;
