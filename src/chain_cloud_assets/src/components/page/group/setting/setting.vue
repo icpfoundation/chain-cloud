@@ -241,7 +241,7 @@
         />
       </div>
       <div class="description">
-        <span>Git url </span>
+        <span>Group URL </span>
         <Input
           type="textarea"
           style="width: 100%; margin-top: 0.1rem"
