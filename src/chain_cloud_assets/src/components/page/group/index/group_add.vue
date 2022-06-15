@@ -187,6 +187,7 @@
   font-weight: 500;
   color: #ffffff;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .lineBottom {
@@ -240,7 +241,7 @@
             <span>Group name</span>
             <Input
               placeholder="Production group"
-              style="width: 320px; margin-top: 10px"
+              style="width: 720px; margin-top: 10px"
               :clearable="true"
               v-model="group['name']"
             />
