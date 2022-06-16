@@ -300,15 +300,15 @@ export default {
   },
   methods: {
     getProjectInfo(item) {
-      let manageCanister = this.getManageCanister();
-      if (!manageCanister) {
-        throw "No login account";
-      }
-      let account = manageCanister.identity;
+      // let manageCanister = this.getManageCanister();
+      // if (!manageCanister) {
+      //   throw "No login account";
+      // }
+      // let account = manageCanister.identity;
       this.$router.push({
         name: "project",
         params: {
-          user: account.toString(),
+          user: item.user,
           groupId: item.groupId,
           projectId: item.id,
           owner: item.gitowner == undefined ? "undefined" : item.gitowner,
@@ -327,6 +327,137 @@ export default {
       if (getUserInfoRes.Ok) {
         let imageRes = [];
         let currentTime = BigInt(new Date().getTime());
+
+        for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
+          let user = getUserInfoRes.Ok.relation_project[0][0];
+          for (
+            let j = 0;
+            j < getUserInfoRes.Ok.relation_project[i][1].length;
+            j++
+          ) {
+            try {
+              let res = await manageCanister.getGroupInfo(
+                user,
+                getUserInfoRes.Ok.relation_project[i][1][j].group_id
+              );
+
+              if (res.Ok) {
+                console.log(res.Ok[0].projects);
+                for (let k = 0; k < res.Ok[0].projects.length; k++) {
+                  try {
+                    let getProjectRest = await manageCanister.getProjectInfo(
+                      user,
+                      getUserInfoRes.Ok.relation_project[i][1][j].group_id,
+                      res.Ok[0].projects[k][0]
+                    );
+                    if (getProjectRest.Ok) {
+                      let duration = parseInt(
+                        Number(
+                          currentTime - BigInt(getProjectRest.Ok[0].create_time)
+                        ) / 1000
+                      );
+
+                      let create_time = "0 s ago";
+                      if (duration >= 86400) {
+                        create_time = `create ${parseInt(
+                          duration / 86400
+                        )} day ago`;
+                      } else if (duration >= 3600) {
+                        create_time = `create ${parseInt(
+                          duration / 3600
+                        )} hour ago`;
+                      } else if (duration >= 60) {
+                        create_time = `create ${parseInt(
+                          duration / 60
+                        )} min ago`;
+                      } else {
+                        create_time = `create ${duration} s ago`;
+                      }
+
+                      let giturl = getProjectRest.Ok[0].git_repo_url;
+                      let owner = giturl.split("/")[3];
+                      let repo = giturl.split("/")[4];
+                      try {
+                        imageRes.push(
+                          (async function (len) {
+                            try {
+                              let imageData =
+                                await manageCanister.getProjectImage(
+                                  user,
+                                  getUserInfoRes.Ok.relation_project[i][1][j]
+                                    .group_id,
+                                  res.Ok[0].projects[k][0]
+                                );
+                              return [imageData, len];
+                            } catch (err) {
+                              return [];
+                            }
+
+                            // imageData = new TextDecoder().decode(
+                            //   Uint8Array.from(imageData)
+                            // );
+                          })(this.projectList.length)
+                        );
+
+                        this.projectList.push({
+                          user: user.toString(),
+                          groupId:
+                            getUserInfoRes.Ok.relation_project[i][1][j]
+                              .group_id,
+                          groupType: "",
+                          name: getProjectRest.Ok[0].name,
+                          id: getProjectRest.Ok[0].id,
+                          type: "Maintainer",
+                          info: getProjectRest.Ok[0].description,
+                          xingNum: 0,
+                          time: create_time,
+                          imageData: "",
+                          gitowner: owner,
+                          gitrepo: repo,
+                          imageData: "",
+                        });
+                      } catch (err) {
+                        this.projectList.push({
+                          user: user.toString(),
+                          groupId:
+                            getUserInfoRes.Ok.relation_project[i][1][j]
+                              .group_id,
+                          groupType: "",
+                          name: getProjectRest.Ok[0].name,
+                          id: getProjectRest.Ok[0].id,
+                          type: "Maintainer",
+                          info: getProjectRest.Ok[0].description,
+                          xingNum: 0,
+                          time: create_time,
+                          imageData: "",
+                          gitowner: owner,
+                          gitrepo: repo,
+                          imageData: "",
+                        });
+                      }
+                    }
+                  } catch (err) {
+                    console.log("err:", err);
+                  }
+
+                  // if (getProjectRest.Err) {
+                  //   throw getProjectRest.Err;
+                  // }
+                  // if (getProjectRest.Ok.length > 0) {
+                  //   if ("Public" in getProjectRest.Ok[0].visibility) {
+                  //     this.project.visibility = "Public";
+                  //   } else {
+                  //     this.project.visibility = "Private";
+                  //   }
+                  //   this.project.name = getProjectRest.Ok[0].name;
+                  //   this.project.id = getProjectRest.Ok[0].id;
+                  //   this.project.gitURl = getProjectRest.Ok[0].git_repo_url;
+                  // }
+                }
+              }
+            } catch (err) {}
+          }
+        }
         for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
           for (
             let j = 0;
@@ -368,6 +499,7 @@ export default {
               let owner = giturl.split("/")[3];
               let repo = giturl.split("/")[4];
               this.projectList.push({
+                user: account.toString(),
                 groupId: getUserInfoRes.Ok.groups[i][1].id,
                 groupType: "",
                 name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,
@@ -386,6 +518,7 @@ export default {
               let owner = giturl.split("/")[3];
               let repo = giturl.split("/")[4];
               this.projectList.push({
+                user: account.toString(),
                 groupId: getUserInfoRes.Ok.groups[i][1].id,
                 groupType: "",
                 name: getUserInfoRes.Ok.groups[i][1].projects[j][1].name,

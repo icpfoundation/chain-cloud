@@ -297,11 +297,11 @@ export default {
       if (!manageCanister) {
         throw "No login account";
       }
-      let account = manageCanister.identity;
+
       this.$router.push({
         name: "group",
         params: {
-          user: account.toString(),
+          user: item.user,
           groupId: item.id,
         },
       });
@@ -314,9 +314,8 @@ export default {
       let account = manageCanister.identity;
       let getUserInfoRes = await manageCanister.getUserInfo(account);
       for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
-        console.log("getUserInfoRes");
         let user = getUserInfoRes.Ok.relation_project[0][0];
-        //
+
         for (
           let j = 0;
           j < getUserInfoRes.Ok.relation_project[i][1].length;
@@ -327,17 +326,36 @@ export default {
               user,
               getUserInfoRes.Ok.relation_project[i][1][j].group_id
             );
-
-            this.projectList.push({
-              groupType: "Z",
-              name: res.Ok[0].name,
-              id: res.Ok[0].id,
-              info: res.Ok[0].description,
-              shuqian: 0,
-              peoplese: res.Ok[0].members.length,
-              xingNum: 0,
-              imageData: "",
-            });
+            try {
+              let imageData = await manageCanister.getGroupImage(
+                user,
+                res.Ok[0].id
+              );
+              imageData = new TextDecoder().decode(Uint8Array.from(imageData));
+              this.projectList.push({
+                user: user.toString(),
+                groupType: "Z",
+                name: res.Ok[0].name,
+                id: res.Ok[0].id,
+                info: res.Ok[0].description,
+                shuqian: 0,
+                peoplese: res.Ok[0].members.length,
+                xingNum: 0,
+                imageData: imageData,
+              });
+            } catch (err) {
+              this.projectList.push({
+                user: user.toString(),
+                groupType: "Z",
+                name: res.Ok[0].name,
+                id: res.Ok[0].id,
+                info: res.Ok[0].description,
+                shuqian: 0,
+                peoplese: res.Ok[0].members.length,
+                xingNum: 0,
+                imageData: "",
+              });
+            }
           } catch (err) {
             console.log("err:", err);
           }
@@ -360,6 +378,7 @@ export default {
 
             //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.projectList.push({
+              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
@@ -371,6 +390,7 @@ export default {
             });
           } catch (err) {
             this.projectList.push({
+              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
