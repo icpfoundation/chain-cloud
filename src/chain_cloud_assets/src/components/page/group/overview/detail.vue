@@ -300,8 +300,8 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      description: "This is a wonderful and beautiful team.",
-      createdTime: "Apr 16,2019 7:54am",
+      description: "",
+      createdTime: "",
       visibility: "",
       storageSize: "0 KB",
       group: {

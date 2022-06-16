@@ -241,7 +241,7 @@
         />
       </div>
       <div class="description">
-        <span>Group url </span>
+        <span>Group url (optional)</span>
         <Input
           type="textarea"
           style="width: 100%; margin-top: 0.1rem"
