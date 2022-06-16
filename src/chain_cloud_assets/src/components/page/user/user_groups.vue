@@ -313,76 +313,83 @@ export default {
       }
       let account = manageCanister.identity;
       let getUserInfoRes = await manageCanister.getUserInfo(account);
-      for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
-        let user = getUserInfoRes.Ok.relation_project[i][0];
-
-        if (user.toString() == account.toString()) {
-          continue;
-        }
-
-        for (
-          let j = 0;
-          j < getUserInfoRes.Ok.relation_project[i][1].length;
-          j++
-        ) {
-          try {
-            let res = await manageCanister.getGroupInfo(
-              user,
-              getUserInfoRes.Ok.relation_project[i][1][j].group_id
-            );
-            try {
-              let imageData = await manageCanister.getGroupImage(
-                user,
-                res.Ok[0].id
-              );
-              imageData = new TextDecoder().decode(Uint8Array.from(imageData));
-              this.projectList.push({
-                user: user.toString(),
-                groupType: "Z",
-                name: res.Ok[0].name,
-                id: res.Ok[0].id,
-                info: res.Ok[0].description,
-                shuqian: 0,
-                peoplese: res.Ok[0].members.length,
-                xingNum: 0,
-                imageData: imageData,
-              });
-            } catch (err) {
-              this.projectList.push({
-                user: user.toString(),
-                groupType: "Z",
-                name: res.Ok[0].name,
-                id: res.Ok[0].id,
-                info: res.Ok[0].description,
-                shuqian: 0,
-                peoplese: res.Ok[0].members.length,
-                xingNum: 0,
-                imageData: "",
-              });
-            }
-          } catch (err) {
-            console.log("err:", err);
-          }
-        }
-      }
 
       if (getUserInfoRes.Ok) {
+        let httpReq = [];
+        for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
+          let user = getUserInfoRes.Ok.relation_project[i][0];
+
+          if (user.toString() == account.toString()) {
+            continue;
+          }
+
+          for (
+            let j = 0;
+            j < getUserInfoRes.Ok.relation_project[i][1].length;
+            j++
+          ) {
+            httpReq.push(
+              (async function (user, that) {
+                try {
+                  let res = await manageCanister.getGroupInfo(
+                    user,
+                    getUserInfoRes.Ok.relation_project[i][1][j].group_id
+                  );
+                  try {
+                    let imageData = await manageCanister.getGroupImage(
+                      user,
+                      res.Ok[0].id
+                    );
+                    imageData = new TextDecoder().decode(
+                      Uint8Array.from(imageData)
+                    );
+                    that.projectList.push({
+                      user: user.toString(),
+                      groupType: "Z",
+                      name: res.Ok[0].name,
+                      id: res.Ok[0].id,
+                      info: res.Ok[0].description,
+                      shuqian: 0,
+                      peoplese: res.Ok[0].members.length,
+                      xingNum: 0,
+                      imageData: imageData,
+                    });
+                  } catch (err) {
+                    that.projectList.push({
+                      user: user.toString(),
+                      groupType: "Z",
+                      name: res.Ok[0].name,
+                      id: res.Ok[0].id,
+                      info: res.Ok[0].description,
+                      shuqian: 0,
+                      peoplese: res.Ok[0].members.length,
+                      xingNum: 0,
+                      imageData: "",
+                    });
+                  }
+                } catch (err) {
+                  console.log("err:", err);
+                }
+              })(user, this)
+            );
+          }
+        }
+
         let groupImage = [];
         for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
           try {
             groupImage.push(
-              (async function (len) {
+              (async function (len, user) {
                 let imageData = await manageCanister.getGroupImage(
                   account,
                   getUserInfoRes.Ok.groups[i][1].id
                 );
-                return [imageData, len];
-              })(this.projectList.length)
+                return [imageData, len, user];
+              })(this.projectList.length, account.toString())
             );
 
             //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.projectList.push({
-              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
@@ -394,7 +401,6 @@ export default {
             });
           } catch (err) {
             this.projectList.push({
-              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
@@ -422,8 +428,11 @@ export default {
               Uint8Array.from(res[i][0])
             );
             this.projectList[res[i][1]].imageData = imageData;
+            this.projectList[res[i][1]].user = res[i][2];
           }
         });
+
+        Promise.all(httpReq).then((res) => {});
       }
     },
     async deleteGroup(item) {
