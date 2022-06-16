@@ -186,7 +186,7 @@
           </div>
           <div class="imgBox">
             <img
-              src="../../../assets/chain_cloud/teamscan/twitter@2x.png"
+              src="../../../assets/chain_cloud/teamscan/twitter@3x.png"
               alt=""
               class="imgboxImg"
             />

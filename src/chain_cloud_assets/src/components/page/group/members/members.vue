@@ -270,7 +270,7 @@
     </div>
     <div class="head">
       <div class="headLeft">
-        <span>Invite members to</span>
+        <span>Invite a member</span>
         <span class="headLeftName"></span>
       </div>
       <div class="headRight">
