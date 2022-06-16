@@ -327,6 +327,7 @@ export default {
 
       if (getUserInfoRes.Ok) {
         let imageRes = [];
+        let imageResOth = [];
         let currentTime = BigInt(new Date().getTime());
         let httpReq = [];
         let httpProjectReq = [];
@@ -358,12 +359,16 @@ export default {
             try {
               imageRes.push(
                 (async function (len) {
-                  let imageData = await manageCanister.getProjectImage(
-                    account,
-                    getUserInfoRes.Ok.groups[i][1].id,
-                    getUserInfoRes.Ok.groups[i][1].projects[j][1].id
-                  );
-                  return [imageData, len];
+                  try {
+                    let imageData = await manageCanister.getProjectImage(
+                      account,
+                      getUserInfoRes.Ok.groups[i][1].id,
+                      getUserInfoRes.Ok.groups[i][1].projects[j][1].id
+                    );
+                    return [imageData, len];
+                  } catch (err) {
+                    return [];
+                  }
                 })(this.projectList.length)
               );
               let giturl =
@@ -406,7 +411,16 @@ export default {
             }
           }
         }
-
+        Promise.all(imageRes).then((res) => {
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].length > 0) {
+              let imageData = new TextDecoder().decode(
+                Uint8Array.from(res[i][0])
+              );
+              that.projectList[res[i][1]].imageData = imageData;
+            }
+          }
+        });
         for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
           let user = getUserInfoRes.Ok.relation_project[i][0];
           if (user.toString() == account.toString()) {
@@ -424,7 +438,7 @@ export default {
                     user,
                     getUserInfoRes.Ok.relation_project[i][1][j].group_id
                   );
-
+                  console.log("res", res);
                   if (res.Ok) {
                     for (let k = 0; k < res.Ok[0].projects.length; k++) {
                       try {
@@ -470,15 +484,23 @@ export default {
                               let giturl = getProjectRest.Ok[0].git_repo_url;
                               let owner = giturl.split("/")[3];
                               let repo = giturl.split("/")[4];
+
                               try {
                                 imageRes.push(
-                                  (async function (user, len, id) {
+                                  (async function (
+                                    user,
+                                    len,
+                                    groupid,
+                                    projectid
+                                  ) {
                                     try {
                                       let imageData =
                                         await manageCanister.getProjectImage(
                                           user,
-                                          id
+                                          groupid,
+                                          projectid
                                         );
+
                                       return [imageData, len];
                                     } catch (err) {
                                       return [];
@@ -487,7 +509,12 @@ export default {
                                     // imageData = new TextDecoder().decode(
                                     //   Uint8Array.from(imageData)
                                     // );
-                                  })(user, that.projectList.length, groupid)
+                                  })(
+                                    user,
+                                    that.projectList.length,
+                                    groupid,
+                                    projectid
+                                  )
                                 );
 
                                 that.projectList.push({
@@ -541,15 +568,16 @@ export default {
                       }
                     }
                   }
-                })(user, this, imageRes)
+                })(user, this, imageResOth)
               );
             } catch (err) {}
           }
         }
         let that = this;
+
         Promise.all(httpReq).then((res2) => {
           Promise.all(httpProjectReq).then((res3) => {
-            Promise.all(imageRes).then((res) => {
+            Promise.all(imageResOth).then((res) => {
               for (let i = 0; i < res.length; i++) {
                 if (res[i].length > 0) {
                   let imageData = new TextDecoder().decode(
