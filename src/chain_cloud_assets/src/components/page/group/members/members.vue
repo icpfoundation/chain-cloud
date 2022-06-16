@@ -585,6 +585,7 @@ export default {
           this.memeber.authority = { Operational: null };
       }
       this.memeber.join_time = new Date().getTime();
+
       this.memeber.identity = Principal.fromText(this.memeber.identity);
       let canister = this.getManageCanister();
       if (!canister) {
