@@ -330,6 +330,9 @@ export default {
 
         for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
           let user = getUserInfoRes.Ok.relation_project[0][0];
+          if (user.toString() == account.toString()) {
+            continue;
+          }
           for (
             let j = 0;
             j < getUserInfoRes.Ok.relation_project[i][1].length;
