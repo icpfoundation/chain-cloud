@@ -497,6 +497,50 @@ export default {
       if ("Err" in getUserInfoRes) {
         throw getUserInfoRes.Err;
       }
+      for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
+        let user = getUserInfoRes.Ok.relation_project[i][0];
+        if (user.toString() == account.toString()) {
+          continue;
+        }
+
+        for (
+          let j = 0;
+          j < getUserInfoRes.Ok.relation_project[i][1].length;
+          j++
+        ) {
+          try {
+            let res = await manageCanister.getGroupInfo(
+              user,
+              getUserInfoRes.Ok.relation_project[i][1][j].group_id
+            );
+            if (res.Ok) {
+              for (let v = 0; v < res.Ok[0].members.length; v++) {
+                if (res.Ok[0].members[v][0].toString() == user.toString()) {
+                  if ("Operational" in res.Ok[0].members[v][1].authority) {
+                    let nonce = BigInt(1);
+                    for (let k = 0; k < res.Ok[0].projects.length; k++) {
+                      if (nonce < res.Ok[0].projects[k][0]) {
+                        nonce = res.Ok[0].projects[k][0];
+                      }
+                    }
+                    nonce = nonce + BigInt(1);
+                    this.group.push({
+                      user: user.toString(),
+                      name: res.Ok[0].name,
+                      id: getUserInfoRes.Ok.relation_project[i][1][
+                        j
+                      ].group_id.toString(),
+                      projectNonce: nonce.toString(),
+                    });
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            console.log("err:", err);
+          }
+        }
+      }
 
       for (let i = 0; i < getUserInfoRes.Ok.groups.length; i++) {
         let nonce = BigInt(1);
@@ -511,6 +555,7 @@ export default {
         }
         nonce = nonce + BigInt(1);
         this.group.push({
+          user: account.toString(),
           name: getUserInfoRes.Ok.groups[i][1].name,
           id: getUserInfoRes.Ok.groups[i][1].id.toString(),
           projectNonce: nonce.toString(),
@@ -589,8 +634,9 @@ export default {
         projectType[types] = null;
       }
       this.project.function = projectType;
+      let user = this.groupId.user;
       let addProjectRes = await manageCanister.addProject(
-        Principal.fromText(this.toAccount),
+        Principal.fromText(user),
         this.project.in_group,
         this.project
       );
@@ -599,8 +645,9 @@ export default {
       if ("Ok" in addProjectRes) {
         info = "Successfully added";
         let enc = new TextEncoder();
+
         let imageStoreRes = await manageCanister.projectImageStore(
-          Principal.fromText(this.toAccount),
+          Principal.fromText(user),
           this.project.in_group,
           this.project.id,
           Array.from(enc.encode(this.imgurl))

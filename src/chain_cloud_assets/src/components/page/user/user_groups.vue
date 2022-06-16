@@ -314,7 +314,8 @@ export default {
       let account = manageCanister.identity;
       let getUserInfoRes = await manageCanister.getUserInfo(account);
       for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
-        let user = getUserInfoRes.Ok.relation_project[0][0];
+        let user = getUserInfoRes.Ok.relation_project[i][0];
+
         if (user.toString() == account.toString()) {
           continue;
         }
