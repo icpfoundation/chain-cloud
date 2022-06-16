@@ -313,6 +313,36 @@ export default {
       }
       let account = manageCanister.identity;
       let getUserInfoRes = await manageCanister.getUserInfo(account);
+      for (let i = 0; i < getUserInfoRes.Ok.relation_project.length; i++) {
+        console.log("getUserInfoRes");
+        let user = getUserInfoRes.Ok.relation_project[0][0];
+        //
+        for (
+          let j = 0;
+          j < getUserInfoRes.Ok.relation_project[i][1].length;
+          j++
+        ) {
+          try {
+            let res = await manageCanister.getGroupInfo(
+              user,
+              getUserInfoRes.Ok.relation_project[i][1][j].group_id
+            );
+
+            this.projectList.push({
+              groupType: "Z",
+              name: res.Ok[0].name,
+              id: res.Ok[0].id,
+              info: res.Ok[0].description,
+              shuqian: 0,
+              peoplese: res.Ok[0].members.length,
+              xingNum: 0,
+              imageData: "",
+            });
+          } catch (err) {
+            console.log("err:", err);
+          }
+        }
+      }
 
       if (getUserInfoRes.Ok) {
         let groupImage = [];

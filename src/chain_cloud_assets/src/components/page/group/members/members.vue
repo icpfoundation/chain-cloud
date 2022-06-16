@@ -290,10 +290,7 @@
           @on-clear="searchFun"
           v-model="memeber['identity']"
         />
-        <div class="searchItemDec">
-          Search for members by name, username, or email, or invite new ones
-          using their email address.
-        </div>
+        <div class="searchItemDec">Input user identity</div>
       </div>
       <div class="searchItem">
         <span>User name</span>
@@ -306,10 +303,7 @@
           @on-clear="searchFun"
           v-model="memeber['name']"
         />
-        <div class="searchItemDec">
-          Search for members by name, username, or email, or invite new ones
-          using their email address.
-        </div>
+        <div class="searchItemDec">Input a display name</div>
       </div>
       <div class="searchItem">
         <span>Select an authority</span>
@@ -322,10 +316,7 @@
             >{{ item.label }}</Option
           >
         </Select>
-        <div class="searchItemDec">
-          Search for members by name, username, or email, or invite new ones
-          using their email address.
-        </div>
+        <div class="searchItemDec">Choose a role permission</div>
       </div>
       <div class="searchItem">
         <span>Expiration time</span>
@@ -340,7 +331,7 @@
         >
         </DatePicker>
         <div class="searchItemDec">
-          On this date, the member(s) will automatically lose access to this
+          After this date,the member will automatically lose access to this
           group and all of its projects.
         </div>
       </div>
