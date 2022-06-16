@@ -406,7 +406,7 @@
                 :class="{ leaveStop: item.isMe }"
                 @click="removeGroupMember(item)"
               >
-                Leave
+                Remove
               </div>
             </div>
           </div>
