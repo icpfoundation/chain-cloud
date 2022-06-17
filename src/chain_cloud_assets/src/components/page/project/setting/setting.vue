@@ -467,6 +467,11 @@ export default {
       throw getProjectRes.Err;
     }
     if (getProjectRes.Ok.length > 0) {
+      if ("Private" in getProjectRes.Ok[0].visibility) {
+        this.type = "Private";
+      } else {
+        this.type = "Public";
+      }
       this.project.name = getProjectRes.Ok[0].name;
       this.project.description = getProjectRes.Ok[0].description;
       this.project.url = getProjectRes.Ok[0].git_repo_url;

@@ -440,6 +440,11 @@ export default {
 
     this.group.imageData = new TextDecoder().decode(Uint8Array.from(imageData));
     if (getGroupInfoRes.Ok.length > 0) {
+      if ("Private" in getGroupInfoRes.Ok[0].visibility) {
+        this.type = "Private";
+      } else {
+        this.type = "Public";
+      }
       this.group.name = getGroupInfoRes.Ok[0].name;
       this.group.description = getGroupInfoRes.Ok[0].description;
       this.group.url = getGroupInfoRes.Ok[0].url;

@@ -297,7 +297,6 @@ export default {
       if (!manageCanister) {
         throw "No login account";
       }
-
       this.$router.push({
         name: "group",
         params: {
@@ -335,6 +334,10 @@ export default {
                     user,
                     getUserInfoRes.Ok.relation_project[i][1][j].group_id
                   );
+                  console.log("res", res);
+                  if ((res.Ok && res.Ok.length == 0) || res.Err) {
+                    return;
+                  }
                   try {
                     let imageData = await manageCanister.getGroupImage(
                       user,
@@ -368,7 +371,7 @@ export default {
                     });
                   }
                 } catch (err) {
-                  console.log("err:", err);
+                  console.log("get Group Info err:", err);
                 }
               })(user, this)
             );
@@ -390,6 +393,7 @@ export default {
 
             //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.projectList.push({
+              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
@@ -401,6 +405,7 @@ export default {
             });
           } catch (err) {
             this.projectList.push({
+              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,

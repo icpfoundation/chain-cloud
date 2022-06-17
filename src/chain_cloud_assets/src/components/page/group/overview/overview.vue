@@ -520,59 +520,63 @@ export default {
       manage = canister;
     }
 
-    let account = Principal.fromText(this.$route.params.user);
-    let groupId = BigInt(this.$route.params.groupId);
     try {
-      let imageData = await manageCanister.getGroupImage(account, groupId);
+      let account = Principal.fromText(this.$route.params.user);
+      let groupId = BigInt(this.$route.params.groupId);
+      try {
+        let imageData = await manageCanister.getGroupImage(account, groupId);
 
-      this.group.imageData = new TextDecoder().decode(
-        Uint8Array.from(imageData)
-      );
-    } catch (err) {}
-    let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
-    if (getGroupInfoRes.Err) {
-      throw getGroupInfoRes.Err;
-      return;
-    }
-    this.tableData.total = getGroupInfoRes.Ok[0].projects.length;
-    this.tableData.pageSize = getGroupInfoRes.Ok[0].projects.length;
-    if (getGroupInfoRes.Ok.length > 0) {
-      this.group.name = getGroupInfoRes.Ok[0].name;
-    }
-    let currentTime = BigInt(new Date().getTime());
-    for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
-      for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
-        let duration = parseInt(
-          Number(
-            currentTime -
-              BigInt(getGroupInfoRes.Ok[i].projects[j][1].create_time)
-          ) / 1000
+        this.group.imageData = new TextDecoder().decode(
+          Uint8Array.from(imageData)
         );
-
-        let create_time = "0 s ago";
-        if (duration >= 86400) {
-          create_time = `${parseInt(duration / 86400)} day ago`;
-        } else if (duration >= 3600) {
-          create_time = `${parseInt(duration / 3600)} hour ago`;
-        } else if (duration >= 60) {
-          create_time = `${parseInt(duration / 60)} min ago`;
-        } else {
-          create_time = `${duration} s ago`;
-        }
-
-        this.tableData.tableList.push({
-          name: getGroupInfoRes.Ok[i].projects[j][1].name,
-          group: getGroupInfoRes.Ok[i].projects[j][1].name.slice(0, 1),
-          groupInfo: getGroupInfoRes.Ok[i].projects[j][1].description,
-          time: create_time,
-          isLock: false,
-          isXing: false,
-          isBizoZhi: false,
-          createBy: getGroupInfoRes.Ok[i].projects[j][1].create_by.toString(),
-        });
+      } catch (err) {}
+      let getGroupInfoRes = await manage.getGroupInfo(account, groupId);
+      if (getGroupInfoRes.Err) {
+        throw getGroupInfoRes.Err;
+        return;
       }
+      this.tableData.total = getGroupInfoRes.Ok[0].projects.length;
+      this.tableData.pageSize = getGroupInfoRes.Ok[0].projects.length;
+      if (getGroupInfoRes.Ok.length > 0) {
+        this.group.name = getGroupInfoRes.Ok[0].name;
+      }
+      let currentTime = BigInt(new Date().getTime());
+      for (let i = 0; i < getGroupInfoRes.Ok.length; i++) {
+        for (let j = 0; j < getGroupInfoRes.Ok[0].projects.length; j++) {
+          let duration = parseInt(
+            Number(
+              currentTime -
+                BigInt(getGroupInfoRes.Ok[i].projects[j][1].create_time)
+            ) / 1000
+          );
+
+          let create_time = "0 s ago";
+          if (duration >= 86400) {
+            create_time = `${parseInt(duration / 86400)} day ago`;
+          } else if (duration >= 3600) {
+            create_time = `${parseInt(duration / 3600)} hour ago`;
+          } else if (duration >= 60) {
+            create_time = `${parseInt(duration / 60)} min ago`;
+          } else {
+            create_time = `${duration} s ago`;
+          }
+
+          this.tableData.tableList.push({
+            name: getGroupInfoRes.Ok[i].projects[j][1].name,
+            group: getGroupInfoRes.Ok[i].projects[j][1].name.slice(0, 1),
+            groupInfo: getGroupInfoRes.Ok[i].projects[j][1].description,
+            time: create_time,
+            isLock: false,
+            isXing: false,
+            isBizoZhi: false,
+            createBy: getGroupInfoRes.Ok[i].projects[j][1].create_by.toString(),
+          });
+        }
+      }
+      this.tableData.tableFilter = this.tableData.tableList;
+    } catch (err) {
+      console.log("invalid params:", this.$route.params.user);
     }
-    this.tableData.tableFilter = this.tableData.tableList;
   },
 };
 </script>
