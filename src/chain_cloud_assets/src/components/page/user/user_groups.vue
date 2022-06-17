@@ -335,6 +335,10 @@ export default {
                     user,
                     getUserInfoRes.Ok.relation_project[i][1][j].group_id
                   );
+                  console.log("res", res);
+                  if ((res.Ok && res.Ok.length == 0) || res.Err) {
+                    return;
+                  }
                   try {
                     let imageData = await manageCanister.getGroupImage(
                       user,
@@ -368,7 +372,7 @@ export default {
                     });
                   }
                 } catch (err) {
-                  console.log("err:", err);
+                  console.log("get Group Info err:", err);
                 }
               })(user, this)
             );

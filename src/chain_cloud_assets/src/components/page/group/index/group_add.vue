@@ -369,12 +369,12 @@ export default {
 
       let account = manageCanister.identity;
       this.loading = true;
-      let addUserRes = await manageCanister.addUser(account.toString(), {
-        Public: null,
-      });
-      if (addUserRes.Err) {
-        console.log(addUserRes.Err);
-      }
+      // let addUserRes = await manageCanister.addUser(account.toString(), {
+      //   Public: null,
+      // });
+      // if (addUserRes.Err) {
+      //   console.log(addUserRes.Err);
+      // }
       let getUserInfoRes = await manageCanister.getUserInfo(account);
 
       let nonce = BigInt(1);
