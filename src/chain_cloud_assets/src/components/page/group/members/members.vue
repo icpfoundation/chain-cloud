@@ -217,7 +217,7 @@
 }
 
 .leave {
-  width: 0.8rem;
+  width: 1.1rem;
   height: 0.32rem;
   background: #dc5050;
   border-radius: 0.04rem;
@@ -275,7 +275,17 @@
       </div>
       <div class="headRight">
         <!-- <div class="cel buttonCom">Cancel</div> -->
-        <div class="add buttonCom" @click="addGroupMember">Add to group</div>
+        <!-- <div class="add buttonCom" @click="addGroupMember">Add to group</div> -->
+
+        <Button
+                class="add buttonCom"
+                type="primary"
+                :loading="addmemberloading"
+                @click="addGroupMember"
+              >
+                <span v-if="!addmemberloading">Add to group</span>
+                <span v-else>Add...</span>
+              </Button>
       </div>
     </div>
     <div class="search">
@@ -401,13 +411,24 @@
                 >
               </Select> -->
               <div class="authority">{{ item.authority }}</div>
-              <div
+              <!-- <div
                 class="leave"
                 :class="{ leaveStop: item.isMe }"
                 @click="removeGroupMember(item)"
               >
-                Leave
-              </div>
+                Remove
+              </div> -->
+
+              <Button
+                class="leave"
+                type="primary"
+                :loading="item.loading"
+                :class="{ leaveStop: item.isMe }"
+                @click="removeGroupMember(item)"
+              >
+                <span v-if="!item.loading">Remove</span>
+                <span v-else>Removing</span>
+              </Button>
             </div>
           </div>
         </div>
@@ -435,6 +456,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      addmemberloading: false,
       group: {
         name: "",
       },
@@ -479,58 +501,7 @@ export default {
         },
       ],
       tableData: {
-        tableList: [
-          // {
-          //   name: "yong",
-          //   groupInfo: "go-statemachine",
-          //   time: "Given access 3 years ago",
-          //   toName: "@shanshan",
-          //   size: 556565,
-          //   isMe: true,
-          //   nameValue: "1",
-          //   expires: "Expires in over 9 years",
-          // },
-          // {
-          //   name: "yong1",
-          //   groupInfo: "go-statemachine",
-          //   time: "Given access 3 years ago",
-          //   toName: "@shanshan",
-          //   size: 556565,
-          //   isMe: false,
-          //   nameValue: "2",
-          //   expires: "Expires in over 9 years",
-          // },
-          // {
-          //   name: "yong2",
-          //   groupInfo: "go-statemachine",
-          //   time: "Given access 3 years ago",
-          //   toName: "@shanshan",
-          //   size: 556565,
-          //   isMe: false,
-          //   nameValue: "3",
-          //   expires: "Expires in over 9 years",
-          // },
-          // {
-          //   name: "yong3",
-          //   groupInfo: "go-statemachine",
-          //   time: "Given access 3 years ago",
-          //   toName: "@shanshan",
-          //   size: 556565,
-          //   isMe: false,
-          //   nameValue: "3",
-          //   expires: "Expires in over 9 years",
-          // },
-          // {
-          //   name: "yong4",
-          //   groupInfo: "go-statemachine",
-          //   time: "Given access 3 years ago",
-          //   toName: "@shanshan",
-          //   size: 556565,
-          //   isMe: false,
-          //   nameValue: "4",
-          //   expires: "Expires in over 9 years",
-          // },
-        ],
+        tableList: [],
         total: 0,
         page: 1,
         pageSize: 3,
@@ -594,11 +565,14 @@ export default {
       let account = Principal.fromText(this.$route.params.user);
       let groupId = BigInt(this.$route.params.groupId);
 
+      this.addmemberloading = true
       let addGroupMemberRes = await canister.addGroupMember(
         account,
         groupId,
         this.memeber
       );
+
+      this.addmemberloading = false
 
       if ("Ok" in addGroupMemberRes) {
         this.$Notice.info({
@@ -678,6 +652,7 @@ export default {
             expires: expires,
             identity: getGroupInfoRes.Ok[0].members[k][1].identity,
             authority: auth,
+            loading: false,
           });
         }
       }
@@ -691,11 +666,15 @@ export default {
       let account = Principal.fromText(this.$route.params.user);
       let groupId = BigInt(this.$route.params.groupId);
 
+      item.loading = true
+
       let rmGroupMemberRes = await canister.removeGroupMember(
         account,
         groupId,
         item.identity
       );
+
+      item.loading = false
 
       if ("Ok" in rmGroupMemberRes) {
         this.$Notice.info({

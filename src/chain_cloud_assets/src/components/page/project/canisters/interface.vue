@@ -236,13 +236,13 @@ export default {
           data: "",
         },
         {
-          name: "TypeScri",
+          name: "TypeScript",
           select: false,
           id: 4,
           data: "",
         },
         {
-          name: "JavaScri",
+          name: "JavaScript",
           select: false,
           id: 5,
           data: "",

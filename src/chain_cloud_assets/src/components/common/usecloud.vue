@@ -38,7 +38,7 @@
 </style>
 <template>
   <div class="usecloudApp">
-    <div class="title">Partners of Us</div>
+    <div class="title">PARTNERS</div>
     <div class="tabarbox">
       <div class="tabarItem" style="width:270px">
         <img src="../../../assets/img/logo/logo5.png" alt="">

@@ -266,7 +266,7 @@
         </div>
       </div>
       <div class="headItem">
-        <div class="headItemTitle">Branchs info</div>
+        <div class="headItemTitle">Branches summary</div>
         <div class="headItemTable">
           <div class="headTableItem tab">
             <span>Branch number</span>
@@ -288,7 +288,7 @@
       </div>
     </div>
     <div class="content">
-      <div class="contentTitle">Commits</div>
+      <div class="contentTitle">Branches</div>
       <div class="contentBox">
         <div class="table">
           <div
@@ -463,8 +463,9 @@ export default {
           moment(ele.time, "YYYY-MM-DD'T'HH:mm:SS'Z'")
         ).getTime();
         let day = Math.floor((currentTime - t) / 1000 / 3600 / 24);
+        that.branch.lastModify = that.branch.lastModify + 1;
+        
         if (day <= 1) {
-          that.branch.lastModify = that.branch.lastModify + 1;
         } else if (day > 1 && day <= 7) {
           that.branch.active = that.branch.active + 1;
         } else {
