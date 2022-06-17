@@ -197,8 +197,15 @@
     <div class="content">
       <div class="comItem">
         <div class="comItemTitle">Activity</div>
-        <div class="table">
+        <div class="table activity">
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="activeList.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in activeList"
             :key="index"
@@ -227,8 +234,15 @@
       </div>
       <div class="comItem">
         <div class="comItemTitle">Personal projects</div>
-        <div class="table">
+        <div class="table projects">
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="projectList.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in projectList"
             :key="index"
@@ -285,6 +299,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -357,12 +372,20 @@ export default {
     ...mapGetters(["getManageCanister"]),
   },
   methods: {},
-  async created() {
+
+  async mounted() {
     let manageCanister = this.getManageCanister();
     if (!manageCanister) {
       throw "No login account";
     }
     let account = manageCanister.identity;
+    let activityInstance = Loading.service({
+      target: ".activity",
+    });
+    let projectsInstance = Loading.service({
+      target: ".projects",
+    });
+
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
@@ -435,7 +458,10 @@ export default {
           });
         }
       }
-
+      if (logRes.length == 0) {
+        activityInstance.close();
+      }
+      projectsInstance.close();
       Promise.all(logRes).then((getLogRes) => {
         for (let j = 0; j < getLogRes.length; j++) {
           for (let k = 0; k < getLogRes[j].length; k++) {
@@ -485,6 +511,7 @@ export default {
             }
           }
         }
+        activityInstance.close();
       });
       Promise.all(imageRes).then((res) => {
         for (let i = 0; i < res.length; i++) {

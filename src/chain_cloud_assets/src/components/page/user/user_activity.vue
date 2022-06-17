@@ -99,7 +99,14 @@
     <div class="content">
       <div class="comItem">
         <div class="table">
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="activeList.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in activeList"
             :key="index"
@@ -133,6 +140,7 @@
 import { manageCanister } from "@/chain_cloud_assets/assets/js/actor";
 import { Principal } from "@dfinity/principal";
 import { mapGetters } from "vuex";
+import { Loading } from "element-ui";
 export default {
   data() {
     return {
@@ -176,12 +184,15 @@ export default {
     ...mapGetters(["getManageCanister"]),
   },
   methods: {},
-  async created() {
+  async mounted() {
     let manageCanister = this.getManageCanister();
     if (!manageCanister) {
       throw "No login account";
     }
     let account = manageCanister.identity;
+    let activityInstance = Loading.service({
+      target: ".table",
+    });
     let getUserInfoRes = await manageCanister.getUserInfo(account);
 
     if (getUserInfoRes.Ok) {
@@ -198,6 +209,9 @@ export default {
             return getLogRes;
           })()
         );
+      }
+      if (logRes.length == 0) {
+        activityInstance.close();
       }
       Promise.all(logRes).then((getLogRes) => {
         for (let j = 0; j < getLogRes.length; j++) {
@@ -247,6 +261,7 @@ export default {
             }
           }
         }
+        activityInstance.close();
       });
     }
   },

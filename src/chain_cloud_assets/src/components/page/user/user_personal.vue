@@ -208,7 +208,14 @@
     <div class="content">
       <div class="comItem">
         <div class="table">
+          <el-empty
+            :image-size="50"
+            description="No data"
+            v-if="projectList.length == 0"
+          >
+          </el-empty>
           <div
+            v-else
             class="tableItem"
             v-for="(item, index) in projectList"
             :key="index"
@@ -346,6 +353,9 @@ export default {
         throw "No login account";
       }
       let account = manageCanister.identity;
+      let activityInstance = Loading.service({
+        target: ".table",
+      });
       let getUserInfoRes = await manageCanister.getUserInfo(account);
 
       if (getUserInfoRes.Ok) {
@@ -432,6 +442,7 @@ export default {
             }
           }
         }
+        activityInstance.close();
         Promise.all(imageRes).then((res) => {
           for (let i = 0; i < res.length; i++) {
             let imageData = new TextDecoder().decode(
@@ -475,7 +486,7 @@ export default {
   computed: {
     ...mapGetters(["getManageCanister"]),
   },
-  async created() {
+  async mounted() {
     await this.projectInfo();
   },
 };
