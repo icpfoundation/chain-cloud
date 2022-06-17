@@ -297,7 +297,6 @@ export default {
       if (!manageCanister) {
         throw "No login account";
       }
-
       this.$router.push({
         name: "group",
         params: {
@@ -394,6 +393,7 @@ export default {
 
             //imageData = new TextDecoder().decode(Uint8Array.from(imageData));
             this.projectList.push({
+              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
@@ -405,6 +405,7 @@ export default {
             });
           } catch (err) {
             this.projectList.push({
+              user: account.toString(),
               groupType: "Z",
               name: getUserInfoRes.Ok.groups[i][1].name,
               id: getUserInfoRes.Ok.groups[i][1].id,
