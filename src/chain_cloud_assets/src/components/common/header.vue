@@ -324,6 +324,13 @@ export default {
         let manageCanister = await initPlug();
         this.manageCanisterConfig(manageCanister);
 
+        let addUserRes = await manageCanister.addUser(
+          manageCanister.identity.toString(),
+          {
+            Public: null,
+          }
+        );
+        console.log("res:", addUserRes);
         this.principle = manageCanister.identity;
         this.principleShort =
           manageCanister.identity.toString().substring(0, 8) + "...";
@@ -354,6 +361,13 @@ export default {
               // this.authClient.registerActor("ii", manageCanister);
               this.manageCanisterConfig(manageCanister);
 
+              let addUserRes = await manageCanister.addUser(
+                manageCanister.identity.toString(),
+                {
+                  Public: null,
+                }
+              );
+              console.log("res:", addUserRes);
               // window.manageCanister = manageCanister;
               // window.localStorage.setItem("identity", JSON.stringify(identity));
               let principle = identity.getPrincipal();

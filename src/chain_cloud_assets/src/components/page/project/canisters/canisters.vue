@@ -382,7 +382,7 @@
               alt=""
             />
             <div class="groupName">
-              <span>10th June</span>
+              <span>{{ item.day }} {{ item.month }}</span>
               <div class="groupNameItem">
                 <span class="groupNameItemtime">{{ item.time }}</span>
                 <span class="groupNameItemTo">{{ item.action }}</span>
@@ -526,7 +526,20 @@ export default {
     this.project.createdTime = formatTime;
     this.project.updateTime = formatTime;
     this.project.name = getProjectRest.Ok[0].name;
-
+    let months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     if (getProjectRest.Ok.length > 0) {
       let canisterRes = [];
 
@@ -623,6 +636,14 @@ export default {
               )
             );
 
+            let day = new Date(
+              Number(getLogRes[i][j][1] / BigInt(1000000))
+            ).getDate();
+
+            let month = new Date(
+              Number(getLogRes[i][j][1] / BigInt(1000000))
+            ).getMonth();
+
             let create_time = "0 s ago";
             if (duration >= 86400) {
               create_time = `${parseInt(duration / 86400)} day ago`;
@@ -642,6 +663,8 @@ export default {
                   time: create_time,
                   action: getLogRes[i][j][2].UpdateProject[2],
                   data: getLogRes[i][j][3],
+                  day: day,
+                  month: months[month],
                 });
               }
             }
@@ -653,6 +676,8 @@ export default {
                   time: create_time,
                   action: getLogRes[i][j][2].UpdateProjectCanister[2],
                   data: getLogRes[i][j][3],
+                  day: day,
+                  month: months[month],
                 });
               }
             }
