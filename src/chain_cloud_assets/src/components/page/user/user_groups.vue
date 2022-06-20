@@ -249,7 +249,13 @@
                   class="typeImg"
                 />
               </div>
-              <div class="delete" @click.stop="deleteGroup(item)">delete</div>
+              <div
+                class="delete"
+                @click.stop="deleteGroup(item)"
+                v-show="item.show"
+              >
+                delete
+              </div>
             </div>
           </div>
         </div>
@@ -345,7 +351,6 @@ export default {
                     user,
                     getUserInfoRes.Ok.relation_project[i][1][j].group_id
                   );
-                  console.log("res", res);
                   if ((res.Ok && res.Ok.length == 0) || res.Err) {
                     return;
                   }
@@ -367,6 +372,7 @@ export default {
                       peoplese: res.Ok[0].members.length,
                       xingNum: 0,
                       imageData: imageData,
+                      show: false,
                     });
                   } catch (err) {
                     that.projectList.push({
@@ -379,6 +385,7 @@ export default {
                       peoplese: res.Ok[0].members.length,
                       xingNum: 0,
                       imageData: "",
+                      show: false,
                     });
                   }
                 } catch (err) {
@@ -413,6 +420,7 @@ export default {
               peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
               xingNum: 0,
               imageData: "",
+              show: true,
             });
           } catch (err) {
             this.projectList.push({
@@ -425,6 +433,7 @@ export default {
               peoplese: getUserInfoRes.Ok.groups[i][1].members.length,
               xingNum: 0,
               imageData: "",
+              show: true,
             });
           }
 
@@ -438,7 +447,7 @@ export default {
           //   xingNum: 2,
           // });
         }
-        activityInstance.close();
+
         Promise.all(groupImage).then((res) => {
           for (let i = 0; i < res.length; i++) {
             let imageData = new TextDecoder().decode(
@@ -448,8 +457,12 @@ export default {
             this.projectList[res[i][1]].user = res[i][2];
           }
         });
-
-        Promise.all(httpReq).then((res) => {});
+        if (httpReq.length == 0) {
+          activityInstance.close();
+        }
+        Promise.all(httpReq).then((res) => {
+          activityInstance.close();
+        });
       }
     },
     async deleteGroup(item) {

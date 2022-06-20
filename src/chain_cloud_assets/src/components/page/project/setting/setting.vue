@@ -456,7 +456,25 @@ export default {
     if (canister) {
       manage = canister;
     }
+    let getGroupRes = await manage.getGroupInfo(account, groupId);
 
+    if (getGroupRes.Ok) {
+      if (manage.identity) {
+        for (let i = 0; i < getGroupRes.Ok[0].members.length; i++) {
+          if (
+            getGroupRes.Ok[0].members[i][0].toString() ==
+            manage.identity.toString()
+          ) {
+            if (
+              "Operational" in getGroupRes.Ok[0].members[i][1].authority ||
+              "Write" in getGroupRes.Ok[0].members[i][1].authority
+            ) {
+              this.disabled = false;
+            }
+          }
+        }
+      }
+    }
     let getProjectRes = await manage.getProjectInfo(
       account,
       groupId,
@@ -472,6 +490,7 @@ export default {
       } else {
         this.type = "Public";
       }
+
       this.project.name = getProjectRes.Ok[0].name;
       this.project.description = getProjectRes.Ok[0].description;
       this.project.url = getProjectRes.Ok[0].git_repo_url;
@@ -483,23 +502,26 @@ export default {
       }
       this.project.canister = JSON.stringify(arr);
     }
-    for (let i = 0; i < getProjectRes.Ok[0].members.length; i++) {
-      let opt = false;
-      if ("Operational" in getProjectRes.Ok[0].members[i][1].authority) {
-        opt = true;
-      }
-      if ("Write" in getProjectRes.Ok[0].members[i][1].authority) {
-        opt = true;
-      }
-      if (
-        manage.identity &&
-        manage.identity.toString() ==
-          getProjectRes.Ok[0].members[i][0].toString() &&
-        opt
-      ) {
-        this.disabled = false;
+    if (this.disabled) {
+      for (let i = 0; i < getProjectRes.Ok[0].members.length; i++) {
+        let opt = false;
+        if ("Operational" in getProjectRes.Ok[0].members[i][1].authority) {
+          opt = true;
+        }
+        if ("Write" in getProjectRes.Ok[0].members[i][1].authority) {
+          opt = true;
+        }
+        if (
+          manage.identity &&
+          manage.identity.toString() ==
+            getProjectRes.Ok[0].members[i][0].toString() &&
+          opt
+        ) {
+          this.disabled = false;
+        }
       }
     }
+
     let imageData = await manageCanister.getProjectImage(
       account,
       groupId,
