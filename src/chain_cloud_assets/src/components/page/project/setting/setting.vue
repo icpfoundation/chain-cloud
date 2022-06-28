@@ -264,7 +264,7 @@
         />
       </div>
       <div class="description">
-        <span>Group avatar</span>
+        <span>Project avatar</span>
         <div class="fileBox">
           <img :src="project['imageData']" alt="" />
           <div class="fileButtonBox">

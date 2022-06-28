@@ -57,7 +57,7 @@
         <div id="line" style="height: 4.24rem" class="echartLineWidth"></div>
       </div>
       <div class="itemBox">
-        <span>Call function quantity (Last 24 hours)</span>
+        <span>Calling frequency (Last 24 hours)</span>
         <div id="bar" style="height: 4.24rem" class="echartLineWidth"></div>
       </div>
     </div>
@@ -345,7 +345,7 @@ export default {
         },
         series: [
           {
-            name: "function1",
+            name: "",
             type: "bar",
             label: {
               show: true,
@@ -356,7 +356,7 @@ export default {
             data: method1,
           },
           {
-            name: "function2",
+            name: "",
             type: "bar",
             label: {
               show: true,
