@@ -111,14 +111,14 @@ module.exports = {
       cache: false
     }),
     new VueLoaderPlugin(),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.join(__dirname, "src", "chain_cloud_assets", "assets"),
-          to: path.join(__dirname, "dist", "chain_cloud_assets"),
-        },
-      ],
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     {
+    //       from: path.join(__dirname, "src", "chain_cloud_assets", "assets"),
+    //       to: path.join(__dirname, "dist", "chain_cloud_assets"),
+    //     },
+    //   ],
+    // }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
       CHAIN_CLOUD_CANISTER_ID: canisters["chain_cloud"]

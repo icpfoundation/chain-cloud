@@ -1,0 +1,95 @@
+type Metadata = record {
+   canister: principal;
+   caller: principal;
+   cycle: nat;
+   method_name: text;
+   memo:text;
+   transaction_time: nat;
+   stable_size: nat;
+ };
+
+type Result = variant {
+      Ok : null;
+      Err : text;
+};
+
+type CanisterStatus = variant{
+    running:null;
+    stopping:null;
+    stopped:null;
+};
+
+type CallType = variant {
+    Local:null;
+    Remote:null;
+};
+
+type CanisterSettings = record {
+   controller: opt  principal;
+    compute_allocation: opt nat;
+    memory_allocation: opt nat;
+    freezing_threshold: opt nat;
+};
+
+type  CanisterStatusFormat = record {
+    status: CanisterStatus;
+    settings: CanisterSettings;
+    module_hash:opt text;
+    controller: principal;
+    memory_size: nat;
+    cycles: nat;
+};
+
+type StatusResult =  variant{
+    Ok:CanisterStatusFormat;
+    Err:text;
+};
+
+type createCanisterResult = variant {
+    Ok:principal;
+    Err:text;
+};
+
+type updateResult = variant {
+    Ok: null;
+    Err:text;
+};
+
+type CanisterType = variant {
+    wallet:null;
+    ui:null;
+    server:null;
+};
+
+type CommitCanister = record{
+    canister_id:principal;
+    status:CanisterStatus;
+    controller:principal;
+    memory_size:nat;
+    balance:nat;
+    module_hash:text;
+    principle:principal;
+    create_time:nat;
+    subnet:text;
+    canister_type:CanisterType;
+};
+
+type GetCanisterByIdResult = variant {
+    Ok:CommitCanister;
+    Err:text;
+};
+
+service :{
+    "createEvent": (Metadata) -> (Result);
+    "getCanisterEvent":(principal,nat,nat) ->(vec Metadata) query;
+    "getCallerEvent":(principal,nat,nat) ->(vec Metadata) query;
+    "getLastEvent":(nat) -> (vec Metadata) query;
+    "getCanisterLastEvent":(principal,nat) -> (vec Metadata) query;
+    "getCanisterList":() -> (vec principal) query;
+    "getCanisterStatus":(principal,CallType) -> (StatusResult);
+    "getLocalCanisterList":() -> (vec CanisterStatusFormat) query;
+    "commitCanister":(CommitCanister) -> ();
+    "getCanisterByPrinciple":(principal) -> (vec CommitCanister) query;
+    "getCanisterById":(principal,principal) -> (GetCanisterByIdResult) query;
+    "getCanisterEventByTime":(principal,nat) -> (vec Metadata)query;
+}
