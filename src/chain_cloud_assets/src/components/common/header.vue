@@ -356,6 +356,7 @@ export default {
         if (!manageCanister) {
           let that = this;
           this.authClient.login({
+            derivationOrigin: "https://lr6a4-6iaaa-aaaan-qah2a-cai.raw.ic0.app",
             identityProvider: this.IDENTITY_URL,
             maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
             onSuccess: async () => {
